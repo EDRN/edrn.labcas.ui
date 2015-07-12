@@ -1,0 +1,35 @@
+.DS_Store
+._*
+
+*.py[co]
+
+# Packages
+*.egg
+*.egg-info
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+
+# Buildout
+develop-eggs
+.*.cfg
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+
+# Translations
+*.mo
+
+# Other generated artifacts
+doc.txt
+
+# Sublime Text
+*.sublime-workspace

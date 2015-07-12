@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<configure
+    xmlns='http://namespaces.zope.org/zope'
+    xmlns:browser='http://namespaces.zope.org/browser'
+    xmlns:grok='http://namespaces.zope.org/grok'
+    xmlns:genericsetup='http://namespaces.zope.org/genericsetup'
+    xmlns:zcml='http://namespaces.zope.org/zcml'
+    i18n_domain='edrn.labcas.ui'>
+    <include package="z3c.autoinclude" file="meta.zcml" />
+    <includeDependencies package='.' />
+    <grok:grok package='.' />
+    <genericsetup:registerProfile
+        name='default'
+        title='EDRN LabCAS User Interface'
+        directory='profiles/default'
+        description='Laboratory Catalog and Archive Service user interface.'
+        provides='Products.GenericSetup.interfaces.EXTENSION'
+    />
+    <browser:resourceDirectory name='edrn.labcas.ui' directory='static' />
+    <include
+        zcml:condition='installed Products.GenericSetup.upgrade'
+        file='upgrades.zcml'
+    />
+</configure>

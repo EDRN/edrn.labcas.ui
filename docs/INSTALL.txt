@@ -1,0 +1,22 @@
+Installation
+============
+
+Use Buildout_ with the plone.recipe.zope2instance recipe.
+
+• Add ``edrn.labcas.ui`` to the list of eggs to install, e.g.::
+ 
+    [buildout]
+    ...
+    eggs =
+        ...
+        edrn.labcas.ui
+        
+• Re-run buildout, e.g. with::
+  
+    % ./bin/buildout
+        
+You can skip the ZCML slug if you are going to explicitly include the package
+from another package's configure.zcml file.
+
+.. References:
+.. _Buildout: http://www.buildout.org/
