@@ -1,17 +1,19 @@
 ###
-# app configuration
-# http://docs.pylonsproject.org/projects/pyramid/en/1.5-branch/narr/environment.html
+# EDRN LabCAS UI production
+# See http://docs.pylonsproject.org/projects/pyramid/en/1.5-branch/narr/environment.html
 ###
 
 [app:main]
 use = egg:edrn.labcas.ui
 
+# General Pyramid settings
 pyramid.reload_templates = false
 pyramid.debug_authorization = false
 pyramid.debug_notfound = false
 pyramid.debug_routematch = false
 pyramid.default_locale_name = en
 
+# Security
 session.type = file
 session.data_dir = %(here)s/data/sessions/data
 session.lock_dir = %(here)s/data/sessions/lock
@@ -20,6 +22,32 @@ session.secret = CHANGE-ME
 session.cookie_on_exception = true
 session.secure = true
 session.timeout = 1800
+authtkt.secret = CHANGE-ME
+authtkt.hashalg = sha512
+
+# Labcas
+labcas.filemgr = http://localhost:9000/
+labcas.workflow = http://localhost:9001/
+labcas.resource = http://localhost:9002/
+labcas.servlets = http://localhost:8080/
+labcas.solr = http://localhost:8983/solr/oodt-fm
+
+# LDAP
+# • For search scopes, 0 = base, 1 = one-level, 2 = subtree
+# • For % signs, use UTF+FF05 instead (FULLWIDTH PERCENT SIGN) since there is
+#   no way to escape them with Python 2.7's SafeConfigParser
+ldap.url = ldaps://edrn.jpl.nasa.gov
+ldap.manager = uid=admin,ou=system
+ldap.password = CHANGE-ME
+ldap.timeout = 60
+ldap.user.base = dc=edrn,dc=jpl,dc=nasa,dc=gov
+ldap.user.filter = (uid=％(login)s)
+ldap.user.scope = 1
+ldap.group.base = dc=edrn,dc=jpl,dc=nasa,dc=gov
+ldap.group.filter = (&(objectClass=groupOfUniqueNames)(uniquemember=％(userdn)s))
+ldap.group.scope = 1
+ldap.group.cache = 300
+
 
 ###
 # wsgi server configuration
