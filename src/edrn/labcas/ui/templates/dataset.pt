@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8'?> 
+<!DOCTYPE html>
+<html lang='en' xmlns:tal='http://xml.zope.org/namespaces/tal'>
+    <head>
+        <title>Dataset</title>
+        <!--
+            provided names:
+            - datesetID: unicode identifier
+            - description: unicode description
+            - metadata: sequence of (key, [values]) pairs
+        -->
+    </head>
+    <body tal:define='
+        message message|nothing;
+    '>
+        <h1>Dataset: <span tal:replace='datasetID'>urn:whatever:blah-blah</span></h1>
+        <div tal:condition='message' tal:content='message'>Status messages here</div>
+        <p>
+            <label for='datasetID'>Dataset ID:</label> <span id='datasetID' tal:content='datasetID'>urn:whatever</span>
+        </p>
+        <p>
+            <label for='description'>Description:</label>
+            <span id='description' tal:content='description'>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </span>
+        </p>
+        <label for='metadata'>Metadata:</label>
+        <table id='metadata'>
+            <tbody>
+                <tr tal:repeat='row metadata'>
+                    <td><label tal:content='python:row[0]'>Number of sheep</label></td>
+                    <td tal:define='values python:row[1]'>
+                        <span tal:condition='python:len(values) == 0' class='discreet'>
+                            No values.
+                        </span>
+                        <span tal:condition='python:len(values) == 1' tal:content='python:values[0]'>
+                            One value
+                        </span>
+                        <ul tal:condition='python:len(values) > 1'>
+                            <li tal:repeat='value values'>
+                                <span tal:replace='value'>One of several values</span>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>

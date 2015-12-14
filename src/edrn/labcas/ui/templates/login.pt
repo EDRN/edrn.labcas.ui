@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?> 
+<!DOCTYPE html>
+<html lang='en' xmlns:tal='http://xml.zope.org/namespaces/tal'>
+    <head>
+        <title>Login</title>
+        <!--
+            provided names:
+            - url: tells where to submit the form
+            - cameFrom: gives referring URL
+            - username: a default username, defaults to empty string
+            - message: any status message to display above form
+        -->
+    </head>
+    <body tal:define='message message|nothing'>
+        <h1>Login</h1>
+        <div tal:condition='message' tal:content='message'>Status messages here</div>
+        <form method='POST' action='#' tal:attributes='action url'>
+            <input type='hidden' name='cameFrom' value='return-url' tal:attributes='value cameFrom'/>
+            <label for='username'>Username</label>
+            <input type='text' id='username' name='username' value='username' tal:attributes='value username'/>
+            <br/>
+            <label for='password'>Password</label>
+            <input type='password' id='password' name='password' />
+            <input type='submit' name='form.submitted' value='Log In'/>
+        </form>
+    </body>
+</html>

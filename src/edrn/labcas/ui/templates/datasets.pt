@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8'?> 
+<!DOCTYPE html>
+<html lang='en' xmlns:tal='http://xml.zope.org/namespaces/tal'>
+    <head>
+        <title>Datasets</title>
+        <!--
+            provided names:
+            - products = sequence of LabCASProduct instances describing each product.
+            - hasProducts = boolean to tell if products are available.
+        -->
+    </head>
+    <body tal:define='
+        message message|nothing;
+    '>
+        <h1>My Products</h1>
+        <div tal:condition='message' tal:content='message'>Status messages here</div>
+        <span tal:condition='not:hasProducts' class='discreet'>
+            You currently do not have access to any products.
+        </span>
+        <table tal:condition='hasProducts'>
+            <thead>
+                <tr>
+                    <th>Identifier</th><th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr tal:repeat='product products'>
+                    <th>
+                        <a href='#'
+                            tal:attributes='href python:request.current_route_url() + u"/" + product.identifier'
+                            tal:content='product.identifier'>
+                            urn:some:product
+                        </a>
+                    </th>
+                    <th tal:content='python:product.name'>
+                        Some Name
+                    </th>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>

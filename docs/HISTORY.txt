@@ -1,0 +1,12 @@
+Changelog
+=========
+
+What follows is a history of changes from release to release.  Where issue IDs
+are listed below, you can find out more about them by visiting the issue
+tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
+
+
+0.0.0 — Unreleased
+------------------
+
+This release is not released. Neat, huh?
