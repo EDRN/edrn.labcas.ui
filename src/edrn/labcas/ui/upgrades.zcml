@@ -1,5 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<configure
-    xmlns='http://namespaces.zope.org/zope'
-    xmlns:genericsetup='http://namespaces.zope.org/genericsetup'
-    i18n_domain='edrn.labcas.ui'/>
