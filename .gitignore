@@ -33,3 +33,7 @@ doc.txt
 
 # Sublime Text
 *.sublime-workspace
+
+# Pyramid configs
+development.ini
+production.ini
