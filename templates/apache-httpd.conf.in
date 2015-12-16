@@ -1,0 +1,22 @@
+# EDRN configuration
+# ==================
+#
+# Apache HTTPD customizations for Early Detection Research Network
+
+
+# LabCAS UI
+# ---------
+#
+# Settings for LabCAS
+WSGIApplicationGroup %{GLOBAL}
+WSGIPythonHome /usr/local/labcas/ui/python2.7
+WSGIPassAuthorization On
+WSGIDaemonProcess labcas user=edrn group=staff threads=4 python-path=/usr/local/labcas/ui/python2.7/lib/python2.7/site-packages
+WSGIScriptAlias /manage ${buildout:bin-directory}/labcas.wsgi
+<Directory ${buildout:bin-directory}>
+    WSGIProcessGroup labcas
+    Options FollowSymLinks
+    <Files labcas.wsgi>
+        Require all granted
+    </Files>
+</Directory>
