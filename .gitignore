@@ -37,3 +37,6 @@ doc.txt
 # Pyramid configs
 development.ini
 production.ini
+
+# WSGI generated
+app.wsgi
