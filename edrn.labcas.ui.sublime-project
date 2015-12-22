@@ -1,7 +1,6 @@
 {
    "folders" : [
       {
-         "path" : ".",
          "folder_exclude_patterns" : [
             "bin",
             "dep-src",
@@ -12,12 +11,14 @@
             "parts",
             "var"
          ],
+         "path" : ".",
          "file_exclude_patterns" : [
             ".*.cfg",
             "bootstrap.py",
             "doc.txt",
             "*.sublime-*",
-            "ops.cfg"
+            "ops.cfg",
+            "dev.cfg"
          ]
       }
    ]

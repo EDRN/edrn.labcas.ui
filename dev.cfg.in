@@ -12,10 +12,18 @@
 #
 # Bring it all together.
 [buildout]
-extends = base.cfg
+extends = etc/base.cfg
 develop = .
 parts =
     python
     test
     omelette
     paste-dev
+
+
+# Secrets
+# -------
+#
+# Fill in the password to EDRN's manager account
+[secrets]
+ldap-manager-password = 

@@ -35,3 +35,4 @@ doc.txt
 *.sublime-workspace
 
 ops.cfg
+dev.cfg
