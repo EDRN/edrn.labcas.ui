@@ -25,7 +25,9 @@ parts =
 # Strings used to sign cookies and create sessions.  These must be different.
 # And complex.  And long.  And protect this file!
 [secrets]
-
+session = 
+authorization = 
+ldap-manager-password = 
 
 
 # Paths
