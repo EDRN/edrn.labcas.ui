@@ -16,7 +16,8 @@
             ".*.cfg",
             "bootstrap.py",
             "doc.txt",
-            "*.sublime-*"
+            "*.sublime-*",
+            "ops.cfg"
          ]
       }
    ]
