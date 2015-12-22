@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?> 
+<!DOCTYPE html>
+<html lang='en' xml:lang='en'
+    xmlns='http://www.w3.org/1999/xhtml'
+    xmlns:tal='http://xml.zope.org/namespaces/tal'
+    xmlns:metal='http://xml.zope.org/namespaces/metal'>
+    <head>
+        <meta http-equiv='Content-type' content='text/html; charset=utf-8'/>
+        <metal:style-slot define-slot='style_slot'/>
+        <metal:javascript-slot define-slot='javascript_head_slot'/>
+    </head>
+    <body tal:define='
+        message message|nothing;
+    '>
+        <h1>Master</h1>
+        <div tal:condition='message' tal:content='message'>Status messages here</div>
+        <metal:content-slot define-slot='content'/>
+    </body>
+</html>
