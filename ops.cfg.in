@@ -1,0 +1,54 @@
+# EDRN LabCAS User Interface - Operational Configutation
+# ======================================================
+#
+# Use this configuration in ops.
+#
+# Copyright 2015 California Institute of Technology. ALL RIGHTS
+# RESERVED. U.S. Government Sponsorship acknowledged.
+
+
+# Buildout
+# --------
+#
+# Bring it all together.
+[buildout]
+extends = base.cfg
+update-versions-file = ${buildout:directory}/var/ops-versions.cfg
+parts =
+    paste-ops
+    apache-httpd-conf
+
+
+# Secrets
+# -------
+#
+# Strings used to sign cookies and create sessions.  These must be different.
+# And complex.  And long.  And protect this file!
+[secrets]
+
+
+
+# Paths
+# -----
+#
+# We use a virtualenv isolated just for LabCAS
+[paths]
+python-home = /usr/local/labcas/ui/python2.7
+python-version = 2.7
+
+
+# User IDs
+# --------
+#
+# Unix account stuff.
+[users]
+labcas = edrn
+
+
+# Group IDs
+# ---------
+#
+# Unix group stuff.
+[groups]
+labcas = staff
+

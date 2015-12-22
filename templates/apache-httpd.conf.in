@@ -9,14 +9,14 @@
 #
 # Settings for LabCAS
 WSGIApplicationGroup %{GLOBAL}
-WSGIPythonHome /usr/local/labcas/ui/python2.7
+WSGIPythonHome ${paths:python-home}
 WSGIPassAuthorization On
-WSGIDaemonProcess labcas user=edrn group=staff threads=4 python-path=/usr/local/labcas/ui/python2.7/lib/python2.7/site-packages
-WSGIScriptAlias /manage ${buildout:bin-directory}/labcas.wsgi
+WSGIDaemonProcess labcas user=${users:labcas} group=${groups:labcas} threads=4 python-path=${paths:python-home}/lib/python${paths:python-version}/site-packages
+WSGIScriptAlias /manage ${buildout:bin-directory}/${buildout:wsgi-target-name}
 <Directory ${buildout:bin-directory}>
     WSGIProcessGroup labcas
     Options FollowSymLinks
-    <Files labcas.wsgi>
+    <Files ${buildout:wsgi-target-name}>
         Require all granted
     </Files>
 </Directory>
