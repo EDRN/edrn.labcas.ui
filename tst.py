@@ -45,7 +45,7 @@ def main():
 
     # response = server.workflowmgr.executeDynamicWorkflow(
     #     ['urn:edrn:LabcasUploadInitTask', 'urn:edrn:LabcasUploadExecuteTask'],
-    #     {'Dataset': 't1'}
+    #     {'Dataset': 't3'}
     # )
     # print response
     # waitForComp(server, response)
@@ -81,7 +81,7 @@ def main():
     #     printProductType(ptd)
 
     server = xmlrpclib.ServerProxy('http://localhost:9000/')
-    product = server.filemgr.getProductTypeById('urn:edrn:t1')
+    product = server.filemgr.getProductTypeById('urn:edrn:t3')
     import pdb;pdb.set_trace()
     printProductType(product)
 
