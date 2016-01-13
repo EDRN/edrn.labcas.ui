@@ -16,7 +16,7 @@ _authorEmail     = 'sean.kelly@jpl.nasa.gov'
 _maintainer      = 'Sean Kelly'
 _maintainerEmail = 'sean.kelly@jpl.nasa.gov'
 _license         = 'ALv2'
-_namespaces      = ['edrn']
+_namespaces      = ['edrn', 'edrn.labcas']
 _zipSafe         = False
 _keywords        = 'web edrn cancer biomarkers lab laboratory catalog archive'
 _testSuite       = 'edrn.labcas.ui.tests.test_suite'
@@ -27,6 +27,7 @@ _extras = {
 }
 _externalRequirements = [
     'setuptools',
+    'deform >= 2.0a1',
     'pyramid',
     'pyramid_beaker',
     'pyramid_chameleon',
