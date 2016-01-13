@@ -53,6 +53,7 @@ def main(global_config, **settings):
     ))
     config.set_authorization_policy(ACLAuthorizationPolicy())
     config.add_static_view('static', 'static', cache_max_age=3600)  # use ini?
+    config.add_static_view('deform_static', 'deform:static')
     config.add_route('home', '/')
     config.add_route('datasets', '/datasets', factory=Datasets)
     config.add_route('dataset', '/datasets/{datasetID}', factory=Dataset)
