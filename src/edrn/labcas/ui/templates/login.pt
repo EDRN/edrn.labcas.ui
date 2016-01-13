@@ -1,6 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?> 
 <!DOCTYPE html>
-<html lang='en' xmlns:tal='http://xml.zope.org/namespaces/tal'>
+<html
+    xmlns='http://www.w3.org/1999/xhtml'
+    xmlns:tal='http://xml.zope.org/namespaces/tal'
+    xmlns:metal='http://xml.zope.org/namespaces/metal'
+    lang='en'
+    xml:lang='en'
+    metal:use-macro='load:edrn.labcas.ui:templates/master.pt'>
     <head>
         <title>Login</title>
         <!--
@@ -9,19 +15,31 @@
             - cameFrom: gives referring URL
             - username: a default username, defaults to empty string
             - message: any status message to display above form
+            - form: rendered form
         -->
+        <metal:style-slot fill-slot='style_slot'>
+            <tal:repeat repeat='url python:view.widgetResources["css"]'>
+                <link rel='stylesheet' type='text/css' href='#'
+                    tal:attributes='href python:request.static_url(url)'/>
+            </tal:repeat>
+        </metal:style-slot>
+        <metal:javascript fill-slot='javascript_head_slot'>
+            <tal:repeat repeat='url python:view.widgetResources["js"]'>
+                <script type='text/javascript' src='#' tal:attributes='href python:request.static_url(url)'></script>
+            </tal:repeat>
+        </metal:javascript>
     </head>
-    <body tal:define='message message|nothing'>
-        <h1>Login</h1>
-        <div tal:condition='message' tal:content='message'>Status messages here</div>
-        <form method='POST' action='#' tal:attributes='action url'>
-            <input type='hidden' name='cameFrom' value='return-url' tal:attributes='value cameFrom'/>
-            <label for='username'>Username</label>
-            <input type='text' id='username' name='username' value='username' tal:attributes='value username'/>
-            <br/>
-            <label for='password'>Password</label>
-            <input type='password' id='password' name='password' />
-            <input type='submit' name='form.submitted' value='Log In'/>
-        </form>
+    <body>
+        <div metal:fill-slot='content'>
+            <div class='container'>
+                <h2>Please log in</h2>
+                <p tal:content='structure python:form'>
+                    Login form here.
+                </p>
+            </div>
+        </div>
+        <script type='text/javascript'>
+            deform.load()
+        </script>
     </body>
 </html>

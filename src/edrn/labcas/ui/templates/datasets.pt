@@ -1,6 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?> 
 <!DOCTYPE html>
-<html lang='en' xmlns:tal='http://xml.zope.org/namespaces/tal'>
+<html
+    xmlns='http://www.w3.org/1999/xhtml'
+    xmlns:tal='http://xml.zope.org/namespaces/tal'
+    xmlns:metal='http://xml.zope.org/namespaces/metal'
+    lang='en'
+    xml:lang='en'
+    metal:use-macro='load:edrn.labcas.ui:templates/master.pt'>
     <head>
         <title>Datasets</title>
         <!--
@@ -9,34 +15,25 @@
             - hasProducts = boolean to tell if products are available.
         -->
     </head>
-    <body tal:define='
-        message message|nothing;
-    '>
-        <h1>My Products</h1>
-        <div tal:condition='message' tal:content='message'>Status messages here</div>
-        <span tal:condition='not:hasProducts' class='discreet'>
-            You currently do not have access to any products.
-        </span>
-        <table tal:condition='hasProducts'>
-            <thead>
-                <tr>
-                    <th>Identifier</th><th>Name</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr tal:repeat='product products'>
-                    <th>
-                        <a href='#'
-                            tal:attributes='href python:request.current_route_url() + u"/" + product.identifier'
-                            tal:content='product.identifier'>
-                            urn:some:product
-                        </a>
-                    </th>
-                    <th tal:content='python:product.name'>
-                        Some Name
-                    </th>
-                </tr>
-            </tbody>
-        </table>
+    <body>
+        <div metal:fill-slot='content'>
+            <div class='container'>
+                <h1>My Products</h1>
+                <p tal:condition='not:hasProducts' class='discreet'>
+                    You currently do not have access to any products.
+                </p>
+                <div tal:condition='hasProducts'>
+                    <ul class='list-group'>
+                        <li tal:repeat='product products' class='list-group-item'>
+                            <a href='#'
+                                tal:attributes='href python:request.current_route_url() + u"/" + product.identifier'
+                                tal:content='product.identifier'>
+                                urn:some:product
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
