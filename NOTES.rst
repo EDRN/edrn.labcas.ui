@@ -18,6 +18,12 @@ ssh -L 9000:localhost:9000 -L 9001:localhost:9001 -L 9002:localhost:9002 -L 8080
 Luca
 ====
 
+FYI if you ever need the labcas-backend python examples again, I refactored them in this little package:
+
+https://github.com/EDRN/labcas-backend/tree/master/common/src/main/python/gov/nasa/jpl/edrn/labcas
+
+---
+
 Hi Sean,
     here’s a proposal for how the Labcas backend could support your new improved Labcas front-end pages:
 
