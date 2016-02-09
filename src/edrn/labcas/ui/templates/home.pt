@@ -33,7 +33,7 @@
                         <p>
                             <a class='btn btn-default' href='#' role='button'
                                 tal:attributes='href python:request.route_url("datasets")'>
-                                 <span class='glyphicon glyphicon-folder-close' aria-hidden='true'></span> My Products
+                                <span class='glyphicon glyphicon-folder-close' aria-hidden='true'></span> My Products
                             </a>
                         </p>
                     </div>
@@ -42,8 +42,9 @@
                         <p>Got fresh lab results?  Upload your data here for secure storage and processing.
                         </p>
                         <p>
-                            <a class='btn btn-default' href='#' role='button'>
-                                 <span class='glyphicon glyphicon-cloud-upload' aria-hidden='true'></span> Upload
+                            <a class='btn btn-default' href='#' role='button'
+                                tal:attributes='href python:request.route_url("upload")'>
+                                <span class='glyphicon glyphicon-cloud-upload' aria-hidden='true'></span> Upload
                             </a>
                         </p>
                     </div>
@@ -53,7 +54,7 @@
                         </p>
                         <p>
                             <a class='btn btn-default' href='#' role='button'>
-                                 <span class='glyphicon glyphicon-question-sign' aria-hidden='true'></span> Help
+                                <span class='glyphicon glyphicon-question-sign' aria-hidden='true'></span> Help
                             </a>
                         </p>
                     </div>
