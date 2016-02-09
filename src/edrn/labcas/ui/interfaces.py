@@ -5,4 +5,6 @@ from zope.interface import Interface
 
 class IBackend(Interface):
     def getFileMgr():
-        u'''Retrieves the filemgr'''
+        u'''Retrieves the file manager'''
+    def getWorkflowMgr():
+        u'''Retrieves the workflow manager'''
