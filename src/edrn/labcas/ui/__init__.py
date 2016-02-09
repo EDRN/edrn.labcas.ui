@@ -6,7 +6,7 @@ u'''EDRN LabCAS User Interface'''
 
 from .interfaces import IBackend
 from .resources import Root
-from edrn.labcas.ui.resources import Datasets, Dataset
+from edrn.labcas.ui.resources import Datasets, Dataset, Upload
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
@@ -21,10 +21,13 @@ PACKAGE_NAME = __name__
 
 class _Backend(object):
     implements(IBackend)
-    def __init__(self, fileMgrURL):
+    def __init__(self, fileMgrURL, workflowMgrURL):
         self.fileMgr = xmlrpclib.ServerProxy(fileMgrURL)
+        self.workflowMgr = xmlrpclib.ServerProxy(workflowMgrURL)
     def getFileMgr(self):
         return self.fileMgr.filemgr
+    def getWorkflowMgr(self):
+        return self.workflowMgr.workflowmgr  # Note case
 
 
 def main(global_config, **settings):
@@ -57,8 +60,10 @@ def main(global_config, **settings):
     config.add_route('home', '/')
     config.add_route('datasets', '/datasets', factory=Datasets)
     config.add_route('dataset', '/datasets/{datasetID}', factory=Dataset)
+    config.add_route('upload', '/upload', factory=Upload)
+    config.add_route('metadata', '/upload/{workflowID}', factory=Upload)
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
     config.scan()
-    provideUtility(_Backend(settings['labcas.filemgr']))
+    provideUtility(_Backend(settings['labcas.filemgr'], settings['labcas.workflow']))
     return config.make_wsgi_app()
