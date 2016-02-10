@@ -79,7 +79,6 @@ class MetadataView(object):
             try:
                 appstruct = form.validate(self.request.POST.items())
             except deform.ValidationFailure as ex:
-                import pdb;pdb.set_trace()
                 return {
                     u'message': u"Some required metadata don't make sense or are missing.",
                     u'form': ex.render(),
