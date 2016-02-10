@@ -62,6 +62,7 @@ def main(global_config, **settings):
     config.add_route('dataset', '/datasets/{datasetID}', factory=Dataset)
     config.add_route('upload', '/upload', factory=Upload)
     config.add_route('metadata', '/upload/{workflowID}', factory=Upload)
+    config.add_route('accept', '/upload/{workflowID}/accept', factory=Upload)
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
     config.scan()

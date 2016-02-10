@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8'?> 
+<!DOCTYPE html>
+<html
+    xmlns='http://www.w3.org/1999/xhtml'
+    xmlns:tal='http://xml.zope.org/namespaces/tal'
+    xmlns:metal='http://xml.zope.org/namespaces/metal'
+    lang='en'
+    xml:lang='en'
+    metal:use-macro='load:edrn.labcas.ui:templates/master.pt'>
+    <head>
+        <title>Accept</title>
+        <!--
+            provided names:
+            - metadataForm: read only HTML-rendered metadata form
+        -->
+        <metal:javascript fill-slot='javascript_head_slot'>
+            <script type='text/javascript' href='#'
+                tal:attributes='href python:request.static_url("edrn.labcas.ui:static/plupload.full.min.js")'></script>
+        </metal:javascript>
+    </head>
+    <body>
+        <div metal:fill-slot='content'>
+            <div class='container' id='uploadContainer'>
+                <h1>Ready for Files</h1>
+                <p>Simply drag your files into this browser window.</p>
+                <div class='panel panel-success'>
+                    <div class='panel-heading'>What happens next?</div>
+                    <div class='panel-body'>
+                        The metadata you entered, along with any files you drag into this window,
+                        will get saved into LabCAS.  After a while, processing will begin.
+                    </div>
+                </div>
+                <div class='well well-lg'>
+                    Drag your files here to start uploading!
+                </div>
+
+                <div class='row'>
+                    <div class='col-md-6'>
+                        <div class='panel'>
+                            <div class='panel-heading panel-primary'>Uploaded Files</div>
+                            <div class='panel-body' id='fileList'>
+                                No files uploaded yet.
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-md-6'>
+                        <div class='panel'>
+                            <div class='panel-heading panel-primary'>Saved Metadata</div>
+                            <div class='panel-body'>
+                                <p tal:replace='structure metadataForm'>
+                                    Metadata form here.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script type='text/javascript'>
+                    var uploader = new plupload.Uploader({
+                        browse_button: 'browse',
+                        url: edrnUploadURL,
+                        max_retries: 5,
+                        drop_element: 'uploadContainer',
+                        filters: {
+                            prevent_duplicates: true
+                        },
+                        init: {
+                            UploadComplete: function(up, files) {
+                                up.splice();
+                                up.refresh();
+                                document.location.reload(true);
+                            }
+                        }
+                    uploader.init();
+                    uploader.bind('FilesAdded', function(up, files) {
+                        var html = '';
+                        plupload.each(files, function(file) {
+                            html += '<li id="' + file.id + '">'
+                                + file.name 
+                                + ' (' + plupload.formatSize(file.size) + ') <b></b></li>';
+                        });
+                        document.getElementById('filelist').innerHTML += html;
+                    })
+                    uploader.bind('UploadProgress', function(up, file) {
+                        document.getElementById(file.id).getElementsByTagName('b')[0].innerHTML = '<span>'
+                            + file.percent + '%</span>';
+                    });
+                    uploader.bind('Error', function(up, err) {
+                        document.getElementById('console').innerHTML += '\nError #' + err.code + ': ' + err.message;
+                    });
+                    document.getElementById('start-upload').onclick = function() {
+                        uploader.start();
+                    };
+                </script>
+            </div>
+        </div>
+    </body>
+</html>
