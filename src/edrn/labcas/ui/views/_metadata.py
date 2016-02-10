@@ -3,6 +3,7 @@
 from edrn.labcas.ui import PACKAGE_NAME
 from edrn.labcas.ui.interfaces import IBackend
 from edrn.labcas.ui.utils import LabCASWorkflow
+from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, view_defaults
 from zope.component import getUtility
 import colander, re, deform
@@ -51,8 +52,8 @@ class MetadataView(object):
                                 missing=colander.required
                             ))
                     elif dataType == u'integer':
-                        minimum = conf.get(u'input.{}.min'.format(fieldName), 0)
-                        maximum = conf.get(u'input.{}.max'.format(fieldName), 1)
+                        minimum = int(conf.get(u'input.{}.min'.format(fieldName), "0"))
+                        maximum = int(conf.get(u'input.{}.max'.format(fieldName), "1"))
                         schema.add(colander.SchemaNode(
                             colander.Int(),
                             name=fieldName,
@@ -77,7 +78,10 @@ class MetadataView(object):
         form = deform.Form(self._createSchema(workflow), buttons=('submit',))
         if 'submit' in self.request.params:
             try:
-                appstruct = form.validate(self.request.POST.items())
+                metadataAppstruct = form.validate(self.request.POST.items())
+                self.request.session['metadata'] = metadataAppstruct
+                self.request.session['metadataForm'] = form.render(metadataAppstruct, readonly=True)
+                return HTTPFound(self.request.url + u'/accept')
             except deform.ValidationFailure as ex:
                 return {
                     u'message': u"Some required metadata don't make sense or are missing.",
