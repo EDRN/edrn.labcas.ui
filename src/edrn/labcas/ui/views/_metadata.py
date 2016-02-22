@@ -23,8 +23,8 @@ class MetadataView(object):
                 for fieldName in task.get('requiredMetFields', []):
                     title = conf.get(u'input.{}.title'.format(fieldName), u'Unknown Field')
                     description = conf.get(u'input.{}.description'.format(fieldName), u'Not sure what to put here.')
-                    dataType = conf.get(u'input.{}.type'.format(fieldName), u'string')
-                    if dataType == u'string':
+                    dataType = conf.get(u'input.{}.type'.format(fieldName), u'http://www.w3.org/2001/XMLSchema/string')
+                    if dataType == u'http://www.w3.org/2001/XMLSchema/string':
                         # Check for enumerated values
                         if u'input.{}.value.1'.format(fieldName) in conf:
                             # Collect the values
@@ -51,7 +51,7 @@ class MetadataView(object):
                                 description=description,
                                 missing=colander.required
                             ))
-                    elif dataType == u'integer':
+                    elif dataType == u'http://www.w3.org/2001/XMLSchema/integer':
                         minimum = int(conf.get(u'input.{}.min'.format(fieldName), "0"))
                         maximum = int(conf.get(u'input.{}.max'.format(fieldName), "1"))
                         schema.add(colander.SchemaNode(
