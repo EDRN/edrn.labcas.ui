@@ -27,3 +27,11 @@ parts =
 # Fill in the password to EDRN's manager account
 [secrets]
 ldap-manager-password = 
+
+
+# LabCAS
+# ------
+#
+# Specialized settings for developement
+[labcas]
+staging = /tmp/labcas/staging
