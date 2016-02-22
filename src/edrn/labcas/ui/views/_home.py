@@ -2,6 +2,7 @@
 
 from edrn.labcas.ui import PACKAGE_NAME
 from pyramid.view import view_config, view_defaults
+from pyramid.httpexceptions import HTTPFound
 
 
 @view_defaults(renderer=PACKAGE_NAME + ':templates/home.pt')
@@ -10,4 +11,4 @@ class HomeView(object):
         self.request = request
     @view_config(route_name='home')
     def __call__(self):
-        return {}
+        return HTTPFound(self.request.route_url('datasets'))
