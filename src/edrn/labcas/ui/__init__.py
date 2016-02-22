@@ -21,13 +21,16 @@ PACKAGE_NAME = __name__
 
 class _Backend(object):
     implements(IBackend)
-    def __init__(self, fileMgrURL, workflowMgrURL):
+    def __init__(self, fileMgrURL, workflowMgrURL, stagingDir):
         self.fileMgr = xmlrpclib.ServerProxy(fileMgrURL)
         self.workflowMgr = xmlrpclib.ServerProxy(workflowMgrURL)
+        self.stagingDir = stagingDir
     def getFileMgr(self):
         return self.fileMgr.filemgr
     def getWorkflowMgr(self):
         return self.workflowMgr.workflowmgr  # Note case
+    def getStagingDirectory(self):
+        return self.stagingDir
 
 
 def main(global_config, **settings):
@@ -66,5 +69,5 @@ def main(global_config, **settings):
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
     config.scan()
-    provideUtility(_Backend(settings['labcas.filemgr'], settings['labcas.workflow']))
+    provideUtility(_Backend(settings['labcas.filemgr'], settings['labcas.workflow'], settings['labcas.staging']))
     return config.make_wsgi_app()
