@@ -3,16 +3,46 @@
 from edrn.labcas.ui import PACKAGE_NAME
 from edrn.labcas.ui.interfaces import IBackend
 from edrn.labcas.ui.utils import LabCASWorkflow
+from lxml import etree
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, view_defaults
 from zope.component import getUtility
-import colander, re, deform
+import colander, re, deform, os, os.path
+
+
+# Nifty XML constants
+_namespaceURL = u'http://oodt.jpl.nasa.gov/1.0/cas'
+_namespacePrefix = u'{' + _namespaceURL + u'}'
+_namespaceMap = {None: _namespaceURL}
 
 
 @view_defaults(renderer=PACKAGE_NAME + ':templates/metadata.pt')
 class MetadataView(object):
     def __init__(self, request):
         self.request = request
+    def _generateMetadata(self, metadata):
+        root = etree.Element(_namespacePrefix + u'metadata', nsmap=_namespaceMap)
+        for key, value in metadata.iteritems():
+            keyvalNode = etree.SubElement(root, _namespacePrefix + u'keyval')
+            keyNode = etree.SubElement(keyvalNode, _namespacePrefix + u'key')
+            keyNode.text = unicode(key)
+            valNode = etree.SubElement(keyvalNode, _namespacePrefix + u'val')
+            valNode.text = unicode(value)
+        return root
+    def _writeMetadata(self, metadata, dir):
+        u'''Write the metadata to the staging directory and return the generated directory path.'''
+        if u'DatasetId' not in metadata:
+            raise ValueError(u'DatasetId is a required metadata')
+        datasetID = metadata[u'DatasetId']
+        datasetDir = os.path.join(dir, datasetID)
+        if not os.path.isdir(datasetDir):
+            os.makedirs(datasetDir, 0775)
+        root = self._generateMetadata(metadata)
+        metadataFile = os.path.join(datasetDir, u'DatasetMetadata.xmlmet')
+        doc = etree.ElementTree(root)
+        doc.write(metadataFile, encoding='utf-8', pretty_print=True, xml_declaration=True)
+        os.chmod(metadataFile, 0664)
+        return datasetDir
     def _createSchema(self, workflow):
         # Find the task with order 1:
         schema = colander.SchemaNode(colander.Mapping())
@@ -79,8 +109,10 @@ class MetadataView(object):
         if 'submit' in self.request.params:
             try:
                 metadataAppstruct = form.validate(self.request.POST.items())
+                datasetDir = self._writeMetadata(metadataAppstruct, backend.getStagingDirectory())
                 self.request.session['metadata'] = metadataAppstruct
                 self.request.session['metadataForm'] = form.render(metadataAppstruct, readonly=True)
+                self.request.session['datasetDir'] = datasetDir
                 return HTTPFound(self.request.url + u'/accept')
             except deform.ValidationFailure as ex:
                 return {
