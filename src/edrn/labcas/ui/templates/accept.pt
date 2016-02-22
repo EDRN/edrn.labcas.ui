@@ -11,6 +11,8 @@
         <title>Accept</title>
         <!--
             provided names:
+            - hasFiles: true if there are already uploaded files
+            - currentFiles: files we have right now
             - metadataForm: read only HTML-rendered metadata form
         -->
         <metal:javascript fill-slot='javascript_head_slot'>
@@ -26,7 +28,7 @@
         <div metal:fill-slot='content'>
             <div class='container' id='uploadContainer'>
                 <h1>Ready for Files</h1>
-                <p>Simply drag your files into this browser window.</p>
+                <p>Simply drag your files into this browser window, then click "Start Uploading".</p>
                 <div class='panel panel-success'>
                     <div class='panel-heading'>What happens next?</div>
                     <div class='panel-body'>
@@ -38,14 +40,10 @@
                     <p>Drag your files here to stage them for uploading…or browse for them using the file browser
                         button:
                     </p>
-                    <div class='btn-group btn-group-lg' role='group' style='padding-top: 1em;'>
+                    <div class='btn-group' role='group' style='padding-top: 1em;'>
                         <a id='browse-button' class='btn btn-default' href='javascript:;' role='button'>
                             <span class='glyphicon glyphicon-folder-open' aria-hidden='true'></span>
                             Browse…
-                        </a>
-                        <a id='start-upload' class='btn btn-default' href='javascript:;' role='button'>
-                            <span class='glyphicon glyphicon-cloud-upload' aria-hidden='true'></span>
-                            Start Uploading
                         </a>
                     </div>
                 </div>
@@ -53,9 +51,46 @@
                 <div class='row'>
                     <div class='col-md-6'>
                         <div class='panel'>
-                            <div class='panel-heading panel-primary'>Uploaded Files</div>
+                            <div class='panel-heading panel-primary'>Files</div>
                             <div class='panel-body' id='fileList'>
-                                <ul id='filelist'></ul>
+                                <p tal:condition='not:hasFiles'>
+                                    <small>There are no files uploaded yet.</small>
+                                </p>
+                                <div tal:condition='hasFiles'>
+                                    <ul tal:condition='hasFiles' class='list-unstyled'>
+                                        <li tal:repeat='file currentFiles'>
+                                            <span tal:replace='file'>File name here</span>
+                                        </li>
+                                    </ul>
+                                    <p>
+                                        <small>
+                                            Want to add more files?  Browse for them above, or drag them in,
+                                            and click "Start Uploading" again.
+                                        </small>
+                                    </p>
+                                </div>
+                                <h4>Staged for Uploading:</h4>
+                                <ul id='filelist' class='list-unstyled'></ul>
+
+                                <div class='btn-group' role='group'>
+                                    <a id='start-upload' class='btn btn-default' href='javascript:;' role='button'>
+                                        <span class='glyphicon glyphicon-cloud-upload' aria-hidden='true'></span>
+                                        Start Uploading
+                                    </a>
+                                </div>
+
+                                <div tal:condition='hasFiles'>
+                                    <small>
+                                        All done?  Click the button below.
+                                    </small>
+                                    <div class='but-group' role='group'>
+                                        <a class='btn btn-default' href='#' role='button'
+                                            tal:attributes='href python:request.route_url("home")'>
+                                            <span class='glyphicon glyphicon-ok' aria-hidden='true'></span>
+                                            Finished
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
