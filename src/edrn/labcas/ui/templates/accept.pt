@@ -14,8 +14,12 @@
             - metadataForm: read only HTML-rendered metadata form
         -->
         <metal:javascript fill-slot='javascript_head_slot'>
-            <script type='text/javascript' href='#'
-                tal:attributes='href python:request.static_url("edrn.labcas.ui:static/plupload.full.min.js")'></script>
+            <script type='text/javascript' src='#'
+                tal:attributes='src python:request.static_url("edrn.labcas.ui:static/plupload.full.min.js")'></script>
+            <script id='anchor-script' type='text/javascript' data-here='/'
+                tal:attributes='data-here python:request.current_route_url()'>
+                var edrnUploadURL = $("#anchor-script").attr("data-here") + "?data";
+            </script>
         </metal:javascript>
     </head>
     <body>
@@ -31,7 +35,19 @@
                     </div>
                 </div>
                 <div class='well well-lg'>
-                    Drag your files here to start uploading!
+                    <p>Drag your files here to stage them for uploading…or browse for them using the file browser
+                        button:
+                    </p>
+                    <div class='btn-group btn-group-lg' role='group' style='padding-top: 1em;'>
+                        <a id='browse-button' class='btn btn-default' href='javascript:;' role='button'>
+                            <span class='glyphicon glyphicon-folder-open' aria-hidden='true'></span>
+                            Browse…
+                        </a>
+                        <a id='start-upload' class='btn btn-default' href='javascript:;' role='button'>
+                            <span class='glyphicon glyphicon-cloud-upload' aria-hidden='true'></span>
+                            Start Uploading
+                        </a>
+                    </div>
                 </div>
 
                 <div class='row'>
@@ -39,7 +55,7 @@
                         <div class='panel'>
                             <div class='panel-heading panel-primary'>Uploaded Files</div>
                             <div class='panel-body' id='fileList'>
-                                No files uploaded yet.
+                                <ul id='filelist'></ul>
                             </div>
                         </div>
                     </div>
@@ -56,7 +72,7 @@
                 </div>
                 <script type='text/javascript'>
                     var uploader = new plupload.Uploader({
-                        browse_button: 'browse',
+                        browse_button: 'browse-button',
                         url: edrnUploadURL,
                         max_retries: 5,
                         drop_element: 'uploadContainer',
@@ -70,6 +86,7 @@
                                 document.location.reload(true);
                             }
                         }
+                    });
                     uploader.init();
                     uploader.bind('FilesAdded', function(up, files) {
                         var html = '';
