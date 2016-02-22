@@ -19,21 +19,29 @@
         <div metal:fill-slot='content'>
             <div class='container'>
                 <h1>Upload</h1>
-                <!-- Workflow Selection -->
-                <p tal:condition='not:hasWorkflows' class='discreet'>
-                    You currently do not have access to any workflows.
-                </p>
-                <div tal:condition='hasWorkflows'>
-                    <p>First, select a workflow:</p>
-                    <ul class='list-group'>
-                        <li tal:repeat='workflow workflows' class='list-group-item'>
-                            <a href='#'
-                                tal:attributes='href python:request.current_route_url() + u"/" + workflow.identifier'
-                                tal:content='workflow.name'>
-                                Workflow name here!
-                            </a>
-                        </li>
-                    </ul>
+                <p>First, select a workflow:</p>
+                <div class='row'>
+                    <div class='col-md-2'>
+                    </div>
+                    <div class='col-md-8'>
+                        <!-- Workflow Selection -->
+                        <p tal:condition='not:hasWorkflows' class='discreet'>
+                            You currently do not have access to any workflows.
+                        </p>
+                        <div tal:condition='hasWorkflows'>
+                            <ul class='list-group'>
+                                <li tal:repeat='workflow workflows' class='list-group-item'>
+                                    <a href='#'
+                                        tal:attributes='href python:request.current_route_url() + u"/" + workflow.identifier'
+                                        tal:content='workflow.name'>
+                                        Workflow name here!
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class='col-md-2'>
+                    </div>
                 </div>
             </div>
         </div>
