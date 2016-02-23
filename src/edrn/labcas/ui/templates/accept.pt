@@ -85,7 +85,7 @@
                                     </small>
                                     <div class='but-group' role='group'>
                                         <a class='btn btn-default' href='#' role='button'
-                                            tal:attributes='href python:request.route_url("home")'>
+                                            tal:attributes='href python:request.current_route_url() + "?finish"'>
                                             <span class='glyphicon glyphicon-ok' aria-hidden='true'></span>
                                             Finished
                                         </a>
