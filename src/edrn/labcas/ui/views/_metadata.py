@@ -55,7 +55,8 @@ class MetadataView(object):
                     description = conf.get(u'input.{}.description'.format(fieldName), u'Not sure what to put here.')
                     dataType = conf.get(u'input.{}.type'.format(fieldName), u'http://www.w3.org/2001/XMLSchema/string')
                     missing = colander.required if conf.get(u'input.{}.required'.format(fieldName)) == u'true' else None
-                    if dataType == u'http://www.w3.org/2001/XMLSchema/string':
+                    # FIXME:
+                    if dataType in (u'http://www.w3.org/2001/XMLSchema/string', u'http://edrn.nci.nih.gov/xml/schema/types.xml#principalInvestigator'):
                         # Check for enumerated values
                         if u'input.{}.value.1'.format(fieldName) in conf:
                             # Collect the values
