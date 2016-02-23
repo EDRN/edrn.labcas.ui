@@ -54,6 +54,7 @@ class MetadataView(object):
                     title = conf.get(u'input.{}.title'.format(fieldName), u'Unknown Field')
                     description = conf.get(u'input.{}.description'.format(fieldName), u'Not sure what to put here.')
                     dataType = conf.get(u'input.{}.type'.format(fieldName), u'http://www.w3.org/2001/XMLSchema/string')
+                    missing = colander.required if conf.get(u'input.{}.required'.format(fieldName)) == u'true' else None
                     if dataType == u'http://www.w3.org/2001/XMLSchema/string':
                         # Check for enumerated values
                         if u'input.{}.value.1'.format(fieldName) in conf:
@@ -71,7 +72,7 @@ class MetadataView(object):
                                 description=description,
                                 validator=colander.OneOf([i[0] for i in values]),
                                 widget=deform.widget.RadioChoiceWidget(values=values),
-                                missing=colander.required
+                                missing=missing
                             ))
                         else:
                             schema.add(colander.SchemaNode(
@@ -79,18 +80,15 @@ class MetadataView(object):
                                 name=fieldName,
                                 title=title,
                                 description=description,
-                                missing=colander.required
+                                missing=missing
                             ))
                     elif dataType == u'http://www.w3.org/2001/XMLSchema/integer':
-                        minimum = int(conf.get(u'input.{}.min'.format(fieldName), "0"))
-                        maximum = int(conf.get(u'input.{}.max'.format(fieldName), "1"))
                         schema.add(colander.SchemaNode(
                             colander.Int(),
                             name=fieldName,
                             title=title,
                             description=description,
-                            validator=colander.Range(minimum, maximum),
-                            missing=colander.required
+                            missing=missing
                         ))
                 break
         return schema
@@ -113,6 +111,7 @@ class MetadataView(object):
                 self.request.session['metadata'] = metadataAppstruct
                 self.request.session['metadataForm'] = form.render(metadataAppstruct, readonly=True)
                 self.request.session['datasetDir'] = datasetDir
+                self.request.session['workflow'] = workflow
                 return HTTPFound(self.request.url + u'/accept')
             except deform.ValidationFailure as ex:
                 return {
