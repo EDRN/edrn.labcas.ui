@@ -16,3 +16,5 @@ class LabCASWorkflow(object):
         self.identifier, self.name, self.conditions, self.tasks = identifier, name, conditions, tasks
     def __cmp__(self, other):
         return cmp(self.identifier, other.identifier)
+    def __hash__(self):
+        return hash(self.identifier)
