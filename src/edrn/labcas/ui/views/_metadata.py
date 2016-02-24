@@ -22,12 +22,15 @@ class MetadataView(object):
         self.request = request
     def _generateMetadata(self, metadata):
         root = etree.Element(_namespacePrefix + u'metadata', nsmap=_namespaceMap)
-        for key, value in metadata.iteritems():
+        for key, values in metadata.iteritems():
             keyvalNode = etree.SubElement(root, _namespacePrefix + u'keyval')
             keyNode = etree.SubElement(keyvalNode, _namespacePrefix + u'key')
             keyNode.text = unicode(key)
-            valNode = etree.SubElement(keyvalNode, _namespacePrefix + u'val')
-            valNode.text = unicode(value)
+            if not isinstance(values, list):
+                values = [values]
+            for value in values:
+                valNode = etree.SubElement(keyvalNode, _namespacePrefix + u'val')
+                valNode.text = unicode(value)
         return root
     def _writeMetadata(self, metadata, dir):
         u'''Write the metadata to the staging directory and return the generated directory path.'''
@@ -108,6 +111,8 @@ class MetadataView(object):
         if 'submit' in self.request.params:
             try:
                 metadataAppstruct = form.validate(self.request.POST.items())
+                principals = frozenset(self.request.effective_principals)
+                metadataAppstruct['OwnerGroup'] = [i for i in principals if not i.startswith(u'system.')]
                 datasetDir = self._writeMetadata(metadataAppstruct, backend.getStagingDirectory())
                 self.request.session['metadata'] = metadataAppstruct
                 self.request.session['metadataForm'] = form.render(metadataAppstruct, readonly=True)
