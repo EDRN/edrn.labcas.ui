@@ -22,7 +22,7 @@
         </metal:style-slot>
         <metal:javascript fill-slot='javascript_head_slot'>
             <tal:repeat repeat='url python:widgetResources["js"]'>
-                <script type='text/javascript' src='#' tal:attributes='href python:request.static_url(url)'></script>
+                <script type='text/javascript' src='#' tal:attributes='src python:request.static_url(url)'></script>
             </tal:repeat>
         </metal:javascript>
     </head>

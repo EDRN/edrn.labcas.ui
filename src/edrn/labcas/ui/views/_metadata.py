@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 from edrn.labcas.ui import PACKAGE_NAME
-from edrn.labcas.ui.interfaces import IBackend
+from edrn.labcas.ui.interfaces import IBackend, IVocabularies
 from edrn.labcas.ui.utils import LabCASWorkflow
 from lxml import etree
 from pyramid.httpexceptions import HTTPFound
@@ -48,6 +48,7 @@ class MetadataView(object):
         return datasetDir
     def _createSchema(self, workflow):
         # Find the task with order 1:
+        vocabularies = getUtility(IVocabularies)
         schema = colander.SchemaNode(colander.Mapping())
         for task in workflow.tasks:
             if task.get('order', '-1') == '1':
@@ -61,11 +62,9 @@ class MetadataView(object):
                     # FIXME:
                     if dataType in (
                         u'http://www.w3.org/2001/XMLSchema/string',
-                        u'http://edrn.nci.nih.gov/xml/schema/types.xml#principalInvestigator',
                         u'http://edrn.nci.nih.gov/xml/schema/types.xml#collaborativeGroup',
                         u'http://edrn.nci.nih.gov/xml/schema/types.xml#discipline',
                         u'http://edrn.nci.nih.gov/xml/schema/types.xml#organSite',
-                        u'http://edrn.nci.nih.gov/xml/schema/types.xml#protocolName',
                     ):
                         # Check for enumerated values
                         if u'input.dataset.{}.value.1'.format(fieldName) in conf:
@@ -93,6 +92,24 @@ class MetadataView(object):
                                 description=description,
                                 missing=missing
                             ))
+                    elif dataType == u'http://edrn.nci.nih.gov/xml/schema/types.xml#principalInvestigator':
+                        schema.add(colander.SchemaNode(
+                            colander.String(),
+                            name=fieldName,
+                            title=title,
+                            description=description,
+                            missing=missing,
+                            widget=deform.widget.AutocompleteInputWidget(values=vocabularies.getPeople())
+                        ))
+                    elif dataType == u'http://edrn.nci.nih.gov/xml/schema/types.xml#protocolName':
+                        schema.add(colander.SchemaNode(
+                            colander.String(),
+                            name=fieldName,
+                            title=title,
+                            description=description,
+                            missing=missing,
+                            widget=deform.widget.AutocompleteInputWidget(values=vocabularies.getProtocols())
+                        ))
                     elif dataType == u'http://www.w3.org/2001/XMLSchema/integer':
                         schema.add(colander.SchemaNode(
                             colander.Int(),
