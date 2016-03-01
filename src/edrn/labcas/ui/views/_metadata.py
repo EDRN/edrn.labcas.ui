@@ -54,16 +54,23 @@ class MetadataView(object):
                 # build the form
                 conf = task.get('configuration', {})
                 for fieldName in task.get('requiredMetFields', []):
-                    title = conf.get(u'input.{}.title'.format(fieldName), u'Unknown Field')
-                    description = conf.get(u'input.{}.description'.format(fieldName), u'Not sure what to put here.')
-                    dataType = conf.get(u'input.{}.type'.format(fieldName), u'http://www.w3.org/2001/XMLSchema/string')
-                    missing = colander.required if conf.get(u'input.{}.required'.format(fieldName)) == u'true' else None
+                    title = conf.get(u'input.dataset.{}.title'.format(fieldName), u'Unknown Field')
+                    description = conf.get(u'input.dataset.{}.description'.format(fieldName), u'Not sure what to put here.')
+                    dataType = conf.get(u'input.dataset.{}.type'.format(fieldName), u'http://www.w3.org/2001/XMLSchema/string')
+                    missing = colander.required if conf.get(u'input.dataset.{}.required'.format(fieldName)) == u'true' else None
                     # FIXME:
-                    if dataType in (u'http://www.w3.org/2001/XMLSchema/string', u'http://edrn.nci.nih.gov/xml/schema/types.xml#principalInvestigator'):
+                    if dataType in (
+                        u'http://www.w3.org/2001/XMLSchema/string',
+                        u'http://edrn.nci.nih.gov/xml/schema/types.xml#principalInvestigator',
+                        u'http://edrn.nci.nih.gov/xml/schema/types.xml#collaborativeGroup',
+                        u'http://edrn.nci.nih.gov/xml/schema/types.xml#discipline',
+                        u'http://edrn.nci.nih.gov/xml/schema/types.xml#organSite',
+                        u'http://edrn.nci.nih.gov/xml/schema/types.xml#protocolName',
+                    ):
                         # Check for enumerated values
-                        if u'input.{}.value.1'.format(fieldName) in conf:
+                        if u'input.dataset.{}.value.1'.format(fieldName) in conf:
                             # Collect the values
-                            exp = re.compile(u'input.{}.value.[0-9]'.format(fieldName))
+                            exp = re.compile(u'input.dataset.{}.value.[0-9]+'.format(fieldName))
                             values = []
                             for key, val in conf.items():
                                 if exp.match(key) is not None:
