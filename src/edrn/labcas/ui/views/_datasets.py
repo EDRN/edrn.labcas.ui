@@ -18,9 +18,8 @@ class DatasetsView(object):
         principals = frozenset(self.request.effective_principals)
         products = []
         for product in productTypes:
-            typeMetadata = product.get('typeMetadata', {})
-            owners = frozenset(typeMetadata.get('OwnerGroup', []))
-            if not principals.isdisjoint(owners):
-                products.append(LabCASProduct(product.get('id', u'UNKNOWN'), product.get('name', u'UNKNOWN')))
+            p = LabCASProduct.new(product, principals)
+            if p is None: continue
+            products.append(p)
         products.sort()
         return {'products': products, 'hasProducts': len(products) > 0}

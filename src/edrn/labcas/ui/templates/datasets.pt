@@ -25,12 +25,13 @@
                             <small>You currently do not have access to any products.</small>
                         </p>
                         <div tal:condition='hasProducts'>
-                            <p><small>Current products:</small></p>
+                            <p><small>Current products (and number of files in each):</small></p>
                             <ul class='list-group'>
                                 <li tal:repeat='product products' class='list-group-item'>
+                                    <span class='badge' tal:content='python:unicode(len(product.files))'>42</span>
                                     <a href='#'
                                         tal:attributes='href python:request.current_route_url() + u"/" + product.identifier'
-                                        tal:content='product.identifier'>
+                                        tal:content='product.name'>
                                         urn:some:product
                                     </a>
                                 </li>
