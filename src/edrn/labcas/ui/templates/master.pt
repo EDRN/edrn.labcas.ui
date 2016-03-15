@@ -25,16 +25,16 @@
     <body id='public' tal:define='
         message message|nothing;
     '>
-        <nav class='navbar navbar-inverse' role='navigation'>
+        <nav class='navbar navbar-inverse' role='navigation' style='background-color: red;'>
             <div class='container'>
                 <div class='navbar-header'>
                     <button type='button' class='navbar-toggle collapsed' data-toggle='collapse' data-target='#navbar'
                         aria-expanded='false' aria-controls='navbar'>
                         <span class='sr-only'>Toggle navigation</span>
                     </button>
-                    <a class='navbar-brand' href='#' tal:attributes='href python:request.route_url("home")'>
-                        <span class='glyphicon glyphicon-cloud' aria-hidden='true'></span>
-                        LabCAS
+                    <a class='navbar-brand' href='#' tal:attributes='href python:request.route_url("home")'
+                        style='color: white;'>
+                        EDRN LabCAS
                     </a>
                 </div>
                 <div id='navbar' class='navbar-collapse collapse'>
