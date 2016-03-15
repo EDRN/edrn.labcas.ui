@@ -75,15 +75,16 @@ def main():
     # for result in response.results:
     #     printResult(result)
 
-    # server = xmlrpclib.ServerProxy('http://localhost:9000/')
-    # productTypes = server.filemgr.getProductTypes()
-    # for ptd in productTypes:
-    #     printProductType(ptd)
-
     server = xmlrpclib.ServerProxy('http://localhost:9000/')
-    product = server.filemgr.getProductTypeById('urn:edrn:t3')
+    productTypes = server.filemgr.getProductTypes()
     import pdb;pdb.set_trace()
-    printProductType(product)
+    for ptd in productTypes:
+        printProductType(ptd)
+
+    # server = xmlrpclib.ServerProxy('http://localhost:9000/')
+    # product = server.filemgr.getProductTypeById('urn:edrn:t3')
+    # import pdb;pdb.set_trace()
+    # printProductType(product)
 
 
 if __name__ == '__main__':
