@@ -38,7 +38,7 @@ def printProductType(ptd):
 
 
 def main():
-    server = xmlrpclib.ServerProxy('http://localhost:9001/')
+    # server = xmlrpclib.ServerProxy('http://localhost:9001/')
     # response = server.workflowmgr.getRegisteredEvents()
     # response = server.workflowmgr.getWorkflows()
     # print '\n'.join([repr(i['tasks']) for i in response])
@@ -57,29 +57,31 @@ def main():
     # print response
     # waitForComp(server, response)
 
-    # server = solr.SolrConnection('http://localhost:8080/solr')
+    server = solr.SolrConnection('http://localhost:8983/solr/oodt-fm')
     # response = server.query('*:*', fq=['OwnerGroup:cn=Crichton*'], start=0)
     # for result in response.results:
     #     printResult(result)
 
-    # response = server.query('*:*', fq=['Dataset:t1'], start=0, rows=0, facet='true', facet_field='Version')
-    # versions = response.facet_counts['facet_fields']['Version']
-    # lastVersion = 0
-    # for key, value in versions.items():
-    #     print 'Version {} has {} files'.format(key, value)
-    #     if int(key) > lastVersion:
-    #         lastVersion = int(key)
+    # response = server.query('*:*', fq=['Dataset:FHCRCHanashAnnexinLamr'], start=0, rows=0, facet='true', facet_field='Version')
+    response = server.query('*:*', fq=['DatasetId:FHCRCHanashAnnexinLamr'], start=0)
+    import pdb;pdb.set_trace()
+    versions = response.facet_counts['facet_fields']['Version']
+    lastVersion = 0
+    for key, value in versions.items():
+        print 'Version {} has {} files'.format(key, value)
+        if int(key) > lastVersion:
+            lastVersion = int(key)
 
     # response = server.query('*:*', fq=['Dataset:t1', 'Version:%s'.format(lastVersion)], start=0)
     # print 'Latest version {} # of files {}'.format(lastVersion, response.numFound)
     # for result in response.results:
     #     printResult(result)
 
-    server = xmlrpclib.ServerProxy('http://localhost:9000/')
-    productTypes = server.filemgr.getProductTypes()
-    import pdb;pdb.set_trace()
-    for ptd in productTypes:
-        printProductType(ptd)
+    # server = xmlrpclib.ServerProxy('http://localhost:9000/')
+    # productTypes = server.filemgr.getProductTypes()
+    # import pdb;pdb.set_trace()
+    # for ptd in productTypes:
+    #     printProductType(ptd)
 
     # server = xmlrpclib.ServerProxy('http://localhost:9000/')
     # product = server.filemgr.getProductTypeById('urn:edrn:t3')
