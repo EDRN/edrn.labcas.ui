@@ -25,7 +25,7 @@
                     </div>
                     <div class='col-md-8'>
                         <!-- Workflow Selection -->
-                        <p tal:condition='not:hasWorkflows' class='discreet'>
+                        <p tal:condition='not:hasWorkflows' class='text-muted'>
                             You currently do not have access to any kinds of data-uploading workfows.  Sorry!
                         </p>
                         <div tal:condition='hasWorkflows'>
