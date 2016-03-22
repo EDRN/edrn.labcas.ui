@@ -13,7 +13,7 @@ from pyramid.config import Configurator
 from pyramid_ldap import groupfinder
 from zope.component import provideUtility
 from zope.interface import implements
-import xmlrpclib
+import xmlrpclib, solr
 
 
 PACKAGE_NAME = __name__
@@ -21,16 +21,22 @@ PACKAGE_NAME = __name__
 
 class _Backend(object):
     implements(IBackend)
-    def __init__(self, fileMgrURL, workflowMgrURL, stagingDir):
+    def __init__(self, fileMgrURL, workflowMgrURL, stagingDir, archiveDir, solrURL):
         self.fileMgr = xmlrpclib.ServerProxy(fileMgrURL)
         self.workflowMgr = xmlrpclib.ServerProxy(workflowMgrURL)
-        self.stagingDir = stagingDir
+        self.stagingDir, self.archiveDir = stagingDir, archiveDir
+        self.solr = solr.SolrConnection(solrURL)
     def getFileMgr(self):
         return self.fileMgr.filemgr
     def getWorkflowMgr(self):
         return self.workflowMgr.workflowmgr  # Note case
     def getStagingDirectory(self):
         return self.stagingDir
+    def getArchiveDirectory(self):
+        return self.archiveDir
+    def getSearchEngine(self):
+        return self.solr
+
 
 _protocols = [
     u"A Methylation Panel for Bladder Cancer",
@@ -1782,6 +1788,7 @@ _names = [
     u"jiang, xiao ying",
 ]
 
+
 class _Vocabularies(object):
     implements(IVocabularies)
     def __init__(self):
@@ -1828,6 +1835,12 @@ def main(global_config, **settings):
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
     config.scan()
-    provideUtility(_Backend(settings['labcas.filemgr'], settings['labcas.workflow'], settings['labcas.staging']))
+    provideUtility(_Backend(
+        settings['labcas.filemgr'],
+        settings['labcas.workflow'],
+        settings['labcas.staging'],
+        settings['labcas.archive'],
+        settings['labcas.solr']
+    ))
     provideUtility(_Vocabularies())
     return config.make_wsgi_app()

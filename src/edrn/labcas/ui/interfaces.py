@@ -11,6 +11,10 @@ class IBackend(Interface):
         u'''Retrieves the workflow manager'''
     def getStagingDirectory():
         u'''Retrieves the path to the LabCAS staging directory'''
+    def getArchiveDirectory():
+        u'''Retrieves the path to the LabCAS archive directory'''
+    def getSearchEngine():
+        u'''Retrieves the SOLR search API'''
 
 
 class IVocabularies(Interface):
