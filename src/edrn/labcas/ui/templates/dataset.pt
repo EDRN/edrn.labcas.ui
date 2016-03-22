@@ -44,13 +44,13 @@
                             <tr tal:repeat='row metadata'>
                                 <td><label tal:content='python:row[0]'>Number of sheep</label></td>
                                 <td tal:define='values python:row[1]'>
-                                    <span tal:condition='python:len(values) == 0' class='discreet'>
+                                    <span tal:condition='python:len(values) == 0' class='text-muted'>
                                         No values.
                                     </span>
                                     <span tal:condition='python:len(values) == 1' tal:content='python:values[0]'>
                                         One value
                                     </span>
-                                    <ul tal:condition='python:len(values) > 1'>
+                                    <ul tal:condition='python:len(values) &gt; 1'>
                                         <li tal:repeat='value values'>
                                             <span tal:replace='value'>One of several values</span>
                                         </li>
@@ -61,22 +61,50 @@
                     </table>
                 </div>
                 <h1>Files <small>Click to download</small></h1>
-                <table id='files' class='table'>
-                    <thead><tr><th>File name</th><th style='text-align: right;'>Size (bytes)</th></tr></thead>
-                    <tbody>
-                        <tr tal:repeat='file python:product.getFiles()'>
-                            <td>
-                                <a href='#' tal:content='python:file.name'
-                                    tal:attributes='href python:request.current_route_url() + "?file=" + file.name'>
-                                    SMCKTHAT.EXE
-                                </a>
-                            </td>
-                            <td tal:content='python:file.size' style='text-align: right;'>
-                                1234
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <ul class='list-group'>
+                    <li class='list-group-item' tal:repeat='version python:product.getVersions()'>
+                        <h4>Version <span tal:replace='python:version[0]'>42</span></h4>
+                        <ul class='list-group' tal:define='
+                            files      python:version[1];
+                            versionStr python:unicode(version[0])
+                        '>
+                            <li class='list-group-item' tal:repeat='file python:files'>
+                                <h5 tal:define='fileURL python:request.current_route_url() +
+                                    "?version=" + versionStr + "&amp;name=" + file.name
+                                '>
+                                    <a href='#' tal:content='file.name' tal:attributes='href python:fileURL'>
+                                        booger.dat
+                                    </a>
+                                    <small>
+                                        <span tal:replace='file.size'>42</span> bytes
+                                    </small>
+                                    <table id='fileMetadata' class='table'>
+                                        <tbody>
+                                            <tr tal:repeat='row python:file.getMetadata()'>
+                                                <td><label tal:content='python:row[0]'>Sheeps in file</label></td>
+                                                <td tal:define='values python:row[1]' class='text-muted'>
+                                                    <span tal:condition='python:len(values) == 0'
+                                                        class='text-muted'>
+                                                        No values.
+                                                    </span>
+                                                    <span tal:condition='python:len(values) == 1'
+                                                        tal:content='python:values[0]'>
+                                                        One value
+                                                    </span>
+                                                    <ul tal:condition='python:len(values) &gt; 1'>
+                                                        <li tal:repeat='value values'>
+                                                            <span tal:replace='value'>One of several values</span>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </h5>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
         </div>
     </body>
