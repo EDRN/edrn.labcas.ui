@@ -1,48 +1,81 @@
+# encoding: utf-8
 # Copyright 2015 California Institute of Technology. ALL RIGHTS
 # RESERVED. U.S. Government Sponsorship acknowledged.
 
-import os, os.path
+from zope.component import getUtility
+from edrn.labcas.ui.interfaces import IBackend
+from urlparse import urlparse
+import urllib
 
 
 SUPER_GROUP = u'cn=Super User,dc=edrn,dc=jpl,dc=nasa,dc=gov'
 
+_metadataToIgnore = frozenset((
+    u'_version_',
+    u'DatasetId',
+    u'id',
+    u'ParentDatasetId',
+    u'score',
+    u'Version',
+    u'LeadPI'
+))
+
 
 class LabCASFile(object):
     u'''A file stored in a LabCASProduct'''
-    def __init__(self, name, physicalLocation):
-        self.name, self.physicalLocation = name, physicalLocation
-        self.size = os.stat(physicalLocation).st_size
+    def __init__(self, name, physicalLocation, size, contentType, metadata):
+        self.name, self.physicalLocation, self.size, self.contentType = name, physicalLocation, size, contentType
+        self.metadata = {}
+        for key, value in metadata.items():
+            if key.startswith(u'CAS.') or key in _metadataToIgnore: continue
+            self.metadata[key] = value
+    def getMetadata(self):
+        metadata = self.metadata.items()
+        metadata.sort(lambda a, b: cmp(a[0], b[0]))
+        return metadata
     def __cmp__(self, other):
         return cmp(self.name, other.name)
 
 
 class LabCASProduct(object):
     u'''A product stored within LabCAS.'''
-    def __init__(self, identifier, name, files):
-        self.identifier, self.name = identifier, name
-        self.files = {}
-        for i in files:
-            self.files[i.name] = i
-    def getFiles(self):
-        files = self.files.values()
-        files.sort()
-        return files
+    def __init__(self, identifier, name, versions, pi):
+        self.identifier, self.name, self.versions, self.pi = identifier, name, versions, pi
     def __cmp__(self, other):
         return cmp(self.name, other.name)
+    def getVersions(self):
+        versions = self.versions.items()
+        versions.sort(lambda a, b: cmp(a[0], b[0]))
+        return versions
     @staticmethod
     def new(product, principals):
         typeMetadata = product.get('typeMetadata', {})
+        pi = typeMetadata.get(u'LeadPI', [u'Unknown'])
+        pi = pi[0]
         owners = frozenset(typeMetadata.get('OwnerGroup', []))
         if SUPER_GROUP in principals or not principals.isdisjoint(owners):
             name, productID = product.get('name'), product.get('id')
             if not name or not productID: return None
-            repository = product.get('repositoryPath')
-            if not repository: return None
-            if not repository.startswith(u'file:///'): return None
-            d = os.path.join(repository[7:], name, u'1')
-            if not os.path.isdir(d): return None
-            files = [LabCASFile(i, os.path.join(d, i)) for i in os.listdir(d)]
-            return LabCASProduct(productID, name, files)
+            backend = getUtility(IBackend)
+            response = backend.getSearchEngine().query('*:*', fq=['DatasetId:{}'.format(name)], start=0)
+            versions = {}  # version → [files]
+            for item in response.results:
+                version = item.get(u'Version', u'0')
+                files = versions.get(version, [])
+                fileName = item.get(u'CAS.ProductName')
+                if not fileName: continue
+                physicalLocation = item.get(u'CAS.ReferenceDatastore')
+                if not physicalLocation: continue
+                physicalLocation = urlparse(urllib.unquote(physicalLocation[0])).path  # FIXME assumes file: URLs always
+                mimeType = item.get(u'CAS.ReferenceMimeType')
+                if not mimeType: continue
+                mimeType = mimeType[0]
+                size = item.get(u'CAS.ReferenceFileSize')
+                if not size: continue
+                size = size[0]
+                files.append(LabCASFile(fileName, physicalLocation, size, mimeType, item))
+                versions[version] = files
+            return LabCASProduct(productID, name, versions, pi)
         else:
             return None
 
@@ -55,23 +88,3 @@ class LabCASWorkflow(object):
         return cmp(self.identifier, other.identifier)
     def __hash__(self):
         return hash(self.identifier)
-
-
-# Lame
-def guessContentType(name):
-    if name.endswith('.xml'):
-        return 'text/xml'
-    elif name.endswith('.txt'):
-        return 'text/plain'
-    elif name.endswith('.csv'):
-        return 'text/csv'
-    elif name.endswith('.docx'):
-        return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    elif name.endswith('.sas7bdat'):
-        return 'application/x-sas-data'
-    elif name.endswith('.pdf'):
-        return 'application/pdf'
-    elif name.endswith('.xls'):
-        return 'application/vnd.ms-excel'
-    else:
-        return 'application/octet-stream'
