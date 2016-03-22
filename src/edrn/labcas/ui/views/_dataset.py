@@ -2,10 +2,11 @@
 
 from edrn.labcas.ui import PACKAGE_NAME
 from edrn.labcas.ui.interfaces import IBackend
-from edrn.labcas.ui.utils import LabCASProduct, guessContentType
+from edrn.labcas.ui.utils import LabCASProduct
 from pyramid.view import view_config, view_defaults
 from pyramid.response import FileResponse
 from zope.component import getUtility
+from pyramid.httpexceptions import HTTPNotFound
 
 
 @view_defaults(renderer=PACKAGE_NAME + ':templates/dataset.pt')
@@ -18,10 +19,16 @@ class DatasetView(object):
         datasetID = self.request.matchdict['datasetID']
         product = backend.getFileMgr().getProductTypeById(datasetID)
         p = LabCASProduct.new(product, frozenset(self.request.effective_principals))
-        if 'file' in self.request.params:
-            name = self.request.params['file']
-            contentType = guessContentType(name)
-            return FileResponse(p.files[name].physicalLocation, self.request, content_type=contentType)
+        if 'version' in self.request.params and 'name' in self.request.params:
+            versionNum, name = int(self.request.params['version']), self.request.params['name']
+            version = p.versions[versionNum]
+            for f in version:
+                if f.name == name:
+                    physicalLocation, contentType = f.physicalLocation, f.contentType
+                    return FileResponse(physicalLocation, self.request, content_type=contentType.encode('utf-8'))
+            raise HTTPNotFound(detail='File "{}" not found in version {} of product "{}"'.format(
+                name, versionNum, p.name
+            ))
         else:
             metadata = product['typeMetadata'].items()
             metadata.sort(lambda a, b: cmp(a[0], b[0]))
