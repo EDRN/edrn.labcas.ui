@@ -25,15 +25,20 @@
                             <small>You currently do not have access to any products.</small>
                         </p>
                         <div tal:condition='hasProducts'>
-                            <p><small>Current products (and number of files in each):</small></p>
+                            <p><small>Current products (and number of versions of each):</small></p>
                             <ul class='list-group'>
                                 <li tal:repeat='product products' class='list-group-item'>
-                                    <span class='badge' tal:content='python:unicode(len(product.files))'>42</span>
-                                    <a href='#'
-                                        tal:attributes='href python:request.current_route_url() + u"/" + product.identifier'
-                                        tal:content='product.name'>
-                                        urn:some:product
-                                    </a>
+                                    <tal:define define='numVersions python:len(product.versions);'>
+                                        <span class='badge' tal:content='python:unicode(numVersions)'>42</span>
+                                        <h4>
+                                            <a href='#'
+                                                tal:attributes='href python:request.current_route_url() + u"/" + product.identifier'
+                                                tal:content='product.name'>
+                                                urn:some:product
+                                            </a>
+                                        </h4>
+                                        <p>Lead PI: <span tal:replace='product.pi'>Joe Schmoe</span></p>
+                                    </tal:define>
                                 </li>
                             </ul>
                         </div>
