@@ -35,3 +35,4 @@ ldap-manager-password =
 # Specialized settings for developement
 [labcas]
 staging = /tmp/labcas/staging
+archive = /tmp/labcas/archive
