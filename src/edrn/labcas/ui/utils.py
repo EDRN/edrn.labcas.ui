@@ -39,8 +39,9 @@ class LabCASFile(object):
 
 class LabCASProduct(object):
     u'''A product stored within LabCAS.'''
-    def __init__(self, identifier, name, versions, pi):
-        self.identifier, self.name, self.versions, self.pi = identifier, name, versions, pi
+    def __init__(self, identifier, name, versions, pi, organSite, cg):
+        self.identifier, self.name, self.versions, self.pi, self.organSite = identifier, name, versions, pi, organSite
+        self.cg = cg
     def __cmp__(self, other):
         return cmp(self.name, other.name)
     def getVersions(self):
@@ -50,12 +51,18 @@ class LabCASProduct(object):
     @staticmethod
     def new(product, principals):
         typeMetadata = product.get('typeMetadata', {})
-        pi = typeMetadata.get(u'LeadPI', [u'Unknown'])
-        pi = pi[0]
         owners = frozenset(typeMetadata.get('OwnerGroup', []))
         if SUPER_GROUP in principals or not principals.isdisjoint(owners):
             name, productID = product.get('name'), product.get('id')
-            if not name or not productID: return None
+            if not productID: return None
+            pi = typeMetadata.get(u'LeadPI', [u'Unknown'])
+            pi = pi[0]
+            organ = typeMetadata.get(u'OrganSite', [u'Unknown'])
+            organ = organ[0]
+            cg = typeMetadata.get(u'CollaborativeGroup', [u'Unknown'])
+            cg = cg[0]
+            datasetName = typeMetadata.get(u'DatasetName', [name if name else productID])
+            datasetName = datasetName[0]
             backend = getUtility(IBackend)
             response = backend.getSearchEngine().query('*:*', fq=['DatasetId:{}'.format(name)], start=0)
             versions = {}  # version → [files]
@@ -76,7 +83,7 @@ class LabCASProduct(object):
                 files.append(LabCASFile(fileName, physicalLocation, size, mimeType, item))
                 versions[version] = files
             if not versions: return None
-            return LabCASProduct(productID, name, versions, pi)
+            return LabCASProduct(productID, datasetName, versions, pi, organ, cg)
         else:
             return None
 
