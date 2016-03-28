@@ -75,6 +75,7 @@ class LabCASProduct(object):
                 size = size[0]
                 files.append(LabCASFile(fileName, physicalLocation, size, mimeType, item))
                 versions[version] = files
+            if not versions: return None
             return LabCASProduct(productID, name, versions, pi)
         else:
             return None
