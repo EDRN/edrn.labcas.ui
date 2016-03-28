@@ -20,7 +20,7 @@
     <body>
         <div metal:fill-slot='content'>
             <div class='container'>
-                <h1>Dataset: <span tal:replace='datasetID'>urn:whatever:blah-blah</span></h1>
+                <h1 tal:content='product.name'>urn:whatever:blah-blah</h1>
                 <p>
                     <label for='datasetID'>Dataset ID:</label> <span id='datasetID' tal:content='datasetID'>urn:whatever</span>
                 </p>
