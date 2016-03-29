@@ -18,9 +18,9 @@
     <body>
         <div metal:fill-slot='content'>
             <div class='container'>
-                <h1>My Products</h1>
+                <h1>My Data</h1>
                 <p tal:condition='not:hasProducts'>
-                    <small>You currently do not have access to any products.</small>
+                    <small>You currently do not have access to any datasets.</small>
                 </p>
                 <div tal:condition='hasProducts'>
                     <table class='table table-hover'>
