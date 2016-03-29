@@ -9,6 +9,11 @@ import urllib
 
 
 SUPER_GROUP = u'cn=Super User,dc=edrn,dc=jpl,dc=nasa,dc=gov'
+CG_BASE_URL = u'https://edrn.nci.nih.gov/collaborative-groups/'
+COLLABORATIVE_GROUPS = {
+    u'Lung and Upper Aerodigestive': CG_BASE_URL + u'lung-and-upper-aerodigestive-cancers-research',
+    u'Prostate and Urologic': CG_BASE_URL + u'prostate-and-urologic-cancers-research-group'
+}
 
 _metadataToIgnore = frozenset((
     u'_version_',
@@ -96,3 +101,7 @@ class LabCASWorkflow(object):
         return cmp(self.identifier, other.identifier)
     def __hash__(self):
         return hash(self.identifier)
+
+
+def computeCollaborativeGroupURL(product):
+    return COLLABORATIVE_GROUPS.get(product.cg)

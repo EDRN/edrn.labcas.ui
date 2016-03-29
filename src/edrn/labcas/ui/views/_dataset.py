@@ -2,7 +2,7 @@
 
 from edrn.labcas.ui import PACKAGE_NAME
 from edrn.labcas.ui.interfaces import IBackend
-from edrn.labcas.ui.utils import LabCASProduct
+from edrn.labcas.ui.utils import LabCASProduct, computeCollaborativeGroupURL
 from pyramid.view import view_config, view_defaults
 from pyramid.response import FileResponse
 from zope.component import getUtility
@@ -32,9 +32,11 @@ class DatasetView(object):
         else:
             metadata = product['typeMetadata'].items()
             metadata.sort(lambda a, b: cmp(a[0], b[0]))
+            cgURL = computeCollaborativeGroupURL(p)
             return {
                 'datasetID': datasetID,
                 'description': product.get('description'),
                 'metadata': metadata,
-                'product': p
+                'product': p,
+                'cgURL': cgURL
             }
