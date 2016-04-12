@@ -74,7 +74,7 @@
                     </div>
                     <div role='tabpanel' class='tab-pane' id='alldata'>
                         <h3>All Public Data</h3>
-                        <p>There is currently no publicly available data.</p>
+                        <p>There are currently no publicly available data.</p>
                     </div>
                 </div>
             </div>
