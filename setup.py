@@ -28,6 +28,7 @@ _extras = {
 _externalRequirements = [
     'setuptools',
     'deform >= 2.0a1',
+    'humanize',
     'lxml',
     'pyramid',
     'pyramid_beaker',
