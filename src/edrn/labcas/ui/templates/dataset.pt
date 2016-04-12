@@ -21,6 +21,12 @@
     <body>
         <div metal:fill-slot='content'>
             <div class='container'>
+                <ol class='breadcrumb'>
+                    <li><a href='#' tal:attributes='href python:request.route_url("home")'>Home</a></li>
+                    <li><a href='#' tal:attributes='href python:request.route_url("datasets")'>Datasets</a></li>
+                    <li class='active' tal:content='product.name'>Some Dataset</li>
+                </ol>
+
                 <h1 tal:content='product.name'>urn:whatever:blah-blah</h1>
 
                 <ul class='nav nav-tabs' role='tablist'>
@@ -97,44 +103,69 @@
                         files      python:version[1];
                     '>
                         <h3>Files <small>(version <span tal:replace='versionStr'>42</span>)</small></h3>
-                        <table class='table'>
-                            <thead><tr><td>✓</td><td>Name</td><td>Size</td><td>Metadata</td></tr></thead>
-                            <tbody>
-                                <tr tal:repeat='file python:files'>
-                                    <td>✓</td>
-                                    <td tal:define='fileURL python:request.current_route_url() +
-                                        "?version=" + versionStr + "&amp;name=" + file.name'>
-                                        <a href='#' tal:content='file.name' tal:attributes='href python:fileURL'>
-                                            booger.dat
-                                        </a>
-                                    </td>
-                                    <td tal:content='python:file.size' style='text-align: right;'>
-                                        42
-                                    </td>
-                                    <td>
-                                        <ul>
-                                            <li tal:repeat='row python:file.getMetadata()'>
-                                                <tal:define define='label python:row[0]; values python:row[1];'>
-                                                    <label tal:content='label'>Sheeps in file</label>:
-                                                    <span tal:condition='python:len(values) == 0' class='text-muted'>
-                                                        No values.
-                                                    </span>
-                                                    <span tal:condition='python:len(values) == 1'
-                                                        tal:content='python:values[0]'>
-                                                        One value
-                                                    </span>
-                                                    <ul tal:condition='python:len(values) &gt; 1'>
-                                                        <li tal:repeat='value values'>
-                                                            <span tal:replace='value'>One of several values</span>
-                                                        </li>
-                                                    </ul>
-                                                </tal:define>
-                                            </li>
-                                        </ul>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <p>
+                            <form action='#' method='POST'>
+                                <table class='table'>
+                                    <thead>
+                                        <tr>
+                                            <td><input type='checkbox' name='all.include' checked='true'/></td>
+                                            <td>Name</td>
+                                            <td>Size</td>
+                                            <td>Metadata</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr tal:repeat='file python:files'>
+                                            <td>
+                                                <input type='checkbox' name='include.name' checked='true'
+                                                    tal:attributes='name python:u"include." + file.name'/>
+                                            </td>
+                                            <td tal:define='fileURL python:request.current_route_url() +
+                                                "?version=" + versionStr + "&amp;name=" + file.name'>
+                                                <a href='#' tal:content='file.name' tal:attributes='href python:fileURL'>
+                                                    booger.dat
+                                                </a>
+                                            </td>
+                                            <td tal:content='python:view.humanFriendlySize(file.size)'
+                                                style='text-align: right;'>
+                                                42
+                                            </td>
+                                            <td>
+                                                <ul>
+                                                    <li tal:repeat='row python:file.getMetadata()'>
+                                                        <tal:define define='label python:row[0]; values python:row[1];'>
+                                                            <label tal:content='label'>Sheeps in file</label>:
+                                                            <span tal:condition='python:len(values) == 0' class='text-muted'>
+                                                                No values.
+                                                            </span>
+                                                            <span tal:condition='python:len(values) == 1'
+                                                                tal:content='python:values[0]'>
+                                                                One value
+                                                            </span>
+                                                            <ul tal:condition='python:len(values) &gt; 1'>
+                                                                <li tal:repeat='value values'>
+                                                                    <span tal:replace='value'>One of several values</span>
+                                                                </li>
+                                                            </ul>
+                                                        </tal:define>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <button type='submit' class='btn bth-default' name='Download checked files'
+                                    value='download'>
+                                    <span class='glyphicon glyphicon-download-alt' aria-hidden='true'></span>
+                                    Download checked files
+                                </button>
+                            </form>
+                        </p>
+                        <p class='text-muted' tal:condition='python:version[0] &gt; 1'>
+                            To access earlier versions of this dataset,
+                            <a href='https://edrn.nci.nih.gov/contact-info'>please contact the EDRN
+                                Informatics Center</a>.
+                        </p>
                     </div> <!-- /Files -->
                 </div>
             </div>
