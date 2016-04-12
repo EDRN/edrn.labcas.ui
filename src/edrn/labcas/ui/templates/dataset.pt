@@ -104,7 +104,9 @@
                     '>
                         <h3>Files <small>(version <span tal:replace='versionStr'>42</span>)</small></h3>
                         <p>
-                            <form action='#' method='POST'>
+                            <form action='#' method='POST' tal:attributes='action python:request.current_route_url()'>
+                                <input type='hidden' name='archiveVersion' value='123'
+                                    tal:attributes='value versionStr'/>
                                 <table class='table'>
                                     <thead>
                                         <tr>

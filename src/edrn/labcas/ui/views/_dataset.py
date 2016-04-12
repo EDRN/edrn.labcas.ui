@@ -6,8 +6,12 @@ from edrn.labcas.ui.utils import LabCASProduct, computeCollaborativeGroupURL
 from pyramid.view import view_config, view_defaults
 from pyramid.response import FileResponse
 from zope.component import getUtility
-from pyramid.httpexceptions import HTTPNotFound
-import humanize
+from pyramid.httpexceptions import HTTPNotFound, HTTPFound
+import humanize, zipfile, os, os.path, threading
+import tempfile  # FIXME: if /tmp lacks space, we fail
+
+
+_tempFileRemovalTimeout = 10.0  # seconds
 
 
 @view_defaults(renderer=PACKAGE_NAME + ':templates/dataset.pt')
@@ -22,8 +26,9 @@ class DatasetView(object):
         datasetID = self.request.matchdict['datasetID']
         product = backend.getFileMgr().getProductTypeById(datasetID)
         p = LabCASProduct.new(product, frozenset(self.request.effective_principals))
-        if 'version' in self.request.params and 'name' in self.request.params:
-            versionNum, name = int(self.request.params['version']), self.request.params['name']
+        params = self.request.params
+        if 'version' in params and 'name' in params and 'archiveVersion' not in params:
+            versionNum, name = int(params['version']), params['name']
             version = p.versions[versionNum]
             for f in version:
                 if f.name == name:
@@ -32,6 +37,24 @@ class DatasetView(object):
             raise HTTPNotFound(detail='File "{}" not found in version {} of product "{}"'.format(
                 name, versionNum, p.name
             ))
+        elif 'archiveVersion' in params:
+            # FIXME: overly large archives cause browser to hang and we fail
+            versionNum = int(params['archiveVersion'])
+            version = p.versions[versionNum]
+            files = [unicode(i[8:]) for i in params if i.startswith(u'include.') and params[i] == u'on']
+            if len(files) == 0:
+                raise HTTPFound(self.request.url, message=u'No files were selected.')
+            zipFileDesc, zipFileName = tempfile.mkstemp(u'.zip', u'labcas-')
+            with zipfile.ZipFile(os.fdopen(zipFileDesc, 'w'), 'w', zipfile.ZIP_DEFLATED, allowZip64=True) as z:
+                for name in files:
+                    for candidateFile in version:  # FIXME: this won't scale for huge datasets
+                        if candidateFile.name == name:
+                            os.chdir(os.path.dirname(candidateFile.physicalLocation))
+                            z.write(name)
+            remover = threading.Timer(_tempFileRemovalTimeout, os.remove, (zipFileName,))
+            remover.daemon = True
+            remover.start()
+            return FileResponse(zipFileName, self.request, content_type='application/zip')
         else:
             metadata = product['typeMetadata'].items()
             metadata.sort(lambda a, b: cmp(a[0], b[0]))
