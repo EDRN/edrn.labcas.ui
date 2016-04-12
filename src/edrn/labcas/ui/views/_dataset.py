@@ -7,12 +7,15 @@ from pyramid.view import view_config, view_defaults
 from pyramid.response import FileResponse
 from zope.component import getUtility
 from pyramid.httpexceptions import HTTPNotFound
+import humanize
 
 
 @view_defaults(renderer=PACKAGE_NAME + ':templates/dataset.pt')
 class DatasetView(object):
     def __init__(self, request):
         self.request = request
+    def humanFriendlySize(self, size):
+        return unicode(humanize.naturalsize(size)).replace(u' ', u' ')  # There's a NO-BREAK SPACE in there.
     @view_config(route_name='dataset', permission='view')
     def __call__(self):
         backend = getUtility(IBackend)
