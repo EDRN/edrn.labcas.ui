@@ -17,44 +17,66 @@
     </head>
     <body>
         <div metal:fill-slot='content'>
-            <div class='container'>
-                <h1>My Data</h1>
-                <p tal:condition='not:hasProducts'>
-                    <small>You currently do not have access to any datasets.</small>
-                </p>
-                <div tal:condition='hasProducts'>
-                    <table class='table table-hover'>
-                        <thead><tr><th>Product</th><th>Lead PI</th><th>Organ</th><th>Collaborative Group</th></tr></thead>
-                        <tbody>
-                            <tr tal:repeat='product products'>
-                                <td>
-                                    <a href='#'
-                                        tal:attributes='href python:request.current_route_url() + u"/" + product.identifier'
-                                        tal:content='product.name'>
-                                        urn:some:product
-                                    </a>
-                                </td>
-                                <td tal:content='product.pi'>
-                                    Joe Schmoe
-                                </td>
-                                <td tal:content='product.organSite'>
-                                    Anus
-                                </td>
-                                <td tal:content='product.cg'>
-                                    Anal Group
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
 
-                <h4>Upload Data</h4>
-                <p>
-                    <a class='btn btn-default' href='#' role='button'
-                        tal:attributes='href python:request.route_url("upload")'>
-                        <span class='glyphicon glyphicon-cloud-upload' aria-hidden='true'></span> Upload
-                    </a>
-                </p>
+            <div class='container'>
+                <ol class='breadcrumb'>
+                    <li><a href='#' tal:attributes='href python:request.route_url("home")'>Home</a></li>
+                    <li class='active'>Datasets</li>
+                </ol>
+
+                <ul class='nav nav-tabs' role='tablist'>
+                    <li role='presentation' class='active'>
+                        <a href='#mydata' aria-controls='mydata' role='tab' data-toggle='tab'>My Data</a>
+                    </li>
+                    <li role='presentation'>
+                        <a href='#alldata' aria-controls='alldata' role='tab' data-toggle='tab'>All Public Data</a>
+                    </li>
+                </ul>
+
+                <div class='tab-content'>
+                    <div role='tabpanel' class='tab-pane active' id='mydata'>
+                        <h3>My Data</h3>
+                        <p tal:condition='not:hasProducts' class='text-muted'>
+                            You currently do not have access to any datasets.
+                        </p>
+                        <div tal:condition='hasProducts'>
+                            <table class='table table-hover'>
+                                <thead><tr><th>Product</th><th>Lead PI</th><th>Organ</th><th>Collaborative Group</th></tr></thead>
+                                <tbody>
+                                    <tr tal:repeat='product products'>
+                                        <td>
+                                            <a href='#'
+                                                tal:attributes='href python:request.current_route_url() + u"/" + product.identifier'
+                                                tal:content='product.name'>
+                                                urn:some:product
+                                            </a>
+                                        </td>
+                                        <td tal:content='product.pi'>
+                                            Joe Schmoe
+                                        </td>
+                                        <td tal:content='product.organSite'>
+                                            Anus
+                                        </td>
+                                        <td tal:content='product.cg'>
+                                            Anal Group
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <h4>Upload Data</h4>
+                        <p>
+                            <a class='btn btn-default' href='#' role='button'
+                                tal:attributes='href python:request.route_url("upload")'>
+                                <span class='glyphicon glyphicon-cloud-upload' aria-hidden='true'></span> Upload
+                            </a>
+                        </p>
+                    </div>
+                    <div role='tabpanel' class='tab-pane' id='alldata'>
+                        <h3>All Public Data</h3>
+                        <p>There is currently no publicly available data.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </body>
