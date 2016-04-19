@@ -28,6 +28,7 @@ class DatasetView(object):
         p = LabCASProduct.new(product, frozenset(self.request.effective_principals))
         params = self.request.params
         if 'version' in params and 'name' in params and 'archiveVersion' not in params:
+            # Download single file
             versionNum, name = int(params['version']), params['name']
             version = p.versions[versionNum]
             for f in version:
@@ -38,6 +39,7 @@ class DatasetView(object):
                 name, versionNum, p.name
             ))
         elif 'archiveVersion' in params:
+            # Download multiple files
             # FIXME: overly large archives cause browser to hang and we fail
             versionNum = int(params['archiveVersion'])
             version = p.versions[versionNum]
@@ -56,6 +58,7 @@ class DatasetView(object):
             remover.start()
             return FileResponse(zipFileName, self.request, content_type='application/zip')
         else:
+            # View files
             metadata = product['typeMetadata'].items()
             metadata.sort(lambda a, b: cmp(a[0], b[0]))
             cgURL = computeCollaborativeGroupURL(p)
