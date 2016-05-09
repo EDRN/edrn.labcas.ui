@@ -6,6 +6,12 @@ are listed below, you can find out more about them by visiting the issue
 tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 
 
+0.0.1 — TBD
+-----------
+
+• CA-1333, added fields for booleans and URIs.
+
+
 0.0.0 — Unreleased
 ------------------
 

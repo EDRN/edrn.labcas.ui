@@ -2,12 +2,16 @@
 
 from edrn.labcas.ui import PACKAGE_NAME
 from edrn.labcas.ui.interfaces import IBackend, IVocabularies
-from edrn.labcas.ui.utils import LabCASWorkflow
+from edrn.labcas.ui.utils import LabCASWorkflow, re_python_rfc3986_URI_reference
 from lxml import etree
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, view_defaults
 from zope.component import getUtility
-import colander, re, deform, os, os.path
+import colander, re, deform, os, os.path, logging
+
+
+# Logging
+_logger = logging.getLogger(__name__)
 
 
 # Nifty XML constants
@@ -118,6 +122,25 @@ class MetadataView(object):
                             description=description,
                             missing=missing
                         ))
+                    elif dataType == u'http://www.w3.org/2001/XMLSchema/boolean':
+                        schema.add(colander.SchemaNode(
+                            colander.Boolean(),
+                            name=fieldName,
+                            title=title,
+                            description=description,
+                            missing=missing
+                        ))
+                    elif dataType == u'http://www.w3.org/2001/XMLSchema/anyURI':
+                        schema.add(colander.SchemaNode(
+                            colander.String(),
+                            name=fieldName,
+                            title=title,
+                            description=description,
+                            missing=missing,
+                            validator=colander.Regex(re_python_rfc3986_URI_reference)
+                        ))
+                    else:
+                        _logger.warn(u'Unknown data type "%s" for field "%s"', dataType, fieldName)
                 break
         return schema
     @view_config(route_name='metadata', permission='upload')
