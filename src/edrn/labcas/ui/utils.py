@@ -69,7 +69,7 @@ class LabCASProduct(object):
             datasetName = typeMetadata.get(u'DatasetName', [name if name else productID])
             datasetName = datasetName[0]
             backend = getUtility(IBackend)
-            response = backend.getSearchEngine().query('*:*', fq=['DatasetId:{}'.format(name)], start=0)
+            response = backend.getSearchEngine().query('*:*', fq=['DatasetId:{}'.format(name.replace(u':', u'\\:'))], start=0)
             versions = {}  # version → [files]
             for item in response.results:
                 version = item.get(u'Version', u'0')
