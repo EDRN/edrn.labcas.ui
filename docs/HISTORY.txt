@@ -9,6 +9,7 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 0.0.1 — TBD
 -----------
 
+• CA-1332, fixed RNA sequence upload
 • CA-1333, added fields for booleans and URIs.
 
 

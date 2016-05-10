@@ -34,13 +34,18 @@ class AcceptView(object):
             # Completion
             backend = getUtility(IBackend)
             metadata = self.request.session['metadata']
-            # Apparently we need two workflows, not just the one, so this idea isn't going to work:
-            # workflow = self.request.session['workflow']
-            # backend.getWorkflowMgr().executeDynamicWorkflow([workflow.identifier], metadata)
-            backend.getWorkflowMgr().executeDynamicWorkflow(
-                ['urn:edrn:LabcasUploadInitTask', 'urn:edrn:LabcasUploadExecuteTask'],
-                metadata
-            )
+            workflow = self.request.session['workflow']
+            # See comments on CA-1332; we need a better way to discover this and not hard-code
+            if workflow.identifier == u'urn:edrn:RnaSeqWorkflow':
+                backend.getWorkflowMgr().executeDynamicWorkflow(
+                    ['urn:edrn:RnaSeqInitTask', 'urn:edrn:RnaSeqCrawlTask'],
+                    metadata
+                )
+            else:
+                backend.getWorkflowMgr().executeDynamicWorkflow(
+                    ['urn:edrn:LabcasUploadInitTask', 'urn:edrn:LabcasUploadExecuteTask'],
+                    metadata
+                )
             return HTTPFound(self.request.route_url('home'))
         else:
             # Presentation
