@@ -114,7 +114,10 @@ class MetadataView(object):
                             missing=missing,
                             widget=deform.widget.AutocompleteInputWidget(values=vocabularies.getProtocols())
                         ))
-                    elif dataType == u'http://www.w3.org/2001/XMLSchema/integer':
+                    elif dataType in (
+                        u'http://www.w3.org/2001/XMLSchema/integer',
+                        u'http://edrn.nci.nih.gov/xml/schema/types.xml#protocolId'
+                    ):
                         schema.add(colander.SchemaNode(
                             colander.Int(),
                             name=fieldName,
@@ -138,6 +141,14 @@ class MetadataView(object):
                             description=description,
                             missing=missing,
                             validator=colander.Regex(re_python_rfc3986_URI_reference)
+                        ))
+                    elif dataType == u'http://www.w3.org/2001/XMLSchema/date':
+                        schema.add(colander.SchemaNode(
+                            colander.Date(),
+                            name=fieldName,
+                            title=title,
+                            description=description,
+                            missing=missing
                         ))
                     else:
                         _logger.warn(u'Unknown data type "%s" for field "%s"', dataType, fieldName)

@@ -11,6 +11,7 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 
 • CA-1332, fixed RNA sequence upload
 • CA-1333, added fields for booleans and URIs.
+• CA-1345, Date" and "ProtocolID" fields not appearing in LabCAS UI
 
 
 0.0.0 — Unreleased
