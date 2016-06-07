@@ -36,19 +36,14 @@ class MetadataView(object):
                 valNode = etree.SubElement(keyvalNode, _namespacePrefix + u'val')
                 valNode.text = unicode(value)
         return root
-    def _writeMetadata(self, metadata, dir):
-        u'''Write the metadata to the staging directory and return the generated directory path.'''
+    def _getDatasetDir(self, metadata, dir):
+        u'''Create and return the path to the dataset directory.'''
         if u'DatasetId' not in metadata:
             raise ValueError(u'DatasetId is a required metadata')
         datasetID = metadata[u'DatasetId']
         datasetDir = os.path.join(dir, datasetID)
         if not os.path.isdir(datasetDir):
             os.makedirs(datasetDir, 0775)
-        root = self._generateMetadata(metadata)
-        metadataFile = os.path.join(datasetDir, u'DatasetMetadata.xmlmet')
-        doc = etree.ElementTree(root)
-        doc.write(metadataFile, encoding='utf-8', pretty_print=True, xml_declaration=True)
-        os.chmod(metadataFile, 0664)
         return datasetDir
     def _createSchema(self, workflow):
         # Find the task with order 1:
@@ -171,7 +166,7 @@ class MetadataView(object):
                 metadataAppstruct = form.validate(self.request.POST.items())
                 principals = frozenset(self.request.effective_principals)
                 metadataAppstruct['OwnerGroup'] = [i for i in principals if not i.startswith(u'system.')]
-                datasetDir = self._writeMetadata(metadataAppstruct, backend.getStagingDirectory())
+                datasetDir = self._getDatasetDir(metadataAppstruct, backend.getStagingDirectory())
                 self.request.session['metadata'] = metadataAppstruct
                 self.request.session['metadataForm'] = form.render(metadataAppstruct, readonly=True)
                 self.request.session['datasetDir'] = datasetDir

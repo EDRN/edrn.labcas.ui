@@ -14,6 +14,7 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 • CA-1345, Date" and "ProtocolID" fields not appearing in LabCAS UI
 • CA-1343, LabCAS UI should display images inline and not force the browser to
   download them
+• CA-1346, Double metadata entries
 
 
 0.0.0 — Unreleased
