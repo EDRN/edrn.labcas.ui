@@ -20,4 +20,4 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 0.0.0 — Unreleased
 ------------------
 
-This release is not released. Neat, huh?
+• CA-1331, Release to operations
