@@ -18,7 +18,8 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 • CA-1357, People and protocols not updating
 • CA-1354, Don't prompt for both Protocol Name and Protocol ID, but display
   both after uploading
-
+• CA-1356, Collaborative group metadata field is plain text, should be
+  restricted values
 
 0.0.0 — Unreleased
 ------------------

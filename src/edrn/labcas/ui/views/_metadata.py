@@ -24,6 +24,15 @@ _namespaceMap = {None: _namespaceURL}
 _idNumberHunter = re.compile(ur'\((\d+)\)$')
 
 
+# Current collaborative groups
+_collaborativeGroups = [
+    u'Breast and Gynecologic Cancers Research Group',
+    u'G.I. and Other Associated Cancers Research Group',
+    u'Lung and Upper Aerodigestive Cancers Research Group',
+    u'Prostate and Urologic Cancers Research Group'
+]
+
+
 @view_defaults(renderer=PACKAGE_NAME + ':templates/metadata.pt')
 class MetadataView(object):
     def __init__(self, request):
@@ -64,7 +73,6 @@ class MetadataView(object):
                     # FIXME:
                     if dataType in (
                         u'http://www.w3.org/2001/XMLSchema/string',
-                        u'http://edrn.nci.nih.gov/xml/schema/types.xml#collaborativeGroup',
                         u'http://edrn.nci.nih.gov/xml/schema/types.xml#discipline',
                         u'http://edrn.nci.nih.gov/xml/schema/types.xml#organSite',
                     ):
@@ -94,6 +102,18 @@ class MetadataView(object):
                                 description=description,
                                 missing=missing
                             ))
+                    elif dataType == u'http://edrn.nci.nih.gov/xml/schema/types.xml#collaborativeGroup':
+                        # CA-1356 ugly fix but I'm in a hurry and these groups haven't changed in 10 years.
+                        # FIXME: correct solution: use IVocabularies
+                        schema.add(colander.SchemaNode(
+                            colander.String(),
+                            name=fieldName,
+                            title=title,
+                            description=description,
+                            missing=missing,
+                            validator=colander.OneOf(_collaborativeGroups),
+                            widget=deform.widget.RadioChoiceWidget(values=[(i, i) for i in _collaborativeGroups])
+                        ))
                     elif dataType == u'http://edrn.nci.nih.gov/xml/schema/types.xml#principalInvestigator':
                         schema.add(colander.SchemaNode(
                             colander.String(),
