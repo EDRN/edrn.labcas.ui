@@ -16,6 +16,8 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
   download them
 • CA-1346, Double metadata entries
 • CA-1357, People and protocols not updating
+• CA-1354, Don't prompt for both Protocol Name and Protocol ID, but display
+  both after uploading
 
 
 0.0.0 — Unreleased

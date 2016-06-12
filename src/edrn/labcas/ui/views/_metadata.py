@@ -20,6 +20,10 @@ _namespacePrefix = u'{' + _namespaceURL + u'}'
 _namespaceMap = {None: _namespaceURL}
 
 
+# Capture the ID number in parentheses at the end of a "Name name name (ID number)" string
+_idNumberHunter = re.compile(ur'\((\d+)\)$')
+
+
 @view_defaults(renderer=PACKAGE_NAME + ':templates/metadata.pt')
 class MetadataView(object):
     def __init__(self, request):
@@ -109,10 +113,7 @@ class MetadataView(object):
                             missing=missing,
                             widget=deform.widget.AutocompleteInputWidget(values=self.request.route_url('protocols'))
                         ))
-                    elif dataType in (
-                        u'http://www.w3.org/2001/XMLSchema/integer',
-                        u'http://edrn.nci.nih.gov/xml/schema/types.xml#protocolId'
-                    ):
+                    elif dataType == u'http://www.w3.org/2001/XMLSchema/integer':
                         schema.add(colander.SchemaNode(
                             colander.Int(),
                             name=fieldName,
@@ -164,6 +165,12 @@ class MetadataView(object):
         if 'submit' in self.request.params:
             try:
                 metadataAppstruct = form.validate(self.request.POST.items())
+                # CA-1354 ugly kludge
+                protocolName = metadataAppstruct.get('ProtocolName', None)
+                if protocolName:
+                    match = _idNumberHunter.search(metadataAppstruct['ProtocolName'])
+                    if match:
+                        metadataAppstruct['ProtocolId'] = match.group(1)
                 principals = frozenset(self.request.effective_principals)
                 metadataAppstruct['OwnerGroup'] = [i for i in principals if not i.startswith(u'system.')]
                 datasetDir = self._getDatasetDir(metadataAppstruct, backend.getStagingDirectory())
