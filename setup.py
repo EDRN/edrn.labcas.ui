@@ -21,7 +21,8 @@ _zipSafe         = False
 _keywords        = 'web edrn cancer biomarkers lab laboratory catalog archive'
 _testSuite       = 'edrn.labcas.ui.tests.test_suite'
 _entryPoints     = {
-    'paste.app_factory': ['main=edrn.labcas.ui:main']
+    'paste.app_factory': ['main=edrn.labcas.ui:main'],
+    'console_scripts': ['update-vocabularies=edrn.labcas.ui.vocabularies:main']
 }
 _extras = {
 }
@@ -35,6 +36,7 @@ _externalRequirements = [
     'pyramid_chameleon',
     'pyramid_debugtoolbar',
     'pyramid_ldap',
+    'rdflib',
     'solrpy',
     'waitress',
     'zope.component',

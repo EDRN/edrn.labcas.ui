@@ -19,6 +19,7 @@ parts =
     wsgi
     paste-ops
     apache-httpd-conf
+    cron
 
 
 # Secrets

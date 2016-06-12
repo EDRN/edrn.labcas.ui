@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 from edrn.labcas.ui import PACKAGE_NAME
-from edrn.labcas.ui.interfaces import IBackend, IVocabularies
+from edrn.labcas.ui.interfaces import IBackend
 from edrn.labcas.ui.utils import LabCASWorkflow, re_python_rfc3986_URI_reference
 from lxml import etree
 from pyramid.httpexceptions import HTTPFound
@@ -47,7 +47,6 @@ class MetadataView(object):
         return datasetDir
     def _createSchema(self, workflow):
         # Find the task with order 1:
-        vocabularies = getUtility(IVocabularies)
         schema = colander.SchemaNode(colander.Mapping())
         for task in workflow.tasks:
             if task.get('order', '-1') == '1':
@@ -98,7 +97,8 @@ class MetadataView(object):
                             title=title,
                             description=description,
                             missing=missing,
-                            widget=deform.widget.AutocompleteInputWidget(values=vocabularies.getPeople())
+                            widget=deform.widget.AutocompleteInputWidget(values=self.request.route_url('people'))
+                            # widget=deform.widget.AutocompleteInputWidget(values=vocabularies.getPeople())
                         ))
                     elif dataType == u'http://edrn.nci.nih.gov/xml/schema/types.xml#protocolName':
                         schema.add(colander.SchemaNode(
@@ -107,7 +107,7 @@ class MetadataView(object):
                             title=title,
                             description=description,
                             missing=missing,
-                            widget=deform.widget.AutocompleteInputWidget(values=vocabularies.getProtocols())
+                            widget=deform.widget.AutocompleteInputWidget(values=self.request.route_url('protocols'))
                         ))
                     elif dataType in (
                         u'http://www.w3.org/2001/XMLSchema/integer',

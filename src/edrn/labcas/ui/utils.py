@@ -5,7 +5,7 @@
 from zope.component import getUtility
 from edrn.labcas.ui.interfaces import IBackend
 from urlparse import urlparse
-import urllib, re
+import urllib, re, datetime
 
 
 SUPER_GROUP = u'cn=Super User,dc=edrn,dc=jpl,dc=nasa,dc=gov'
@@ -24,6 +24,20 @@ _metadataToIgnore = frozenset((
     u'Version',
     u'LeadPI'
 ))
+
+
+class _UTC(datetime.tzinfo):
+    u'''Time zone for Coordinated Universal Time (UTC); for more information, please see
+    https://docs.python.org/2.7/library/datetime.html#tzinfo-objects
+    '''
+    zero = datetime.timedelta(0)
+    def utcoffset(self, dt):
+        return self.zero
+    def tzname(self, dt):
+        return 'UTC'
+    def dst(self, dt):
+        return self.zero
+UTC = _UTC()
 
 
 class LabCASFile(object):
@@ -194,3 +208,5 @@ re_python_rfc3986_URI_reference = re.compile(r""" ^
       (?:\# (?:[A-Za-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9A-Fa-f]{2})* )?
     )                                                                       # )
     $ """, re.VERBOSE)
+
+

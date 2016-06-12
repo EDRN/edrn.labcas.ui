@@ -15,6 +15,7 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 • CA-1343, LabCAS UI should display images inline and not force the browser to
   download them
 • CA-1346, Double metadata entries
+• CA-1357, People and protocols not updating
 
 
 0.0.0 — Unreleased
