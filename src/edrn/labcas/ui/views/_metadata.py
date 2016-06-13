@@ -24,6 +24,10 @@ _namespaceMap = {None: _namespaceURL}
 _idNumberHunter = re.compile(ur'\((\d+)\)$')
 
 
+# Capture the common name (cn) at the front of an LDAP distinguished name (dn)
+_cnHunter = re.compile(ur'^cn=([^,]+),')
+
+
 # Current collaborative groups
 _collaborativeGroups = [
     u'Breast and Gynecologic Cancers Research Group',
@@ -114,6 +118,20 @@ class MetadataView(object):
                             validator=colander.OneOf(_collaborativeGroups),
                             widget=deform.widget.RadioChoiceWidget(values=[(i, i) for i in _collaborativeGroups])
                         ))
+                    elif dataType == u'urn:ldap:attributes:dn':
+                        principals = list(self.request.effective_principals)
+                        principals.sort()
+                        ldapGroups = [i for i in principals if not i.startswith(u'system.')]
+                        ldapDNsAndLabels = [(i, _cnHunter.match(i).group(1)) for i in ldapGroups if _cnHunter.match(i)]
+                        schema.add(colander.SchemaNode(
+                            colander.List(),
+                            name=fieldName,
+                            title=title,
+                            description=description,
+                            missing=missing,
+                            validator=colander.ContainsOnly(ldapGroups),
+                            widget=deform.widget.CheckboxChoiceWidget(values=ldapDNsAndLabels)
+                        ))
                     elif dataType == u'http://edrn.nci.nih.gov/xml/schema/types.xml#principalInvestigator':
                         schema.add(colander.SchemaNode(
                             colander.String(),
@@ -122,7 +140,6 @@ class MetadataView(object):
                             description=description,
                             missing=missing,
                             widget=deform.widget.AutocompleteInputWidget(values=self.request.route_url('people'))
-                            # widget=deform.widget.AutocompleteInputWidget(values=vocabularies.getPeople())
                         ))
                     elif dataType == u'http://edrn.nci.nih.gov/xml/schema/types.xml#protocolName':
                         schema.add(colander.SchemaNode(
@@ -191,8 +208,6 @@ class MetadataView(object):
                     match = _idNumberHunter.search(metadataAppstruct['ProtocolName'])
                     if match:
                         metadataAppstruct['ProtocolId'] = match.group(1)
-                principals = frozenset(self.request.effective_principals)
-                metadataAppstruct['OwnerGroup'] = [i for i in principals if not i.startswith(u'system.')]
                 datasetDir = self._getDatasetDir(metadataAppstruct, backend.getStagingDirectory())
                 self.request.session['metadata'] = metadataAppstruct
                 self.request.session['metadataForm'] = form.render(metadataAppstruct, readonly=True)
