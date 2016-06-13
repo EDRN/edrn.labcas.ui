@@ -15,6 +15,7 @@
 extends = etc/base.cfg
 update-versions-file = ${buildout:directory}/var/ops-versions.cfg
 parts =
+    python
     var
     wsgi
     paste-ops
