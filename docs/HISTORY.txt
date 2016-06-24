@@ -21,6 +21,12 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 • CA-1356, Collaborative group metadata field is plain text, should be
   restricted values
 • CA-1355, "OwnerGroup" should be check boxes, not a free text field
+• CA-1358, On dataset list change "Product" in table header to "Dataset"
+• CA-1359, Add a N/A option to Collaborative Group
+• CA-1360, Change name of "Owner Group" to something like "Share data with…"
+• CA-1362, Show all groups; default to groups of which you are a mamber
+• CA-1363, Disable upload button if you're not a member of any group, and add
+  a contact notice
 
 
 0.0.0 — Unreleased

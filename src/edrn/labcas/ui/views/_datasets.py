@@ -16,10 +16,11 @@ class DatasetsView(object):
         backend = getUtility(IBackend)
         productTypes = backend.getFileMgr().getProductTypes()
         principals = frozenset(self.request.effective_principals)
+        canUpload = any([i for i in principals if i.startswith('cn=')])
         products = []
         for product in productTypes:
             p = LabCASProduct.new(product, principals)
             if p is None: continue
             products.append(p)
         products.sort()
-        return {'products': products, 'hasProducts': len(products) > 0}
+        return {'products': products, 'hasProducts': len(products) > 0, 'canUpload': canUpload}

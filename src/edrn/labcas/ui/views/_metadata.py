@@ -4,8 +4,10 @@ from edrn.labcas.ui import PACKAGE_NAME
 from edrn.labcas.ui.interfaces import IBackend
 from edrn.labcas.ui.utils import LabCASWorkflow, re_python_rfc3986_URI_reference
 from lxml import etree
+from pyramid.exceptions import ConfigurationError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, view_defaults
+from pyramid_ldap import get_ldap_connector
 from zope.component import getUtility
 import colander, re, deform, os, os.path, logging
 
@@ -30,6 +32,7 @@ _cnHunter = re.compile(ur'^cn=([^,]+),')
 
 # Current collaborative groups
 _collaborativeGroups = [
+    u'N/A',
     u'Breast and Gynecologic Cancers Research Group',
     u'G.I. and Other Associated Cancers Research Group',
     u'Lung and Upper Aerodigestive Cancers Research Group',
@@ -119,18 +122,23 @@ class MetadataView(object):
                             widget=deform.widget.RadioChoiceWidget(values=[(i, i) for i in _collaborativeGroups])
                         ))
                     elif dataType == u'urn:ldap:attributes:dn':
-                        principals = list(self.request.effective_principals)
+                        principals = [i for i in self.request.effective_principals if not i.startswith(u'system.')]
                         principals.sort()
-                        ldapGroups = [i for i in principals if not i.startswith(u'system.')]
+                        c = get_ldap_connector(self.request)
+                        ldapGroups = [dn for dn, attrs in c.user_groups(u'uid=*') if not dn.startswith(u'system.')]
                         ldapDNsAndLabels = [(i, _cnHunter.match(i).group(1)) for i in ldapGroups if _cnHunter.match(i)]
+                        ldapDNsAndLabels.sort()
                         schema.add(colander.SchemaNode(
                             colander.List(),
                             name=fieldName,
-                            title=title,
-                            description=description,
+                            title=u'Share data with…',
+                            description=u'''Select one or more groups who can access this data;
+                                use CTRL (Windows, etc.) or ⌘ (Mac) to select multiple groups; groups in which you
+                                are a member are already selected by default''',
+                            default=principals,
                             missing=missing,
                             validator=colander.ContainsOnly(ldapGroups),
-                            widget=deform.widget.CheckboxChoiceWidget(values=ldapDNsAndLabels)
+                            widget=deform.widget.SelectWidget(values=ldapDNsAndLabels, multiple=True)
                         ))
                     elif dataType == u'http://edrn.nci.nih.gov/xml/schema/types.xml#principalInvestigator':
                         schema.add(colander.SchemaNode(

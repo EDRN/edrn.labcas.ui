@@ -13,6 +13,7 @@
             provided names:
             - products = sequence of LabCASProduct instances describing each product.
             - hasProducts = boolean to tell if products are available.
+            - canUpload = boolean to tell if the logged in principal can upload data.
         -->
     </head>
     <body>
@@ -41,7 +42,7 @@
                         </p>
                         <div tal:condition='hasProducts'>
                             <table class='table table-hover'>
-                                <thead><tr><th>Product</th><th>Lead PI</th><th>Organ</th><th>Collaborative Group</th></tr></thead>
+                                <thead><tr><th>Dataset</th><th>Lead PI</th><th>Organ</th><th>Collaborative Group</th></tr></thead>
                                 <tbody>
                                     <tr tal:repeat='product products'>
                                         <td>
@@ -65,12 +66,24 @@
                             </table>
                         </div>
                         <h4>Upload Data</h4>
-                        <p>
+                        <div tal:condition='canUpload'>
                             <a class='btn btn-default' href='#' role='button'
                                 tal:attributes='href python:request.route_url("upload")'>
                                 <span class='glyphicon glyphicon-cloud-upload' aria-hidden='true'></span> Upload
                             </a>
-                        </p>
+                        </div>
+                        <div tal:condition='not:canUpload'>
+                            <p>
+                                <a class='btn btn-default disabled' href='#' role='button'>
+                                    <span class='glyphicon glyphicon-cloud-upload' aria-hidden='true'></span> Upload
+                                </a>
+                            </p>
+                            <p class='text-muted'>
+                                Your account is not a member of any group! As a result, you cannot upload any
+                                data into LabCAS. <a href='https://cancer.jpl.nasa.gov/contact-info'>Contact
+                                the EDRN Informatics Center</a> for assistance.
+                            </p>
+                        </div>
                     </div>
                     <div role='tabpanel' class='tab-pane' id='alldata'>
                         <h3>All Public Data</h3>
