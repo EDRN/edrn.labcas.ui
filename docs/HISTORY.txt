@@ -27,6 +27,8 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 • CA-1362, Show all groups; default to groups of which you are a mamber
 • CA-1363, Disable upload button if you're not a member of any group, and add
   a contact notice
+• CA-1366, Help text when hovering over "Share Data with…" is weird
+• CA-1373, "Share data with…" field too error-prone
 
 
 0.0.0 — Unreleased

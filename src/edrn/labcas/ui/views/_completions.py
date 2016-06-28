@@ -5,7 +5,12 @@ u'''EDRN LabCAS UI: completions.  Used to power auto-complete widgets by providi
 from edrn.labcas.ui.interfaces import IVocabularies
 from pyramid.view import view_config
 from zope.component import getUtility
+from pyramid_ldap import get_ldap_connector
 import re
+
+
+# Capture the common name (cn) at the front of an LDAP distinguished name (dn)
+_cnHunter = re.compile(ur'^cn=([^,]+),')
 
 
 class _CompletionsView(object):
@@ -37,3 +42,13 @@ class ProtocolCompletionsView(_CompletionsView):
     @view_config(route_name='protocols', renderer='json')
     def __call__(self):
         return self._getMatches(getUtility(IVocabularies).getProtocols().values())
+
+
+class LDAPGroupsCompletionsView(_CompletionsView):
+    u'''Completions for LDAP groups in EDRN.'''
+    @view_config(route_name='ldapGroups', renderer='json')
+    def __call__(self):
+        c = get_ldap_connector(self.request)
+        ldapGroups = [dn for dn, attrs in c.user_groups(u'uid=*') if not dn.startswith(u'system.')]
+        groupNames = [_cnHunter.match(i).group(1) for i in ldapGroups if _cnHunter.match(i)]
+        return self._getMatches(groupNames)

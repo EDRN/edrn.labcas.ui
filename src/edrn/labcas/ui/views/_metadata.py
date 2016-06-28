@@ -122,24 +122,34 @@ class MetadataView(object):
                             widget=deform.widget.RadioChoiceWidget(values=[(i, i) for i in _collaborativeGroups])
                         ))
                     elif dataType == u'urn:ldap:attributes:dn':
-                        principals = [i for i in self.request.effective_principals if not i.startswith(u'system.')]
+                        principals = [
+                            _cnHunter.match(i).group(1).strip() for i in self.request.effective_principals
+                            if i.startswith(u'cn=')
+                        ]
                         principals.sort()
                         c = get_ldap_connector(self.request)
-                        ldapGroups = [dn for dn, attrs in c.user_groups(u'uid=*') if not dn.startswith(u'system.')]
-                        ldapDNsAndLabels = [(i, _cnHunter.match(i).group(1)) for i in ldapGroups if _cnHunter.match(i)]
-                        ldapDNsAndLabels.sort()
-                        schema.add(colander.SchemaNode(
-                            colander.List(),
+                        ldapGroups = [
+                            _cnHunter.match(i).group(1).strip() for i, attrs in c.user_groups(u'uid=*')
+                            if i.startswith(u'cn=')
+                        ]
+                        group = colander.SchemaNode(
+                            colander.String(),
+                            widget=deform.widget.AutocompleteInputWidget(values=self.request.route_url('ldapGroups')),
+                            name='group',
+                            title=u'Group',
+                            description=u'Name of an EDRN group that should be able to access this data'
+                        )
+                        groups = colander.SchemaNode(
+                            colander.Sequence(),
+                            group,
+                            validator=colander.ContainsOnly(ldapGroups),
                             name=fieldName,
                             title=u'Share data with…',
-                            description=u'''Select one or more groups who can access this data;
-                                use CTRL (Windows, etc.) or ⌘ (Mac) to select multiple groups; groups in which you
-                                are a member are already selected by default''',
-                            default=principals,
+                            description=u"Enter the name of one or more groups with whom you'd like to share this data",
                             missing=missing,
-                            validator=colander.ContainsOnly(ldapGroups),
-                            widget=deform.widget.SelectWidget(values=ldapDNsAndLabels, multiple=True)
-                        ))
+                            default=principals
+                        )
+                        schema.add(groups)
                     elif dataType == u'http://edrn.nci.nih.gov/xml/schema/types.xml#principalInvestigator':
                         schema.add(colander.SchemaNode(
                             colander.String(),

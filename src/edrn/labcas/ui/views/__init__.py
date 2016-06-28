@@ -2,7 +2,7 @@
 
 from ._accept import AcceptView
 from ._authentication import AuthenticationView
-from ._completions import PeopleCompletionsView, ProtocolCompletionsView
+from ._completions import PeopleCompletionsView, ProtocolCompletionsView, LDAPGroupsCompletionsView
 from ._dataset import DatasetView
 from ._datasets import DatasetsView
 from ._home import HomeView
@@ -16,6 +16,7 @@ __all__ = (
     DatasetsView,
     DatasetView,
     HomeView,
+    LDAPGroupsCompletionsView,
     MetadataView,
     PeopleCompletionsView,
     ProtocolCompletionsView,

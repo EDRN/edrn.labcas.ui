@@ -74,6 +74,7 @@ def main(global_config, **settings):
     config.add_route('logout', '/logout')
     config.add_route('people', '/people')
     config.add_route('protocols', '/protocols')
+    config.add_route('ldapGroups', '/ldapGroups')
     config.scan()
     provideUtility(_Backend(
         settings['labcas.filemgr'],
