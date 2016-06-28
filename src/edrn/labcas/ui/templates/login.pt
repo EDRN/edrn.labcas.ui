@@ -14,7 +14,6 @@
             - url: tells where to submit the form
             - cameFrom: gives referring URL
             - username: a default username, defaults to empty string
-            - message: any status message to display above form
             - form: rendered form
         -->
         <metal:style-slot fill-slot='style_slot'>

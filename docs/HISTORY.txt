@@ -29,6 +29,8 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
   a contact notice
 • CA-1366, Help text when hovering over "Share Data with…" is weird
 • CA-1373, "Share data with…" field too error-prone
+• CA-1364, Who is currently logged in
+• CA-1365, No logout button
 
 
 0.0.0 — Unreleased

@@ -54,6 +54,7 @@ class AuthenticationView(object):
                 fullName = result[1].get(u'cn', result[1][u'uid'])
                 fullName = fullName[0]
                 self.request.session['fullName'] = fullName
+                self.request.session.flash(u'Welcome {}. You are now logged in.'.format(fullName), 'info')
                 headers = remember(self.request, dn)
                 return HTTPFound(location=cameFrom, headers=headers)
             else:
@@ -67,7 +68,9 @@ class AuthenticationView(object):
         )
     @view_config(route_name='logout')
     def logout(self):
-        del self.request.session['fullName']
+        try: del self.request.session['fullName']
+        except KeyError: pass
+        self.request.session.flash(u'You are now logged out.', queue='info')
         headers = forget(self.request)
         url = self.request.route_url('home')
         return HTTPFound(location=url, headers=headers)

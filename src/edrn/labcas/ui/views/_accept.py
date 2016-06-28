@@ -46,6 +46,11 @@ class AcceptView(object):
                     ['urn:edrn:LabcasUploadInitTask', 'urn:edrn:LabcasUploadExecuteTask'],
                     metadata
                 )
+            self.request.session.flash(
+                u'Your data is now being processed by LabCAS. It may take some time to appear in the list of datasets.'
+                u" Reload the page at a later time to see if it's ready.",
+                'info'
+            )
             return HTTPFound(self.request.route_url('home'))
         else:
             # Presentation

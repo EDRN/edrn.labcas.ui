@@ -25,6 +25,7 @@
     <body id='public' tal:define='
         message message|nothing;
         fullName python:request.session["fullName"]|nothing;
+        infoFlashes python:request.session.pop_flash("info");
     '>
         <nav class='navbar navbar-default' role='navigation' style='background-color: white;'>
             <div class='container-fluid'>
@@ -50,8 +51,13 @@
                 </div>
             </div>
         </nav>
-        <div tal:condition='message' tal:content='message' class='alert alert-info' role='alert'>
-            Status messages here
+        <div tal:condition='message' tal:content='message' class='alert alert-warning' role='alert'>
+            Status warning here
+        </div>
+        <div tal:condition='infoFlashes'>
+            <div tal:repeat='infoFlash infoFlashes' class='alert alert-info' role='alert'>
+                <span tal:replace='infoFlash'>Some info here</span>
+            </div>
         </div>
         <metal:content-slot define-slot='content'/>
     </body>
