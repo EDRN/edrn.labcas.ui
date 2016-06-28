@@ -51,6 +51,9 @@ class AuthenticationView(object):
             result = connector.authenticate(username, password)
             if result is not None:
                 dn = result[0]
+                fullName = result[1].get(u'cn', result[1][u'uid'])
+                fullName = fullName[0]
+                self.request.session['fullName'] = fullName
                 headers = remember(self.request, dn)
                 return HTTPFound(location=cameFrom, headers=headers)
             else:
@@ -64,6 +67,7 @@ class AuthenticationView(object):
         )
     @view_config(route_name='logout')
     def logout(self):
+        del self.request.session['fullName']
         headers = forget(self.request)
         url = self.request.route_url('home')
         return HTTPFound(location=url, headers=headers)

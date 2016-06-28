@@ -24,6 +24,7 @@
     </head>
     <body id='public' tal:define='
         message message|nothing;
+        fullName python:request.session["fullName"]|nothing;
     '>
         <nav class='navbar navbar-default' role='navigation' style='background-color: white;'>
             <div class='container-fluid'>
@@ -33,11 +34,20 @@
                             tal:attributes='src python:request.static_url("edrn.labcas.ui:static/edrn.png")'/>
                     </a>
                 </div>
-                <p class='navbar-text navbar-right'>
-                    <a class='h1 navbar-link' href='#' tal:attributes='href python:request.route_url("home")'>
+                <div class='navbar-text navbar-right'>
+                    <p>
+                        <a class='h1 navbar-link' href='#' tal:attributes='href python:request.route_url("home")'>
                         LabCAS
-                    </a>
-                </p>
+                        </a>
+                    </p>
+                    <p tal:condition='fullName' tal:define='logoutURL python:request.route_url("logout")'>
+                        Logged in as <span tal:replace='fullName'>joe</span><br/>
+                        <a href='#' tal:attributes='href python:logoutURL'>Logout</a>
+                    </p>
+                    <p tal:condition='not:fullName' tal:define='loginURL python:request.route_url("login")'>
+                        <a href='#' tal:attributes='href python:loginURL'>Log in</a>
+                    </p>
+                </div>
             </div>
         </nav>
         <div tal:condition='message' tal:content='message' class='alert alert-info' role='alert'>
