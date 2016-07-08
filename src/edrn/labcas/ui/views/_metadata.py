@@ -4,7 +4,6 @@ from edrn.labcas.ui import PACKAGE_NAME
 from edrn.labcas.ui.interfaces import IBackend
 from edrn.labcas.ui.utils import LabCASWorkflow, re_python_rfc3986_URI_reference
 from lxml import etree
-from pyramid.exceptions import ConfigurationError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, view_defaults
 from pyramid_ldap import get_ldap_connector
