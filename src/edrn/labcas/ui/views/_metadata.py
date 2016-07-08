@@ -3,7 +3,6 @@
 from edrn.labcas.ui import PACKAGE_NAME
 from edrn.labcas.ui.interfaces import IBackend
 from edrn.labcas.ui.utils import LabCASWorkflow, re_python_rfc3986_URI_reference
-from lxml import etree
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, view_defaults
 from pyramid_ldap import get_ldap_connector
@@ -13,12 +12,6 @@ import colander, re, deform, os, os.path, logging
 
 # Logging
 _logger = logging.getLogger(__name__)
-
-
-# Nifty XML constants
-_namespaceURL = u'http://oodt.jpl.nasa.gov/1.0/cas'
-_namespacePrefix = u'{' + _namespaceURL + u'}'
-_namespaceMap = {None: _namespaceURL}
 
 
 # Capture the ID number in parentheses at the end of a "Name name name (ID number)" string
@@ -43,18 +36,6 @@ _collaborativeGroups = [
 class MetadataView(object):
     def __init__(self, request):
         self.request = request
-    def _generateMetadata(self, metadata):
-        root = etree.Element(_namespacePrefix + u'metadata', nsmap=_namespaceMap)
-        for key, values in metadata.iteritems():
-            keyvalNode = etree.SubElement(root, _namespacePrefix + u'keyval')
-            keyNode = etree.SubElement(keyvalNode, _namespacePrefix + u'key')
-            keyNode.text = unicode(key)
-            if not isinstance(values, list):
-                values = [values]
-            for value in values:
-                valNode = etree.SubElement(keyvalNode, _namespacePrefix + u'val')
-                valNode.text = unicode(value)
-        return root
     def _getDatasetDir(self, metadata, dir):
         u'''Create and return the path to the dataset directory.'''
         if u'DatasetId' not in metadata:
