@@ -32,6 +32,8 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 • CA-1364, Who is currently logged in
 • CA-1365, No logout button
 • CA-1368, Data may not be immediately available
+• CA-1374, Make "Generic LabCAS Dataset" the first workflow and rename it to
+  "Standard LabCAS Dataset"
 
 
 0.0.0 — Unreleased

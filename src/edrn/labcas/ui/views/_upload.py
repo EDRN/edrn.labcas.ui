@@ -26,4 +26,5 @@ class UploadView(object):
                         availableWorkflow.get('conditions', []),
                         tasks
                     ))
+        workflows.sort(lambda a, b: cmp(a.order, b.order))
         return {u'hasWorkflows': len(workflows) > 0, u'workflows': workflows}

@@ -111,6 +111,7 @@ class LabCASWorkflow(object):
     u'''A workflow we can execute within LabCAS.'''
     def __init__(self, identifier, name, conditions, tasks):
         self.identifier, self.name, self.conditions, self.tasks = identifier, name, conditions, tasks
+        self.order = max([i.get(u'configuration', {}).get(u'workflow.order', 0) for i in tasks])
     def __cmp__(self, other):
         return cmp(self.identifier, other.identifier)
     def __hash__(self):
