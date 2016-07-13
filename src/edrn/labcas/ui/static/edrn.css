@@ -1,0 +1,36 @@
+/* Copyright 2016 California Institute of Technology */
+
+.labcas-footer {
+    padding-top: 50px;
+    padding-bottom: 50px;
+    margin-top: 100px;
+    color: #89979c;
+    text-align: center;
+    background-color: #1a2730;
+}
+
+.labcas-footer a {
+    color: #fff;
+}
+
+.labcas-footer-links {
+    padding-left: 0;
+    margin-bottom: 20px;
+}
+
+.labcas-footer-links li {
+    display: inline-block;
+}
+
+.labcas-footer-links li + li {
+    margin-left: 15px;
+}
+
+@media (min-width: 768px) {
+    .labcas-footer {
+        text-align: left;
+    }
+    .labcas-footer p {
+        margin-bottom: 0;
+    }
+}

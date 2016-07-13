@@ -15,6 +15,8 @@
         <![endif]-->
         <link rel='stylesheet' href='#' type='text/css' media='screen' charset='utf-8'
             tal:attributes='href python:request.static_url("deform:static/css/bootstrap.min.css")'/>
+        <link rel='stylesheet' href='#' type='text/css' media='screen' charset='utf-8'
+            tal:attributes='href python:request.static_url("edrn.labcas.ui:static/edrn.css")'/>
         <script src='#' type='text/javascript'
             tal:attributes='src python:request.static_url("deform:static/scripts/jquery-2.0.3.min.js")'></script>
         <script src='#' type='text/javascript'
@@ -60,5 +62,25 @@
             </div>
         </div>
         <metal:content-slot define-slot='content'/>
+        <footer role='contentinfo' class='labcas-footer' tal:define='
+            plupload python:request.static_url("edrn.labcas.ui:static/plupload-2.1.9.zip")
+        '>
+            <div class='container'>
+                <ul class='labcas-footer-links'>
+                    <li><a href='http://edrn.nci.nih.gov/'>EDRN</a></li>
+                    <li><a href='http://cancer.jpl.nasa.gov/'>Informatics Center</a></li>
+                    <li><a href='https://github.com/EDRN/edrn.labcas.ui'>GitHub</a></li>
+                </ul>
+                <p>
+                    Copyright © 2016 California Institute of Technology. <small>ALL RIGHTS RESERVED.</small>
+                    U.S. Government Sponsorship Acknowledged.
+                </p>
+                <p>
+                    Portions of this web application powered by <a href='http://www.plupload.com/'>Plupload</a>,
+                    licensed under <a href='https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html'>GPLv2</a>.
+                    <a href='#' tal:attributes='href plupload'>Get Plupload</a>.
+                </p>
+            </div>
+        </footer>
     </body>
 </html>
