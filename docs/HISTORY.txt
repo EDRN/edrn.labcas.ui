@@ -35,6 +35,7 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 • CA-1374, Make "Generic LabCAS Dataset" the first workflow and rename it to
   "Standard LabCAS Dataset"
 • CA-1377, Must distribute Plupload because of GPL
+• CA-1361, LabCAS UI no longer overrides title & description for "OwnerGroup"
 
 
 0.0.0 — Unreleased

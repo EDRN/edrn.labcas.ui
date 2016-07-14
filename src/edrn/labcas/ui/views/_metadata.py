@@ -124,8 +124,8 @@ class MetadataView(object):
                             group,
                             validator=colander.ContainsOnly(ldapGroups),
                             name=fieldName,
-                            title=u'Share data with…',
-                            description=u"Enter the name of one or more groups with whom you'd like to share this data",
+                            title=title,
+                            description=description,
                             missing=missing,
                             default=principals
                         )
