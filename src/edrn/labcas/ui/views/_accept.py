@@ -6,7 +6,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
 from pyramid.view import view_config, view_defaults
 from zope.component import getUtility
-import os.path, json, httplib, os
+import os.path, json, httplib, os, datetime
 
 
 @view_defaults(renderer=PACKAGE_NAME + ':templates/accept.pt')
@@ -35,10 +35,19 @@ class AcceptView(object):
             backend = getUtility(IBackend)
             metadata = self.request.session['metadata']
             workflow = self.request.session['workflow']
+            # Transform date objects into strings
+            for key, value in metadata.items():
+                if isinstance(value, datetime.date):
+                    metadata[key] = value.isoformat()
             # See comments on CA-1332; we need a better way to discover this and not hard-code
             if workflow.identifier == u'urn:edrn:RnaSeqWorkflow':
                 backend.getWorkflowMgr().executeDynamicWorkflow(
                     ['urn:edrn:RnaSeqInitTask', 'urn:edrn:RnaSeqCrawlTask'],
+                    metadata
+                )
+            elif workflow.identifier == u'urn:edrn:NistWorkflow':
+                backend.getWorkflowMgr().executeDynamicWorkflow(
+                    ['urn:edrn:NistInitTask', 'urn:edrn:NistConvertTask', 'urn:edrn:NistExecTask', 'urn:edrn:NistCrawlTask'],
                     metadata
                 )
             else:

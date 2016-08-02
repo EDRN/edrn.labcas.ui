@@ -32,6 +32,10 @@ _collaborativeGroups = [
 ]
 
 
+# Metadata fields for NIST pipelines that generate dataset IDs
+_nistMetadataFields = frozenset((u'LabNumber', u'NormalizationMethod', u'RoundNumber'))
+
+
 @view_defaults(renderer=PACKAGE_NAME + ':templates/metadata.pt')
 class MetadataView(object):
     def __init__(self, request):
@@ -89,6 +93,9 @@ class MetadataView(object):
                                 description=description,
                                 missing=missing
                             ))
+                    elif dataType == u'http://edrn.nci.nih.gov/xml/schema/types.xml#nistDatasetId':
+                        # Skip this; we generated this dataset ID based on other fields
+                        pass
                     elif dataType == u'http://edrn.nci.nih.gov/xml/schema/types.xml#collaborativeGroup':
                         # CA-1356 ugly fix but I'm in a hurry and these groups haven't changed in 10 years.
                         # FIXME: correct solution: use IVocabularies
@@ -206,6 +213,12 @@ class MetadataView(object):
                     match = _idNumberHunter.search(metadataAppstruct['ProtocolName'])
                     if match:
                         metadataAppstruct['ProtocolId'] = match.group(1)
+                # CA-1382 ugly kludge
+                if _nistMetadataFields <= metadataAppstruct.keys():
+                    ln = metadataAppstruct[u'LabNumber']
+                    nm = metadataAppstruct[u'NormalizationMethod']
+                    rn = metadataAppstruct[u'RoundNumber']
+                    metadataAppstruct[u'DatasetId'] = u'Lab{}_{}_R{}'.format(ln, nm, rn)
                 datasetDir = self._getDatasetDir(metadataAppstruct, backend.getStagingDirectory())
                 self.request.session['metadata'] = metadataAppstruct
                 self.request.session['metadataForm'] = form.render(metadataAppstruct, readonly=True)
