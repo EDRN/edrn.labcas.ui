@@ -214,7 +214,7 @@ class MetadataView(object):
                     if match:
                         metadataAppstruct['ProtocolId'] = match.group(1)
                 # CA-1382 ugly kludge
-                if _nistMetadataFields <= metadataAppstruct.keys() and workflowID != u'urn:edrn:WafWorkflow':
+                if _nistMetadataFields <= frozenset(metadataAppstruct.keys()):
                     ln = metadataAppstruct[u'LabNumber']
                     nm = metadataAppstruct[u'NormalizationMethod']
                     rn = metadataAppstruct[u'RoundNumber']
