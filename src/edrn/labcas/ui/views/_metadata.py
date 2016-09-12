@@ -93,6 +93,15 @@ class MetadataView(object):
                                 description=description,
                                 missing=missing
                             ))
+                    elif dataType == u'http://edrn.nci.nih.gov/xml/schema/types.xml#text':
+                        schema.add(colander.SchemaNode(
+                            colander.String(),
+                            name=fieldName,
+                            title=title,
+                            description=description,
+                            missing=missing,
+                            widget=deform.widget.RichTextWidget()
+                        ))
                     elif dataType == u'http://edrn.nci.nih.gov/xml/schema/types.xml#nistDatasetId':
                         # Skip this; we generated this dataset ID based on other fields
                         pass
