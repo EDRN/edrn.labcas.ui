@@ -33,7 +33,7 @@ _collaborativeGroups = [
 
 
 # Metadata fields for NIST pipelines that generate dataset IDs
-_nistMetadataFields = frozenset((u'LabNumber', u'NormalizationMethod', u'RoundNumber'))
+_nistMetadataFields = frozenset((u'LabNumber', u'Method', u'RoundNumber'))
 
 
 @view_defaults(renderer=PACKAGE_NAME + ':templates/metadata.pt')
