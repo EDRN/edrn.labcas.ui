@@ -50,6 +50,11 @@ class AcceptView(object):
                     ['urn:edrn:NistInitTask', 'urn:edrn:NistConvertTask', 'urn:edrn:NistExecTask', 'urn:edrn:NistCrawlTask'],
                     metadata
                 )
+            elif workflow.identifier == u'urn:edrn:WafWorkflow':
+                backend.getWorkflowMgr().executeDynamicWorkflow(
+                    ['urn:edrn:WafInitTask', 'urn:edrn:WafCrawlTask'],
+                    metadata
+                )
             else:
                 backend.getWorkflowMgr().executeDynamicWorkflow(
                     ['urn:edrn:LabcasUploadInitTask', 'urn:edrn:LabcasUploadExecuteTask'],
