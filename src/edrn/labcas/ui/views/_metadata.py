@@ -225,7 +225,7 @@ class MetadataView(object):
                 # CA-1382 ugly kludge
                 if _nistMetadataFields <= frozenset(metadataAppstruct.keys()):
                     ln = metadataAppstruct[u'LabNumber']
-                    nm = metadataAppstruct[u'NormalizationMethod']
+                    nm = metadataAppstruct[u'Method']
                     rn = metadataAppstruct[u'RoundNumber']
                     metadataAppstruct[u'DatasetId'] = u'Lab{}_{}_R{}'.format(ln, nm, rn)
                 datasetDir = self._getDatasetDir(metadataAppstruct, backend.getStagingDirectory())
