@@ -12,6 +12,7 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 • CA-1382, Support for NIST dataset ID generation
 • CA-1392, CA-1393, Support rich text
 • CA-1395, Change "NormalizationMethod" to "Method"
+• CA-1384, Use pull-downs for menus with many choices
 
 
 0.0.1 — Jackie

@@ -82,7 +82,7 @@ class MetadataView(object):
                                 title=title,
                                 description=description,
                                 validator=colander.OneOf([i[0] for i in values]),
-                                widget=deform.widget.RadioChoiceWidget(values=values),
+                                widget=deform.widget.RadioChoiceWidget(values=values, inline=True),
                                 missing=missing
                             ))
                         else:
