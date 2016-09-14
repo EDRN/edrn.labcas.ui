@@ -16,6 +16,7 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 • CA-1387, Labcas Upload UI does not send the ProtocolId
 • CA-1391, Cannot run UnivColoLungImage workflow on labcas-dev
 • CA-1392, CA-1393, Support rich text
+• CA-1394, LabCAS UI should generate dataset IDs
 • CA-1395, Change "NormalizationMethod" to "Method"
 
 

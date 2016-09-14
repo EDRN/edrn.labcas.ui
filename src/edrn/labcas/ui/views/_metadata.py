@@ -7,7 +7,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, view_defaults
 from pyramid_ldap import get_ldap_connector
 from zope.component import getUtility
-import colander, re, deform, os, os.path, logging
+import colander, re, deform, os, os.path, logging, uuid
 
 
 # Logging
@@ -57,6 +57,8 @@ class MetadataView(object):
                 # build the form
                 conf = task.get('configuration', {})
                 for fieldName in task.get('requiredMetFields', []):
+                    # CA-1394, LabCAS UI will generate dataset IDs
+                    if fieldName == 'DatasetId': continue
                     title = conf.get(u'input.dataset.{}.title'.format(fieldName), u'Unknown Field')
                     description = conf.get(u'input.dataset.{}.description'.format(fieldName), u'Not sure what to put here.')
                     dataType = conf.get(u'input.dataset.{}.type'.format(fieldName), u'http://www.w3.org/2001/XMLSchema/string')
@@ -228,6 +230,8 @@ class MetadataView(object):
                     nm = metadataAppstruct[u'Method']
                     rn = metadataAppstruct[u'RoundNumber']
                     metadataAppstruct[u'DatasetId'] = u'Lab{}_{}_R{}'.format(ln, nm, rn)
+                else:
+                    metadataAppstruct[u'DatasetId'] = unicode(uuid.uuid4())
                 datasetDir = self._getDatasetDir(metadataAppstruct, backend.getStagingDirectory())
                 self.request.session['metadata'] = metadataAppstruct
                 self.request.session['metadataForm'] = form.render(metadataAppstruct, readonly=True)
