@@ -18,7 +18,9 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 • CA-1392, CA-1393, Support rich text
 • CA-1394, LabCAS UI should generate dataset IDs
 • CA-1395, Change "NormalizationMethod" to "Method"
+• CA-1399, Remove HTML tags around DatasetDescription
 • CA-1404, Chrome date input issue
+
 
 
 0.0.1 — Jackie

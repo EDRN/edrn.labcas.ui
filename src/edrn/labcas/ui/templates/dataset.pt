@@ -83,7 +83,8 @@
                                             <span tal:condition='python:len(values) == 0' class='text-muted'>
                                                 No values.
                                             </span>
-                                            <span tal:condition='python:len(values) == 1' tal:content='python:values[0]'>
+                                            <span tal:condition='python:len(values) == 1'
+                                                tal:content='structure python:values[0]'>
                                                 One value
                                             </span>
                                             <ul tal:condition='python:len(values) &gt; 1'>
