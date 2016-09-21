@@ -36,6 +36,25 @@
 
                 <div class='tab-content'>
                     <div role='tabpanel' class='tab-pane active' id='mydata'>
+                        <h4>Upload Data</h4>
+                        <div tal:condition='canUpload'>
+                            <a class='btn btn-default' href='#' role='button'
+                                tal:attributes='href python:request.route_url("upload")'>
+                                <span class='glyphicon glyphicon-cloud-upload' aria-hidden='true'></span> Upload
+                            </a>
+                        </div>
+                        <div tal:condition='not:canUpload'>
+                            <p>
+                                <a class='btn btn-default disabled' href='#' role='button'>
+                                    <span class='glyphicon glyphicon-cloud-upload' aria-hidden='true'></span> Upload
+                                </a>
+                            </p>
+                            <p class='text-muted'>
+                                Your account is not a member of any group! As a result, you cannot upload any
+                                data into LabCAS. <a href='https://cancer.jpl.nasa.gov/contact-info'>Contact
+                                the EDRN Informatics Center</a> for assistance.
+                            </p>
+                        </div>
                         <h3>My Data</h3>
                         <p tal:condition='not:hasProducts' class='text-muted'>
                             You currently do not have access to any datasets.
@@ -64,25 +83,6 @@
                                     </tr>
                                 </tbody>
                             </table>
-                        </div>
-                        <h4>Upload Data</h4>
-                        <div tal:condition='canUpload'>
-                            <a class='btn btn-default' href='#' role='button'
-                                tal:attributes='href python:request.route_url("upload")'>
-                                <span class='glyphicon glyphicon-cloud-upload' aria-hidden='true'></span> Upload
-                            </a>
-                        </div>
-                        <div tal:condition='not:canUpload'>
-                            <p>
-                                <a class='btn btn-default disabled' href='#' role='button'>
-                                    <span class='glyphicon glyphicon-cloud-upload' aria-hidden='true'></span> Upload
-                                </a>
-                            </p>
-                            <p class='text-muted'>
-                                Your account is not a member of any group! As a result, you cannot upload any
-                                data into LabCAS. <a href='https://cancer.jpl.nasa.gov/contact-info'>Contact
-                                the EDRN Informatics Center</a> for assistance.
-                            </p>
                         </div>
                     </div>
                     <div role='tabpanel' class='tab-pane' id='alldata'>
