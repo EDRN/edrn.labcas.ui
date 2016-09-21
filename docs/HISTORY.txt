@@ -9,8 +9,8 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 0.0.2 — TBD
 -----------
 
+• CA-1381, Increase the number of files displayed by LabCAS UI
 • CA-1382, Support for NIST dataset ID generation
-• CA-1384, Use pull-downs for menus with many choices
 • CA-1384, Use pull-downs for menus with many choices
 • CA-1386, UI should respect the order of the field values (won't fix)
 • CA-1387, Labcas Upload UI does not send the ProtocolId

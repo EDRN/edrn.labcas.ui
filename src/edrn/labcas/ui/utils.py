@@ -83,7 +83,16 @@ class LabCASProduct(object):
             datasetName = typeMetadata.get(u'DatasetName', [name if name else productID])
             datasetName = datasetName[0]
             backend = getUtility(IBackend)
-            response = backend.getSearchEngine().query('*:*', fq=['DatasetId:{}'.format(name.replace(u':', u'\\:'))], start=0)
+            response = backend.getSearchEngine().select(
+                q='*:*',
+                fields=None,
+                highlight=None,
+                score=True,
+                sort=None,
+                fq=['DatasetId:{}'.format(name.replace(u':', u'\\:'))],
+                start=0,
+                rows=99999  # FIXME: we should support pagination
+            )
             versions = {}  # version → [files]
             for item in response.results:
                 version = item.get(u'Version', u'0')

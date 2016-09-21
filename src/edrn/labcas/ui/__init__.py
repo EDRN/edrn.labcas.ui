@@ -25,7 +25,7 @@ class _Backend(object):
         self.fileMgr = xmlrpclib.ServerProxy(fileMgrURL)
         self.workflowMgr = xmlrpclib.ServerProxy(workflowMgrURL)
         self.stagingDir, self.archiveDir = stagingDir, archiveDir
-        self.solr = solr.SolrConnection(solrURL)
+        self.solr = solr.Solr(solrURL)
     def getFileMgr(self):
         return self.fileMgr.filemgr
     def getWorkflowMgr(self):
