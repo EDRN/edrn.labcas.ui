@@ -14,8 +14,15 @@ _logger = logging.getLogger(__name__)
 SUPER_GROUP = u'cn=Super User,dc=edrn,dc=jpl,dc=nasa,dc=gov'
 CG_BASE_URL = u'https://edrn.nci.nih.gov/collaborative-groups/'
 COLLABORATIVE_GROUPS = {
+    u'Breast and Gynecologic Cancers Research Group': CG_BASE_URL + u'breast-and-gynecologic-cancers-research-group',
+    u'Breast and Gynecologic': CG_BASE_URL + u'breast-and-gynecologic-cancers-research-group',
+    u'Breast': CG_BASE_URL + u'breast-and-gynecologic-cancers-research-group',
+    u'G.I. and Other Associated Cancers Research Group': CG_BASE_URL + u'g-i-and-other-associated-cancers-research-group',
+    u'G.I. and Other Associated': CG_BASE_URL + u'g-i-and-other-associated-cancers-research-group',
+    u'Lung and Upper Aerodigestive Cancers Research Group': CG_BASE_URL + u'lung-and-upper-aerodigestive-cancers-research',
     u'Lung and Upper Aerodigestive': CG_BASE_URL + u'lung-and-upper-aerodigestive-cancers-research',
-    u'Prostate and Urologic': CG_BASE_URL + u'prostate-and-urologic-cancers-research-group'
+    u'Prostate and Urologic Cancers Research Group': CG_BASE_URL + u'prostate-and-urologic-cancers-research-group',
+    u'Prostate and Urologic': CG_BASE_URL + u'prostate-and-urologic-cancers-research-group',
 }
 
 _metadataToIgnore = frozenset((

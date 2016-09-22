@@ -23,6 +23,7 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 • CA-1404, Chrome date input issue
 • CA-1405, Move Upload button to the top
 • CA-1408, URL to PI leads back to dataset, but with a "#" at the end
+• CA-1409, Collaborative Group URLs work only for two collaborative groups
 
 
 0.0.1 — Jackie
