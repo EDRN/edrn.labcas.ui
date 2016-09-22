@@ -15,7 +15,7 @@
             - description: unicode description
             - metadata: sequence of (key, [values]) pairs
             - product: a LabCASProduct
-            - cgURL: URL to the dataset's collaborative group, if any
+            - cgURL: URL to the dataset's collaborative group, if any (could be None)
         -->
     </head>
     <body>
@@ -47,7 +47,7 @@
                                 urn:whatever
                             </dd>
                             <dt>Lead PI</dt>
-                            <dd><a href='#' tal:content='product.pi'>Dr Butts</a></dd>
+                            <dd><span tal:replace='product.pi'>Dr Butts</span></dd>
                             <dt>Collaborative Group</dt>
                             <dd>
                                 <a tal:condition='cgURL' href='#' tal:content='product.cg'

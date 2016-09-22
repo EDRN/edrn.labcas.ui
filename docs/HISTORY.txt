@@ -22,6 +22,7 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 • CA-1403, Implement QAState=public in LabCAS UI
 • CA-1404, Chrome date input issue
 • CA-1405, Move Upload button to the top
+• CA-1408, URL to PI leads back to dataset, but with a "#" at the end
 
 
 0.0.1 — Jackie
