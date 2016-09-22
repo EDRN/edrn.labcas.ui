@@ -19,6 +19,7 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 • CA-1394, LabCAS UI should generate dataset IDs
 • CA-1395, Change "NormalizationMethod" to "Method"
 • CA-1399, Remove HTML tags around DatasetDescription
+• CA-1403, Implement QAState=public in LabCAS UI
 • CA-1404, Chrome date input issue
 • CA-1405, Move Upload button to the top
 

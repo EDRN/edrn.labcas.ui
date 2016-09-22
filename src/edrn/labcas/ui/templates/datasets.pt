@@ -11,8 +11,10 @@
         <title>Datasets</title>
         <!--
             provided names:
-            - products = sequence of LabCASProduct instances describing each product.
+            - products = sequence of LabCASProduct instances describing each product, private.
             - hasProducts = boolean to tell if products are available.
+            - pubProducts = sequence of LabCASProduct instances that are public.
+            - hasPubProducts = boolean to tell if public products are available.
             - canUpload = boolean to tell if the logged in principal can upload data.
         -->
     </head>
@@ -84,10 +86,37 @@
                                 </tbody>
                             </table>
                         </div>
-                    </div>
+                    </div> <!-- /hasProducts -->
                     <div role='tabpanel' class='tab-pane' id='alldata'>
                         <h3>All Public Data</h3>
-                        <p>There are currently no publicly available data.</p>
+                        <p tal:condition='not:hasPubProducts' class='text-muted'>
+                            There is no publicly available data.
+                        </p>
+                        <div tal:condition='hasPubProducts'>
+                            <table class='table table-hover'>
+                                <thead><tr><th>Dataset</th><th>Lead PI</th><th>Organ</th><th>Collaborative Group</th></tr></thead>
+                                <tbody>
+                                    <tr tal:repeat='product pubProducts'>
+                                        <td>
+                                            <a href='#'
+                                                tal:attributes='href python:request.current_route_url() + u"/" + product.identifier'
+                                                tal:content='product.name'>
+                                                urn:some:pubProduct
+                                            </a>
+                                        </td>
+                                        <td tal:content='product.pi'>
+                                            Joe Public Exposure
+                                        </td>
+                                        <td tal:content='product.organSite'>
+                                            Public Anus
+                                        </td>
+                                        <td tal:content='product.cg'>
+                                            Public Anal Group
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div> <!-- /hasPubProducts -->
                     </div>
                 </div>
             </div>

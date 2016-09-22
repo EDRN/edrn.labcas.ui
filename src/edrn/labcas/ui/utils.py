@@ -5,7 +5,10 @@
 from zope.component import getUtility
 from edrn.labcas.ui.interfaces import IBackend
 from urlparse import urlparse
-import urllib, re, datetime
+import urllib, re, datetime, logging
+
+# Logging
+_logger = logging.getLogger(__name__)
 
 
 SUPER_GROUP = u'cn=Super User,dc=edrn,dc=jpl,dc=nasa,dc=gov'
@@ -58,9 +61,9 @@ class LabCASFile(object):
 
 class LabCASProduct(object):
     u'''A product stored within LabCAS.'''
-    def __init__(self, identifier, name, versions, pi, organSite, cg):
+    def __init__(self, identifier, name, versions, pi, organSite, cg, public):
         self.identifier, self.name, self.versions, self.pi, self.organSite = identifier, name, versions, pi, organSite
-        self.cg = cg
+        self.cg, self.public = cg, public
     def __cmp__(self, other):
         return cmp(self.name, other.name)
     def getVersions(self):
@@ -95,6 +98,8 @@ class LabCASProduct(object):
             )
             versions = {}  # version → [files]
             for item in response.results:
+                public = item.get(u'QAState', None) == [u'Public']
+                _logger.debug(u'QA State = %s, so public = %r', item.get(u'QAState', u'UNKNOWN'), public)
                 version = item.get(u'Version', u'0')
                 files = versions.get(version, [])
                 fileName = item.get(u'CAS.ProductName')
@@ -111,7 +116,7 @@ class LabCASProduct(object):
                 files.append(LabCASFile(fileName, physicalLocation, size, mimeType, item))
                 versions[version] = files
             if not versions: return None
-            return LabCASProduct(productID, datasetName, versions, pi, organ, cg)
+            return LabCASProduct(productID, datasetName, versions, pi, organ, cg, public)
         else:
             return None
 
