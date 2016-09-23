@@ -23,6 +23,7 @@ class DatasetsView(object):
             if p is None: continue
             if p.public:
                 pubProducts.append(p)
+                products.append(p)
             else:
                 products.append(p)
         products.sort()
