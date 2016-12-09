@@ -4,7 +4,7 @@ from pyramid.security import Allow, DENY_ALL
 from edrn.labcas.ui.utils import LabCASCollection
 
 
-class Dataset(object):
+class File(object):
     def __init__(self, request):
         principals = frozenset(request.effective_principals)
         collectionID = request.matchdict.get('collectionID', None)

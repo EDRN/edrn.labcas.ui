@@ -5,7 +5,7 @@
 u'''EDRN LabCAS User Interface'''
 
 from .interfaces import IBackend
-from .resources import Root, Datasets, Dataset, Upload
+from .resources import Root, Dataset, Upload, Collections, Collection, File
 from .vocabularies import Vocabularies
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
@@ -25,7 +25,7 @@ class _Backend(object):
         self.fileMgr = xmlrpclib.ServerProxy(fileMgrURL)
         self.workflowMgr = xmlrpclib.ServerProxy(workflowMgrURL)
         self.stagingDir, self.archiveDir = stagingDir, archiveDir
-        self.solr = solr.Solr(solrURL)
+        self.solrURL = solrURL
     def getFileMgr(self):
         return self.fileMgr.filemgr
     def getWorkflowMgr(self):
@@ -34,8 +34,8 @@ class _Backend(object):
         return self.stagingDir
     def getArchiveDirectory(self):
         return self.archiveDir
-    def getSearchEngine(self):
-        return self.solr
+    def getSearchEngine(self, kind):
+        return solr.Solr(self.solrURL + u'/' + kind)
 
 
 def main(global_config, **settings):
@@ -65,8 +65,10 @@ def main(global_config, **settings):
     config.add_static_view('static', 'static', cache_max_age=3600)  # use ini?
     config.add_static_view('deform_static', 'deform:static')
     config.add_route('home', '/')
-    config.add_route('datasets', '/datasets', factory=Datasets)
-    config.add_route('dataset', '/datasets/{datasetID}', factory=Dataset)
+    config.add_route('collections', '/collections', factory=Collections)
+    config.add_route('collection', '/collections/{collectionID}', factory=Collection)
+    config.add_route('dataset', '/collections/{collectionID}/{datasetID}', factory=Dataset)
+    config.add_route('file', '/collections/{collectionID}/{datasetID}/{fileID}', factory=File)
     config.add_route('upload', '/upload', factory=Upload)
     config.add_route('metadata', '/upload/{workflowID}', factory=Upload)
     config.add_route('accept', '/upload/{workflowID}/accept', factory=Upload)
@@ -81,7 +83,7 @@ def main(global_config, **settings):
         settings['labcas.workflow'],
         settings['labcas.staging'],
         settings['labcas.archive'],
-        settings['labcas.solr']
+        settings['labcas.solr.baseURL']
     ))
     provideUtility(Vocabularies(settings['labcas.vocabularies']))
     return config.make_wsgi_app()

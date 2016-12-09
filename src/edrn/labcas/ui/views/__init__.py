@@ -2,9 +2,11 @@
 
 from ._accept import AcceptView
 from ._authentication import AuthenticationView
+from ._collection import CollectionView
+from ._collections import CollectionsView
 from ._completions import PeopleCompletionsView, ProtocolCompletionsView, LDAPGroupsCompletionsView
 from ._dataset import DatasetView
-from ._datasets import DatasetsView
+from ._file import FileView
 from ._home import HomeView
 from ._metadata import MetadataView
 from ._upload import UploadView
@@ -13,8 +15,10 @@ from ._upload import UploadView
 __all__ = (
     AcceptView,
     AuthenticationView,
-    DatasetsView,
+    CollectionsView,
+    CollectionView,
     DatasetView,
+    FileView,
     HomeView,
     LDAPGroupsCompletionsView,
     MetadataView,

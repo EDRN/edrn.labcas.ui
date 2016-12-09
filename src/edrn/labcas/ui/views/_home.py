@@ -11,4 +11,4 @@ class HomeView(object):
         self.request = request
     @view_config(route_name='home')
     def __call__(self):
-        return HTTPFound(self.request.route_url('datasets'))
+        return HTTPFound(self.request.route_url('collections'))

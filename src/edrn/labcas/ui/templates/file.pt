@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8'?> 
+<!DOCTYPE html>
+<html
+    xmlns='http://www.w3.org/1999/xhtml'
+    xmlns:tal='http://xml.zope.org/namespaces/tal'
+    xmlns:metal='http://xml.zope.org/namespaces/metal'
+    lang='en'
+    xml:lang='en'
+    metal:use-macro='load:edrn.labcas.ui:templates/master.pt'>
+    <head>
+        <title>File</title>
+        <!--
+            provided names:
+            - collection: parent collection
+            - dataset: parent dataset
+            - f: current file
+        -->
+    </head>
+    <body>
+        <div metal:fill-slot='content'>
+            <div class='container'>
+                <ol class='breadcrumb'>
+                    <li><a href='#' tal:attributes='href python:request.route_url("home")'>Home</a></li>
+                    <li><a href='#' tal:attributes='href python:request.route_url("collections")'>Collections</a></li>
+                    <li>
+                        <a href='#' tal:content='collection.name' tal:attributes='
+                            href python:request.route_url("collection", collectionID=collection.identifier)
+                        '>urn:id:collection</a>
+                    </li>
+                    <li>
+                        <a href='#' tal:content='dataset.name' tal:attributes='
+                            href python:request.route_url(
+                                "collection",
+                                collectionID=collection.identifier,
+                                datasetID=dataset.identifier
+                            )
+                        '>urn:id:dataset</a>
+                    </li>
+                    <li class='active' tal:content='python:f.name'>whatever.txt</li>
+                </ol>
+
+                <h1 tal:content='f.name'>whatever.txt</h1>
+
+                <dl class='dl-horizontal'>
+                    <dt>Identifier:</dt>
+                    <dd tal:content='f.identifier'>urn:id:fileID</dd>
+                    <dt>Name:</dt>
+                    <dd tal:content='f.name'>whatever.txt</dd>
+                    <dt>Size:</dt>
+                    <dd>
+                        <abbr title='301925 bytes' tal:attributes='title python:u"{} bytes".format(f.size)'
+                            tal:content='view.humanFriendlySize(f.size)'>
+                            300k
+                        </abbr>
+                    </dd>
+                    <dt>Content type:</dt>
+                    <dd tal:content='f.contentType'>text/plain</dd>
+                </dl>
+
+                <p>
+                    <a class='btn btn-default' href='#' role='button'
+                        tal:attributes='href python:request.current_route_url() + u"?download=true"'>
+                        <span class='glyphicon glyphicon-cloud-download' aria-hidden='true'></span> Download this file
+                    </a>
+                </p>
+
+                <h4>Other Metadata</h4>
+
+                <table id='metadata' class='table' tal:define='metadata f.getMetadata()'>
+                    <tr tal:repeat='row metadata'>
+                        <td><label tal:content='python:row[0]'>Number of sheep</label></td>
+                        <td tal:define='values python:row[1]'>
+                            <span tal:condition='python:len(values) == 0' class='text-muted'>
+                                No values.
+                            </span>
+                            <span tal:condition='python:len(values) == 1' tal:content='python:values[0]'>
+                                One value
+                            </span>
+                            <ul tal:condition='python:len(values) &gt; 1'>
+                                <li tal:repeat='value values'>
+                                    <span tal:replace='value'>One of several values</span>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
+
+                <p tal:condition='python:f.contentType.startswith(u"image/")'>
+                    <img src='#' tal:attributes='src python:request.current_route_url() + u"?download=true"'/>
+                </p>
+
+            </div>
+        </div>
+    </body>
+</html>

@@ -13,8 +13,8 @@ class IBackend(Interface):
         u'''Retrieves the path to the LabCAS staging directory'''
     def getArchiveDirectory():
         u'''Retrieves the path to the LabCAS archive directory'''
-    def getSearchEngine():
-        u'''Retrieves the SOLR search API'''
+    def getSearchEngine(kind):
+        u'''Retrieves the SOLR search API for the given ``kind`` of data.'''
 
 
 class IVocabularies(Interface):

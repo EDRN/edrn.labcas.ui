@@ -1,6 +1,10 @@
 Installation
 ============
 
-Uhm.
+Download the src
+Add [versions]
+Run buildout
+Fix cronjob
+Run initial cron
 
-TBD!
+Maybe when tagging a release we do both setup.py and [versions]?

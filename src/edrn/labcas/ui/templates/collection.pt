@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8'?> 
+<!DOCTYPE html>
+<html
+    xmlns='http://www.w3.org/1999/xhtml'
+    xmlns:tal='http://xml.zope.org/namespaces/tal'
+    xmlns:metal='http://xml.zope.org/namespaces/metal'
+    lang='en'
+    xml:lang='en'
+    metal:use-macro='load:edrn.labcas.ui:templates/master.pt'>
+    <head>
+        <title>Collection</title>
+        <!--
+            provided names:
+            - collection = a single collection
+            - canUpload = boolean if we can upload files and create a new dataset in this collection
+        -->
+    </head>
+    <body>
+        <div metal:fill-slot='content' tal:define='
+            datasets python:collection.datasets();
+            hasDatasets python:len(datasets) &gt; 0;
+        '>
+
+            <div class='container'>
+                <ol class='breadcrumb'>
+                    <li><a href='#' tal:attributes='href python:request.route_url("home")'>Home</a></li>
+                    <li><a href='#' tal:attributes='href python:request.route_url("collections")'>Collections</a></li>
+                    <li class='active' tal:content='python:collection.name'>Some Collection Name</li>
+                </ol>
+
+                <h3>Upload Data</h3>
+                <div tal:condition='canUpload'>
+                    <a class='btn btn-default' href='#' role='button'
+                        tal:attributes='href python:request.route_url("upload")'>
+                        <span class='glyphicon glyphicon-cloud-upload' aria-hidden='true'></span> Upload
+                    </a>
+                </div>
+                <div tal:condition='not:canUpload'>
+                    <p>
+                        <a class='btn btn-default disabled' href='#' role='button'>
+                            <span class='glyphicon glyphicon-cloud-upload' aria-hidden='true'></span> Upload
+                        </a>
+                    </p>
+                    <p class='text-muted'>
+                        Your account is not a member of any group! As a result, you cannot upload any
+                        data into LabCAS. <a href='https://cancer.jpl.nasa.gov/contact-info'>Contact
+                        the EDRN Informatics Center</a> for assistance.
+                    </p>
+                </div>
+
+                <dl class='dl-horizontal'>
+                    <dt>Title:</dt>
+                    <dd tal:content='collection.title'>The Blah Collection</dd>
+                    <dt>Name:</dt>
+                    <dd tal:content='collection.name'>BlahCollection</dd>
+                    <dt>Identifier:</dt>
+                    <dd tal:content='collection.identifier'>urn:edrn:blah</dd>
+                    <dt>QA State:</dt>
+                    <dd tal:content='collection.qaState'>Public</dd>
+                    <dt>Description:</dt>
+                    <dd tal:content='collection.description'>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                    </dd>
+                    <dt>Lead PI:</dt>
+                    <dd tal:content='collection.leadPI'>Joe Schmoe</dd>
+                    <dt>Collaborative Group:</dt>
+                    <dd tal:content='collection.collaborativeGroup'>Lung</dd>
+                    <dt>Organ Sites:</dt>
+                    <dd tal:content='python:u", ".join(collection.organSites)'>Lung, Trachea</dd>
+                    <dt>Protocol ID:</dt>
+                    <dd tal:content='collection.protocolID'>123</dd>
+                    <dt>Protocol Name:</dt>
+                    <dd tal:content='collection.protocolName'>Lung Stuff</dd>
+                    <dt>Data Custodian Name:</dt>
+                    <dd>
+                        <a href='#' tal:attributes='href python:u"mailto:{}".format(collection.dataCustodianEmail)'
+                            tal:content='collection.dataCustodianName'>
+                            Some Other Joe
+                        </a>
+                    </dd>
+                    <dt>Discipline:</dt>
+                    <dd tal:content='collection.discipline'>Well discplined</dd>
+                    <dt>Reference:</dt>
+                    <dd>
+                        <a href='#' tal:attributes='href collection.referenceURL' tal:content='collection.referenceID'>
+                            Some ID
+                        </a>
+                    </dd>
+                </dl>
+
+                <h3>Datasets in this Collection</h3>
+                <p tal:condition='not:hasDatasets' class='text-muted'>
+                    This collection currently has no datasets.
+                </p>
+                <div tal:condition='hasDatasets'>
+                    <table class='table table-hover'>
+                        <tbody>
+                            <tr tal:repeat='dataset datasets'>
+                                <td>
+                                    <a href='#'
+                                        tal:attributes='
+                                            href python:request.current_route_url() + u"/" + dataset.identifier
+                                        '
+                                        tal:content='dataset.name'>
+                                        some dataset name
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -11,11 +11,8 @@
         <title>Dataset</title>
         <!--
             provided names:
-            - datesetID: unicode identifier
-            - description: unicode description
-            - metadata: sequence of (key, [values]) pairs
-            - product: a LabCASProduct
-            - cgURL: URL to the dataset's collaborative group, if any (could be None)
+            - collection: parent collection
+            - dataset: current dataset
         -->
     </head>
     <body>
@@ -23,154 +20,93 @@
             <div class='container'>
                 <ol class='breadcrumb'>
                     <li><a href='#' tal:attributes='href python:request.route_url("home")'>Home</a></li>
-                    <li><a href='#' tal:attributes='href python:request.route_url("datasets")'>Datasets</a></li>
-                    <li class='active' tal:content='product.name'>Some Dataset</li>
+                    <li><a href='#' tal:attributes='href python:request.route_url("collections")'>Collections</a></li>
+                    <li>
+                        <a href='#' tal:content='collection.name' tal:attributes='
+                            href python:request.route_url("collection", collectionID=collection.identifier)
+                        '>urn:id:collection</a>
+                    </li>
+                    <li class='active' tal:content='python:dataset.name'>Some Dataset Name</li>
                 </ol>
 
-                <h1 tal:content='product.name'>urn:whatever:blah-blah</h1>
+                <h1 tal:content='dataset.name'>urn:whatever:blah-blah</h1>
 
-                <ul class='nav nav-tabs' role='tablist'>
-                    <li role='presentation' class='active'>
-                        <a href='#metadata' aria-controls='metadata' role='tab' data-toggle='tab'>Metadata</a>
-                    </li>
-                    <li role='presentation'>
-                        <a href='#files' aria-controls='files' role='tab' data-toggle='tab'>Files</a>
-                    </li>
-                </ul>
+                <dl class='dl-horizontal'>
+                    <dt>Identifier:</dt>
+                    <dd tal:content='dataset.identifier'>urn:id:datasetID</dd>
+                    <dt>Name:</dt>
+                    <dd tal:content='dataset.name'>Some Dataset Name</dd>
+                </dl>
 
-                <div class='tab-content'>
-                    <div role='tabpanel' class='tab-pane active' id='metadata'>
-                        <h3>Metadata</h3>
-                        <dl class='dl-horizontal'>
-                            <dt>Dataset ID</dt>
-                            <dd tal:content='datasetID'>
-                                urn:whatever
-                            </dd>
-                            <dt>Lead PI</dt>
-                            <dd><span tal:replace='product.pi'>Dr Butts</span></dd>
-                            <dt>Collaborative Group</dt>
-                            <dd>
-                                <a tal:condition='cgURL' href='#' tal:content='product.cg'
-                                    tal:attributes='href cgURL'>
-                                    Anus Group with URL
-                                </a>
-                                <span tal:condition='not:cgURL' tal:replace='product.cg'>
-                                    Anus Group without URL
+                <h4>Other Metadata</h4>
+
+                <table id='metadata' class='table' tal:define='metadata dataset.getMetadata()'>
+                    <tbody>
+                        <tr tal:repeat='row metadata'>
+                            <td><label tal:content='python:row[0]'>Number of sheep</label></td>
+                            <td tal:define='values python:row[1]'>
+                                <span tal:condition='python:len(values) == 0' class='text-muted'>
+                                    No values.
                                 </span>
-                            </dd>
-                            <dt>Organ Site</dt>
-                            <dd tal:content='product.organSite'>Anus</dd>
-                            <dt>Description</dt>
-                            <dd tal:content='description'>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                            </dd>
-                        </dl>
+                                <span tal:condition='python:len(values) == 1'
+                                    tal:content='structure python:values[0]'>
+                                    One value
+                                </span>
+                                <ul tal:condition='python:len(values) &gt; 1'>
+                                    <li tal:repeat='value values'>
+                                        <span tal:replace='value'>One of several values</span>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
 
-                        <div class='panel panel-default'>
-                            <div class='panel-heading'>
-                                <h4>Other Metadata</h4>
-                            </div>
-                            <table id='metadata' class='table'>
-                                <tbody>
-                                    <tr tal:repeat='row metadata'>
-                                        <td><label tal:content='python:row[0]'>Number of sheep</label></td>
-                                        <td tal:define='values python:row[1]'>
-                                            <span tal:condition='python:len(values) == 0' class='text-muted'>
-                                                No values.
-                                            </span>
-                                            <span tal:condition='python:len(values) == 1'
-                                                tal:content='structure python:values[0]'>
-                                                One value
-                                            </span>
-                                            <ul tal:condition='python:len(values) &gt; 1'>
-                                                <li tal:repeat='value values'>
-                                                    <span tal:replace='value'>One of several values</span>
-                                                </li>
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div> <!-- /Metadata -->
-                    <div role='tabpanel' class='tab-pane' id='files' tal:define='
-                        version    python:product.getVersions()[-1];
-                        versionStr python:unicode(version[0]);
-                        files      python:version[1];
-                    '>
-                        <h3>Files <small>(version <span tal:replace='versionStr'>42</span>)</small></h3>
-                        <p>
-                            <form action='#' method='POST' tal:attributes='action python:request.current_route_url()'>
-                                <input type='hidden' name='archiveVersion' value='123'
-                                    tal:attributes='value versionStr'/>
-                                <table class='table'>
-                                    <thead>
-                                        <tr>
-                                            <td><input type='checkbox' name='all.include' checked='true'/></td>
-                                            <td>Name</td>
-                                            <td>Size</td>
-                                            <td>Metadata</td>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr tal:repeat='file python:files'>
-                                            <td>
-                                                <input type='checkbox' name='include.name' checked='true'
-                                                    tal:attributes='name python:u"include." + file.name'/>
-                                            </td>
-                                            <td tal:define='fileURL python:request.current_route_url() +
-                                                "?version=" + versionStr + "&amp;name=" + file.name'>
-                                                <a href='#' tal:content='file.name' tal:attributes='href python:fileURL'>
-                                                    booger.dat
-                                                </a>
-                                            </td>
-                                            <td tal:content='python:view.humanFriendlySize(file.size)'
-                                                style='text-align: right;'>
-                                                42
-                                            </td>
-                                            <td>
-                                                <ul>
-                                                    <li tal:repeat='row python:file.getMetadata()'>
-                                                        <tal:define define='label python:row[0]; values python:row[1];'>
-                                                            <label tal:content='label'>Sheeps in file</label>:
-                                                            <span tal:condition='python:len(values) == 0' class='text-muted'>
-                                                                No values.
-                                                            </span>
-                                                            <span tal:condition='python:len(values) == 1'
-                                                                tal:content='python:values[0]'>
-                                                                One value
-                                                            </span>
-                                                            <ul tal:condition='python:len(values) &gt; 1'>
-                                                                <li tal:repeat='value values'>
-                                                                    <span tal:replace='value'>One of several values</span>
-                                                                </li>
-                                                            </ul>
-                                                        </tal:define>
-                                                    </li>
-                                                </ul>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <button type='submit' class='btn bth-default' name='Download checked files'
-                                    value='download'>
-                                    <span class='glyphicon glyphicon-download-alt' aria-hidden='true'></span>
-                                    Download checked files
-                                </button>
-                            </form>
-                        </p>
-                        <p class='text-muted' tal:condition='python:version[0] &gt; 1'>
-                            To access earlier versions of this dataset,
-                            <a href='https://edrn.nci.nih.gov/contact-info'>please contact the EDRN
-                                Informatics Center</a>.
-                        </p>
-                    </div> <!-- /Files -->
-                </div>
+                <h3>Files</h3>
+                <p tal:define='files python:dataset.files()'>
+                    <form action='#' method='POST' tal:attributes='action python:request.current_route_url()'>
+                        <table class='table'>
+                            <thead>
+                                <tr>
+                                    <td><input type='checkbox' name='all.include' checked='true'/></td>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Size</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr tal:repeat='f python:files'>
+                                    <td>
+                                        <input type='checkbox' name='include.name' checked='true'
+                                            tal:attributes='name python:u"include." + f.identifier'/>
+                                    </td>
+                                    <td tal:define='fileURL python:request.route_url(
+                                        "file",
+                                        collectionID=collection.identifier,
+                                        datasetID=dataset.identifier,
+                                        fileID=f.identifier
+                                    )'>
+                                        <a href='#' tal:attributes='href fileURL' tal:content='f.name'>
+                                            Some file name
+                                        </a>
+                                    </td>
+                                    <td tal:content='python:f.contentType'>
+                                        application/octet-stream
+                                    </td>
+                                    <td tal:content='python:view.humanFriendlySize(f.size)'
+                                        style='text-align: right;'>
+                                        42M
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button type='submit' class='btn bth-default' name='Download checked files'
+                            value='download'>
+                            <span class='glyphicon glyphicon-download-alt' aria-hidden='true'></span>
+                            Download checked files
+                        </button>
+                    </form>
+                </p>
             </div>
         </div>
     </body>

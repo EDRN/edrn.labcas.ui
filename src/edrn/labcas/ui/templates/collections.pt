@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8'?> 
+<!DOCTYPE html>
+<html
+    xmlns='http://www.w3.org/1999/xhtml'
+    xmlns:tal='http://xml.zope.org/namespaces/tal'
+    xmlns:metal='http://xml.zope.org/namespaces/metal'
+    lang='en'
+    xml:lang='en'
+    metal:use-macro='load:edrn.labcas.ui:templates/master.pt'>
+    <head>
+        <title>Collections</title>
+        <!--
+            provided names:
+            - collections = sequence of LabCASCollection objects for "My Collections"
+            - publicCollections = the same, but publicly available
+            - hasCollections = true if we have something for "My Collections"
+            - hasPublicCollections = the same, but true if there are public collections
+        -->
+    </head>
+    <body>
+        <div metal:fill-slot='content'>
+
+            <div class='container'>
+                <ol class='breadcrumb'>
+                    <li><a href='#' tal:attributes='href python:request.route_url("home")'>Home</a></li>
+                    <li class='active'>Collections</li>
+                </ol>
+
+                <ul class='nav nav-tabs' role='tablist'>
+                    <li role='presentation' class='active'>
+                        <a href='#mycollections' aria-controls='mycollections' role='tab' data-toggle='tab'>
+                            My Collections
+                        </a>
+                    </li>
+                    <li role='presentation'>
+                        <a href='#allcollections' aria-controls='allcollections' role='tab' data-toggle='tab'>
+                            All Public Collections
+                        </a>
+                    </li>
+                </ul>
+
+                <div class='tab-content'>
+                    <div role='tabpanel' class='tab-pane active' id='mycollections'>
+                        <h3>My Collections</h3>
+                        <p tal:condition='not:hasCollections' class='text-muted'>
+                            You currently do not have access to collections of datasets.
+                        </p>
+                        <div tal:condition='hasCollections'>
+                            <table class='table table-hover'>
+                                <thead>
+                                    <tr><th>Collection</th><th>Lead PI</th><th>Organ</th><th>Collaborative Group</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr tal:repeat='col collections'>
+                                        <td>
+                                            <a href='#'
+                                                tal:attributes='
+                                                    href python:request.current_route_url() + u"/" + col.identifier
+                                                '
+                                                tal:content='col.name'>
+                                                urn:some:collection
+                                            </a>
+                                        </td>
+                                        <td tal:content='col.leadPI'>
+                                            Joe Schmoe
+                                        </td>
+                                        <td tal:content='python:u", ".join(col.organSites)'>
+                                            Anus
+                                        </td>
+                                        <td tal:content='col.collaborativeGroup'>
+                                            Anal Group
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div> <!-- /hasCollections -->
+                    <div role='tabpanel' class='tab-pane' id='allcollections'>
+                        <h3>All Public Collections</h3>
+                        <p tal:condition='not:hasPublicCollections' class='text-muted'>
+                            There are no publicly available collections.
+                        </p>
+                        <div tal:condition='hasPublicCollections'>
+                            <table class='table table-hover'>
+                                <thead>
+                                    <tr><th>Collection</th><th>Lead PI</th><th>Organ</th><th>Collaborative Group</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr tal:repeat='col publicCollections'>
+                                        <td>
+                                            <a href='#'
+                                                tal:attributes='href python:request.current_route_url() + u"/" + col.identifier'
+                                                tal:content='col.name'>
+                                                urn:some:pubcol
+                                            </a>
+                                        </td>
+                                        <td tal:content='col.leadPI'>
+                                            Joe Public Exposure
+                                        </td>
+                                        <td tal:content='u", ".join(col.organSites)'>
+                                            Public Anus
+                                        </td>
+                                        <td tal:content='col.collaborativeGroup'>
+                                            Public Anal Group
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div> <!-- /hasPubProducts -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
