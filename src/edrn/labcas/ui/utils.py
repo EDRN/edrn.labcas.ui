@@ -33,7 +33,9 @@ COLLABORATIVE_GROUPS = {
 _metadataToIgnore = frozenset((
     u'_version_',
     u'CollectionName',
+    u'CollectionId',
     u'DatasetId',
+    u'DatasetName',
     u'DatasetVersion',
     u'FileLocation',
     u'FileName',
@@ -269,7 +271,7 @@ class LabCASFile(object):
         name = mapping[u'FileName']
         physicalLocation = mapping[u'FileLocation']
         size = mapping[u'FileSize']
-        contentType = mapping.get(u'ContentType', u'application/octet-stream')
+        contentType = mapping.get(u'FileType', [u'application/octet-stream'])[0]
         metadata = {}
         for key, values in mapping.iteritems():
             if key not in _metadataToIgnore and not key.startswith(u'CAS.'):
