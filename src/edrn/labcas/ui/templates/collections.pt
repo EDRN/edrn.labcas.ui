@@ -15,6 +15,7 @@
             - publicCollections = the same, but publicly available
             - hasCollections = true if we have something for "My Collections"
             - hasPublicCollections = the same, but true if there are public collections
+            - canUpload = boolean if we can upload files and create a new dataset in this collection
         -->
     </head>
     <body>
@@ -25,6 +26,27 @@
                     <li><a href='#' tal:attributes='href python:request.route_url("home")'>Home</a></li>
                     <li class='active'>Collections</li>
                 </ol>
+
+                <h3>Upload Data</h3>
+                <p tal:condition='canUpload'>
+                    <a class='btn btn-default' href='#' role='button'
+                        tal:attributes='href python:request.route_url("upload")'>
+                        <span class='glyphicon glyphicon-cloud-upload' aria-hidden='true'></span> Upload
+                    </a>
+                </p>
+
+                <div tal:condition='not:canUpload'>
+                    <p>
+                        <a class='btn btn-default disabled' href='#' role='button'>
+                            <span class='glyphicon glyphicon-cloud-upload' aria-hidden='true'></span> Upload
+                        </a>
+                    </p>
+                    <p class='text-muted'>
+                        Your account is not a member of any group! As a result, you cannot upload any
+                        data into LabCAS. <a href='https://cancer.jpl.nasa.gov/contact-info'>Contact
+                        the EDRN Informatics Center</a> for assistance.
+                    </p>
+                </div>
 
                 <ul class='nav nav-tabs' role='tablist'>
                     <li role='presentation' class='active'>

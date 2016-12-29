@@ -12,6 +12,7 @@ class CollectionsView(object):
     @view_config(route_name='collections', permission='view')
     def __call__(self):
         principals = frozenset(self.request.effective_principals)
+        canUpload = any([i for i in principals if i.startswith('cn=')])
         allCollections = LabCASCollection.get(principals=principals)
         collections, publicCollections = [], []
         for collection in allCollections:
@@ -22,5 +23,6 @@ class CollectionsView(object):
             'collections': collections,
             'hasCollections': len(collections) > 0,
             'publicCollections': publicCollections,
-            'hasPublicCollections': len(publicCollections) > 0
+            'hasPublicCollections': len(publicCollections) > 0,
+            'canUpload': canUpload
         }

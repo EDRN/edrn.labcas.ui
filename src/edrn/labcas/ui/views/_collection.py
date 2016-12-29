@@ -14,8 +14,4 @@ class CollectionView(object):
         collectionID = self.request.matchdict['collectionID']
         principals = frozenset(self.request.effective_principals)
         collection = LabCASCollection.get(collectionID, principals)
-        canUpload = any([i for i in principals if i.startswith('cn=')])
-        return {
-            'collection': collection,
-            'canUpload': canUpload,
-        }
+        return {'collection': collection}
