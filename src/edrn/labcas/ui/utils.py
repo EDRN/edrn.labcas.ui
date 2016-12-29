@@ -111,7 +111,7 @@ class LabCASCollection(object):
     def datasets(self, datasetID=None):
         if self.datasetMapping is None:
             self.datasetMapping = {}
-            datasets = LabCASDataset.get(self.name)
+            datasets = LabCASDataset.get(self.identifier)
             for dataset in datasets:
                 self.datasetMapping[dataset.identifier] = dataset
         if datasetID is None:
@@ -229,7 +229,7 @@ class LabCASDataset(object):
                 metadata[key] = value
         return LabCASDataset(identifier, name, metadata)
     @staticmethod
-    def get(collectionName):
+    def get(collectionID):
         u'''Get the LabCAS datasets belonging to the collection with the given
         ``collectionName``.
         '''
@@ -240,7 +240,7 @@ class LabCASDataset(object):
             highlight=None,
             score=True,
             sort=['DatasetName'],
-            fq=[u'CollectionName:{}'.format(collectionName.replace(u':', u'\\:'))],
+            fq=[u'CollectionId:{}'.format(collectionID.replace(u':', u'\\:'))],
             start=0,
             rows=99999  # FIXME: we should support pagination
         )
