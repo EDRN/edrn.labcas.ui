@@ -248,7 +248,7 @@ class LabCASDataset(object):
 
 
 class LabCASFile(object):
-    u'''A file stored in a LabCASProduct'''
+    u'''A file stored in a LabCASDataset'''
     def __init__(self, identifier, name, physicalLocation, size, contentType, metadata):
         self.identifier = identifier
         self.name, self.physicalLocation, self.size, self.contentType = name, physicalLocation, size, contentType
@@ -291,69 +291,6 @@ class LabCASFile(object):
             rows=99999  # FIXME: we should support pagination
         )
         return [LabCASFile._construct(item) for item in response.results]
-
-
-class LabCASProduct(object):
-    u'''A product stored within LabCAS.'''
-    def __init__(self, identifier, name, versions, pi, organSite, cg, public):
-        self.identifier, self.name, self.versions, self.pi, self.organSite = identifier, name, versions, pi, organSite
-        self.cg, self.public = cg, public
-    def __cmp__(self, other):
-        return cmp(self.name, other.name)
-    def getVersions(self):
-        versions = self.versions.items()
-        versions.sort(lambda a, b: cmp(a[0], b[0]))
-        return versions
-    @staticmethod
-    def new(product, principals):
-        typeMetadata = product.get('typeMetadata', {})
-        owners = frozenset(typeMetadata.get('OwnerGroup', []))
-        name, productID = product.get('name'), product.get('id')
-        if not productID: return None
-        pi = typeMetadata.get(u'LeadPI', [u'Unknown'])
-        pi = pi[0]
-        organ = typeMetadata.get(u'OrganSite', [u'Unknown'])
-        organ = organ[0]
-        cg = typeMetadata.get(u'CollaborativeGroup', [u'Unknown'])
-        cg = cg[0]
-        datasetName = typeMetadata.get(u'DatasetName', [name if name else productID])
-        datasetName = datasetName[0]
-        backend = getUtility(IBackend)
-        response = backend.getSearchEngine().select(
-            q='*:*',
-            fields=None,
-            highlight=None,
-            score=True,
-            sort=None,
-            fq=['DatasetId:{}'.format(name.replace(u':', u'\\:'))],
-            start=0,
-            rows=99999  # FIXME: we should support pagination
-        )
-        versions, public = {}, False  # versions = version → [files]
-        for item in response.results:
-            public = item.get(u'QAState', None) == [u'Public']
-            _logger.debug(u'QA State = %s, so public = %r', item.get(u'QAState', u'UNKNOWN'), public)
-            version = item.get(u'Version', u'0')
-            files = versions.get(version, [])
-            fileName = item.get(u'CAS.ProductName')
-            if not fileName: continue
-            physicalLocation = item.get(u'CAS.ReferenceDatastore')
-            if not physicalLocation: continue
-            physicalLocation = urlparse(urllib.unquote(physicalLocation[0])).path  # FIXME assumes file: URLs always
-            mimeType = item.get(u'CAS.ReferenceMimeType')
-            if not mimeType: continue
-            mimeType = mimeType[0]
-            size = item.get(u'CAS.ReferenceFileSize')
-            if not size: continue
-            size = size[0]
-            files.append(LabCASFile(fileName, physicalLocation, size, mimeType, item))
-            versions[version] = files
-        if not versions: return None
-        if SUPER_GROUP in principals or not principals.isdisjoint(owners) or public:
-            return LabCASProduct(productID, datasetName, versions, pi, organ, cg, public)
-        else:
-            _logger.info('Not returning product "%s"; principals = %r, public = %r', productID, principals, public)
-            return None
 
 
 class LabCASWorkflow(object):
