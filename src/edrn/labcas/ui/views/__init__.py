@@ -9,6 +9,7 @@ from ._dataset import DatasetView
 from ._file import FileView
 from ._home import HomeView
 from ._metadata import MetadataView
+from ._target import TargetView
 from ._upload import UploadView
 
 
@@ -24,5 +25,6 @@ __all__ = (
     MetadataView,
     PeopleCompletionsView,
     ProtocolCompletionsView,
+    TargetView,
     UploadView
 )

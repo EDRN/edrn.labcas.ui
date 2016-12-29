@@ -2,7 +2,7 @@
 
 from edrn.labcas.ui import PACKAGE_NAME
 from edrn.labcas.ui.interfaces import IBackend
-from edrn.labcas.ui.utils import LabCASWorkflow, re_python_rfc3986_URI_reference
+from edrn.labcas.ui.utils import LabCASWorkflow, re_python_rfc3986_URI_reference, LabCASCollection
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, view_defaults
 from pyramid_ldap import get_ldap_connector
@@ -40,12 +40,13 @@ _nistMetadataFields = frozenset((u'LabNumber', u'Method', u'RoundNumber'))
 class MetadataView(object):
     def __init__(self, request):
         self.request = request
-    def _getDatasetDir(self, metadata, dir):
+    def _getDatasetDir(self, metadata, dir, collection):
         u'''Create and return the path to the dataset directory.'''
-        if u'DatasetId' not in metadata:
-            raise ValueError(u'DatasetId is a required metadata')
-        datasetID = metadata[u'DatasetId']
-        datasetDir = os.path.join(dir, datasetID)
+        if u'DatasetName' not in metadata:
+            raise ValueError(u'DatasetName is a required metadata')
+        datasetName = metadata[u'DatasetName'].replace(u' ', u'_')
+        collectionName = collection.name.replace(u' ', u'_')
+        datasetDir = os.path.join(dir, collectionName, datasetName)
         if not os.path.isdir(datasetDir):
             os.makedirs(datasetDir, 0775)
         return datasetDir
@@ -214,6 +215,9 @@ class MetadataView(object):
             wfInfo.get('conditions', []),
             wfInfo.get('tasks', [])
         )
+        collectionID = self.request.matchdict['collectionID']
+        principals = frozenset(self.request.effective_principals)
+        collection = LabCASCollection.get(collectionID, principals)
         form = deform.Form(self._createSchema(workflow), buttons=('submit',))
         if 'submit' in self.request.params:
             try:
@@ -232,7 +236,7 @@ class MetadataView(object):
                     metadataAppstruct[u'DatasetId'] = u'Lab{}_{}_R{}'.format(ln, nm, rn)
                 else:
                     metadataAppstruct[u'DatasetId'] = unicode(uuid.uuid4())
-                datasetDir = self._getDatasetDir(metadataAppstruct, backend.getStagingDirectory())
+                datasetDir = self._getDatasetDir(metadataAppstruct, backend.getStagingDirectory(), collection)
                 self.request.session['metadata'] = metadataAppstruct
                 self.request.session['metadataForm'] = form.render(metadataAppstruct, readonly=True)
                 self.request.session['datasetDir'] = datasetDir
