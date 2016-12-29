@@ -12,7 +12,7 @@ Installation generally has the following
 
 There is also Apache HTTPD on ports 80/443 but essentially doing nothing.
 
-ssh -L 9000:localhost:9000 -L 9001:localhost:9001 -L 9002:localhost:9002 -L 8080:localhost:8080 -L 8983:localhost:8983 labcas-dev 
+ssh -L 9000:localhost:9000 -L 9001:localhost:9001 -L 9002:localhost:9002 -L 8080:localhost:8080 -L 8983:localhost:8983 labcas-dev.jpl.nasa.gov
 
 
 Luca
