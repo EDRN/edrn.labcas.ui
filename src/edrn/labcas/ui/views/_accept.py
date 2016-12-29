@@ -40,26 +40,8 @@ class AcceptView(object):
                 if isinstance(value, datetime.date):
                     metadata[key] = value.isoformat()
             # See comments on CA-1332; we need a better way to discover this and not hard-code
-            if workflow.identifier == u'urn:edrn:RnaSeqWorkflow':
-                backend.getWorkflowMgr().executeDynamicWorkflow(
-                    ['urn:edrn:RnaSeqInitTask', 'urn:edrn:RnaSeqCrawlTask'],
-                    metadata
-                )
-            elif workflow.identifier == u'urn:edrn:NistWorkflow':
-                backend.getWorkflowMgr().executeDynamicWorkflow(
-                    ['urn:edrn:NistInitTask', 'urn:edrn:NistConvertTask', 'urn:edrn:NistExecTask', 'urn:edrn:NistCrawlTask'],
-                    metadata
-                )
-            elif workflow.identifier == u'urn:edrn:WafWorkflow':
-                backend.getWorkflowMgr().executeDynamicWorkflow(
-                    ['urn:edrn:WafInitTask', 'urn:edrn:WafCrawlTask'],
-                    metadata
-                )
-            else:
-                backend.getWorkflowMgr().executeDynamicWorkflow(
-                    ['urn:edrn:LabcasUploadInitTask', 'urn:edrn:LabcasUploadExecuteTask'],
-                    metadata
-                )
+            tasks = [i['id'] for i in workflow.tasks]
+            backend.getWorkflowMgr().executeDynamicWorkflow(tasks, metadata)
             self.request.session.flash(
                 u'Your data is now being processed by LabCAS. It may take some time to appear here.',
                 'info'
