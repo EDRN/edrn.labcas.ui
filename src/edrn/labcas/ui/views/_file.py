@@ -2,7 +2,7 @@
 
 from edrn.labcas.ui import PACKAGE_NAME
 from edrn.labcas.ui.utils import LabCASCollection
-from pyramid.response import FileResponse
+from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, view_defaults
 import humanize, os, os.path
 
@@ -25,8 +25,7 @@ class FileView(object):
         params = self.request.params
         if 'download' in params:
             # Download the file
-            return FileResponse(os.path.join(f.physicalLocation, f.name), self.request,
-                content_type=f.contentType.encode('utf-8'))
+            return HTTPFound(self.request.host_url + u'/fmprod/data?productID=' + f.fileID)
         else:
             # View the file metadata
             return {

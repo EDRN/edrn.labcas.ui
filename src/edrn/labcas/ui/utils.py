@@ -251,9 +251,9 @@ class LabCASDataset(object):
 
 class LabCASFile(object):
     u'''A file stored in a LabCASDataset'''
-    def __init__(self, identifier, name, physicalLocation, size, contentType, metadata):
+    def __init__(self, identifier, name, fileID, size, contentType, metadata):
         self.identifier = identifier
-        self.name, self.physicalLocation, self.size, self.contentType = name, physicalLocation, size, contentType
+        self.name, self.fileID, self.size, self.contentType = name, fileID, size, contentType
         self.metadata = {}
         for key, value in metadata.items():
             if key.startswith(u'CAS.') or key in _metadataToIgnore: continue
@@ -269,14 +269,14 @@ class LabCASFile(object):
         u'''Construct a LabCASFile with info in the ``mapping``.'''
         identifier = mapping[u'id']
         name = mapping[u'FileName']
-        physicalLocation = mapping[u'FileLocation']
+        fileID = mapping[u'FileDownloadId'][0]
         size = mapping[u'FileSize']
         contentType = mapping.get(u'FileType', [u'application/octet-stream'])[0]
         metadata = {}
         for key, values in mapping.iteritems():
             if key not in _metadataToIgnore and not key.startswith(u'CAS.'):
                 metadata[key] = values
-        return LabCASFile(identifier, name, physicalLocation, size, contentType, metadata)
+        return LabCASFile(identifier, name, fileID, size, contentType, metadata)
     @staticmethod
     def get(datasetID):
         u'''Get the files belonging to the dataset with the given ``datasetID``
