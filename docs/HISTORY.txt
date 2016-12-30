@@ -10,6 +10,7 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 
 • CA-1422, Support browsing of collections / datasets / files
 • CA-1451, Display more human collection names
+• CA-1452, Use "DownloadId" to download files
 • CA-1457, Expose Data Upload on top-level page
 • CA-1458, Upload to sub-directory
 • CA-1461, Workflow invocation should not be hard-coded
