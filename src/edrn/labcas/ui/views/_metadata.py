@@ -233,10 +233,12 @@ class MetadataView(object):
                     ln = metadataAppstruct[u'LabNumber']
                     nm = metadataAppstruct[u'Method']
                     rn = metadataAppstruct[u'RoundNumber']
-                    metadataAppstruct[u'DatasetId'] = u'Lab{}_{}_R{}'.format(ln, nm, rn)
+                    metadataAppstruct[u'DatasetName'] = u'Lab{}_{}_R{}'.format(ln, nm, rn)
                 else:
                     metadataAppstruct[u'DatasetId'] = unicode(uuid.uuid4())
                 datasetDir = self._getDatasetDir(metadataAppstruct, backend.getStagingDirectory(), collection)
+                if not os.path.isdir(datasetDir):
+                    os.makedirs(datasetDir)
                 self.request.session['metadata'] = metadataAppstruct
                 self.request.session['metadataForm'] = form.render(metadataAppstruct, readonly=True)
                 self.request.session['datasetDir'] = datasetDir
