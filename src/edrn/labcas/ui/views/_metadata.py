@@ -236,6 +236,8 @@ class MetadataView(object):
                     metadataAppstruct[u'DatasetName'] = u'Lab{}_{}_R{}'.format(ln, nm, rn)
                 else:
                     metadataAppstruct[u'DatasetId'] = unicode(uuid.uuid4())
+                    if u'DatasetName' not in metadataAppstruct:
+                        metadataAppstruct[u'DatasetName'] = metadataAppstruct[u'DatasetId']
                 datasetDir = self._getDatasetDir(metadataAppstruct, backend.getStagingDirectory(), collection)
                 if not os.path.isdir(datasetDir):
                     os.makedirs(datasetDir)
