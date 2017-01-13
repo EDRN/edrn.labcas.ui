@@ -7,11 +7,11 @@ from pyramid.view import view_config, view_defaults
 from zope.component import getUtility
 
 
-@view_defaults(renderer=PACKAGE_NAME + ':templates/upload.pt')
-class UploadView(object):
+@view_defaults(renderer=PACKAGE_NAME + ':templates/start.pt')
+class StartView(object):
     def __init__(self, request):
         self.request = request
-    @view_config(route_name='upload', permission='upload')
+    @view_config(route_name='start', permission='upload')
     def __call__(self):
         backend = getUtility(IBackend)
         workflows = []
@@ -26,7 +26,7 @@ class UploadView(object):
                         availableWorkflow.get('conditions', []),
                         tasks
                     )
-                    if workflow.uploadFiles:
+                    if workflow.uploadFiles == False:
                         workflows.append(workflow)
         workflows.sort(lambda a, b: cmp(a.order, b.order))
         return {u'hasWorkflows': len(workflows) > 0, u'workflows': workflows}

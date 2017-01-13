@@ -1,12 +1,14 @@
 # encoding: utf-8
 
+u'''Workflow Metadata'''
+
 from edrn.labcas.ui import PACKAGE_NAME
 from edrn.labcas.ui.interfaces import IBackend
-from edrn.labcas.ui.utils import LabCASWorkflow, re_python_rfc3986_URI_reference, LabCASCollection, createSchema
+from edrn.labcas.ui.utils import LabCASWorkflow, createSchema
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, view_defaults
 from zope.component import getUtility
-import re, deform, os, os.path, logging, uuid
+import re, deform, logging, uuid, datetime
 
 
 # Logging
@@ -21,21 +23,11 @@ _idNumberHunter = re.compile(ur'\((\d+)\)$')
 _nistMetadataFields = frozenset((u'LabNumber', u'Method', u'RoundNumber'))
 
 
-@view_defaults(renderer=PACKAGE_NAME + ':templates/metadata.pt')
-class MetadataView(object):
+@view_defaults(renderer=PACKAGE_NAME + ':templates/wfmetadata.pt')
+class WFMetadataView(object):
     def __init__(self, request):
         self.request = request
-    def _getDatasetDir(self, metadata, dir, collection):
-        u'''Create and return the path to the dataset directory.'''
-        if u'DatasetName' not in metadata:
-            raise ValueError(u'DatasetName is a required metadata')
-        datasetName = metadata[u'DatasetName'].replace(u' ', u'_')
-        collectionName = collection.name.replace(u' ', u'_')
-        datasetDir = os.path.join(dir, collectionName, datasetName)
-        if not os.path.isdir(datasetDir):
-            os.makedirs(datasetDir, 0775)
-        return datasetDir
-    @view_config(route_name='metadata', permission='upload')
+    @view_config(route_name='wfmetadata', permission='upload')
     def __call__(self):
         backend = getUtility(IBackend)
         workflowID = self.request.matchdict['workflowID']
@@ -46,8 +38,6 @@ class MetadataView(object):
             wfInfo.get('conditions', []),
             wfInfo.get('tasks', [])
         )
-        principals = frozenset(self.request.effective_principals)
-        collection = LabCASCollection.get(workflow.collectionName.replace(u' ', u'_'), principals)
         form = deform.Form(createSchema(workflow, self.request), buttons=('submit',))
         if 'submit' in self.request.params:
             try:
@@ -68,14 +58,18 @@ class MetadataView(object):
                     metadataAppstruct[u'DatasetId'] = unicode(uuid.uuid4())
                     if u'DatasetName' not in metadataAppstruct:
                         metadataAppstruct[u'DatasetName'] = metadataAppstruct[u'DatasetId']
-                datasetDir = self._getDatasetDir(metadataAppstruct, backend.getStagingDirectory(), collection)
-                if not os.path.isdir(datasetDir):
-                    os.makedirs(datasetDir)
-                self.request.session['metadata'] = metadataAppstruct
-                self.request.session['metadataForm'] = form.render(metadataAppstruct, readonly=True)
-                self.request.session['datasetDir'] = datasetDir
-                self.request.session['workflow'] = workflow
-                return HTTPFound(self.request.url + u'/accept')
+                # Transform date objects into strings
+                for key, value in metadataAppstruct.items():
+                    if isinstance(value, datetime.date):
+                        metadataAppstruct[key] = value.isoformat()
+                tasks = [i['id'] for i in workflow.tasks]
+                backend = getUtility(IBackend)
+                backend.getWorkflowMgr().executeDynamicWorkflow(tasks, metadataAppstruct)
+                self.request.session.flash(
+                    u'LabCAS is now executng your workflow. It may take some time for results to appear.',
+                    'info'
+                )
+                return HTTPFound(self.request.route_url('home'))
             except deform.ValidationFailure as ex:
                 return {
                     u'message': u"Some required metadata don't make sense or are missing.",

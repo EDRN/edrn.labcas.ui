@@ -18,15 +18,15 @@
     <body>
         <div metal:fill-slot='content'>
             <div class='container'>
-                <h1>Upload Files</h1>
-                <p>What kind of data do you have?</p>
+                <h1>Start Workflow</h1>
+                <p>Select a workflow.</p>
                 <div class='row'>
                     <div class='col-md-2'>
                     </div>
                     <div class='col-md-8'>
                         <!-- Workflow Selection -->
                         <p tal:condition='not:hasWorkflows' class='text-muted'>
-                            You currently do not have access to any kinds of data-uploading workfows.  Sorry!
+                            You currently do not have access to any workfows.  Sorry!
                         </p>
                         <div tal:condition='hasWorkflows'>
                             <ul class='list-group'>

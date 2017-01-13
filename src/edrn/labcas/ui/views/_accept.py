@@ -49,14 +49,13 @@ class AcceptView(object):
             return HTTPFound(self.request.route_url('home'))
         else:
             # Presentation
-            entries = os.listdir(self.request.session['datasetDir'])
-            try:
-                del entries[entries.index('DatasetMetadata.xmlmet')]
-            except ValueError:
-                pass
-            entries.sort()
+            datasetDir = self.request.session['datasetDir']
+            entries = os.listdir(datasetDir)
+            for entry in entries:
+                existingFile = os.path.join(datasetDir, entry)
+                os.unlink(existingFile)
             return {
                 'hasFiles': len(entries) > 0,
-                'currentFiles': entries,
+                'currentFiles': [],
                 'metadataForm': self.request.session['metadataForm']
             }

@@ -27,11 +27,15 @@
                     <li class='active'>Collections</li>
                 </ol>
 
-                <h3>Upload Data</h3>
+                <h3>Manage Workflows</h3>
                 <p tal:condition='canUpload'>
                     <a class='btn btn-default' href='#' role='button'
                         tal:attributes='href python:request.route_url("upload")'>
-                        <span class='glyphicon glyphicon-cloud-upload' aria-hidden='true'></span> Upload
+                        <span class='glyphicon glyphicon-cloud-upload' aria-hidden='true'></span> Upload Files
+                    </a>
+                    <a class='btn btn-default' href='#' role='button'
+                        tal:attributes='href python:request.route_url("start")'>
+                        <span class='glyphicon glyphicon-play-circle' aria-hidden='true'></span> Start Workflow
                     </a>
                 </p>
 
@@ -48,6 +52,8 @@
                     </p>
                 </div>
 
+                <h3>Data</h3>
+
                 <ul class='nav nav-tabs' role='tablist'>
                     <li role='presentation' class='active'>
                         <a href='#mycollections' aria-controls='mycollections' role='tab' data-toggle='tab'>
@@ -63,7 +69,7 @@
 
                 <div class='tab-content'>
                     <div role='tabpanel' class='tab-pane active' id='mycollections'>
-                        <h3>My Collections</h3>
+
                         <p tal:condition='not:hasCollections' class='text-muted'>
                             You currently do not have access to collections of datasets.
                         </p>
@@ -98,7 +104,7 @@
                         </div>
                     </div> <!-- /hasCollections -->
                     <div role='tabpanel' class='tab-pane' id='allcollections'>
-                        <h3>All Public Collections</h3>
+
                         <p tal:condition='not:hasPublicCollections' class='text-muted'>
                             There are no publicly available collections.
                         </p>
