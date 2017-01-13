@@ -32,14 +32,14 @@
         <nav class='navbar navbar-default' role='navigation' style='background-color: white;'>
             <div class='container-fluid'>
                 <div class='navbar-header'>
-                    <a class='navbar-brand' href='#' tal:attributes='href python:request.route_url("home")'>
+                    <a class='navbar-brand' href='#' tal:attributes='href python:request.route_url("collections")'>
                         <img src='#' alt='EDRN'
                             tal:attributes='src python:request.static_url("edrn.labcas.ui:static/edrn.png")'/>
                     </a>
                 </div>
                 <div class='navbar-text navbar-right'>
                     <p>
-                        <a class='h1 navbar-link' href='#' tal:attributes='href python:request.route_url("home")'>
+                        <a class='h1 navbar-link' href='#' tal:attributes='href python:request.route_url("collections")'>
                         LabCAS
                         </a>
                     </p>

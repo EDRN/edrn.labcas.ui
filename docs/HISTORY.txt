@@ -8,6 +8,11 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 0.0.3 — Release Name Here
 -------------------------
 
+• CA-1474, Double collections/collections path in LabCAS UI
+• CA-1473, Remove pre-staged files from aborted uploads
+• CA-1472, Differentiate between upload and non-upload workflows
+• CA-1471, Use workflow's CollectionName to select the staging directory
+  instead of asking for a target collection
 • CA-1422, Support browsing of collections / datasets / files
 • CA-1451, Display more human collection names
 • CA-1452, Use "DownloadId" to download files

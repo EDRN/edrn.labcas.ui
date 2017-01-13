@@ -22,7 +22,6 @@
 
             <div class='container'>
                 <ol class='breadcrumb'>
-                    <li><a href='#' tal:attributes='href python:request.route_url("home")'>Home</a></li>
                     <li><a href='#' tal:attributes='href python:request.route_url("collections")'>Collections</a></li>
                     <li class='active' tal:content='python:collection.name'>Some Collection Name</li>
                 </ol>

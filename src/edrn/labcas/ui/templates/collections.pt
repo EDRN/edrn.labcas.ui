@@ -23,7 +23,6 @@
 
             <div class='container'>
                 <ol class='breadcrumb'>
-                    <li><a href='#' tal:attributes='href python:request.route_url("home")'>Home</a></li>
                     <li class='active'>Collections</li>
                 </ol>
 
@@ -83,7 +82,7 @@
                                         <td>
                                             <a href='#'
                                                 tal:attributes='
-                                                    href python:request.current_route_url() + u"/" + col.identifier
+                                                    href python:request.current_route_url() + col.identifier
                                                 '
                                                 tal:content='col.name'>
                                                 urn:some:collection
@@ -117,7 +116,7 @@
                                     <tr tal:repeat='col publicCollections'>
                                         <td>
                                             <a href='#'
-                                                tal:attributes='href python:request.current_route_url() + u"/" + col.identifier'
+                                                tal:attributes='href python:request.current_route_url() + col.identifier'
                                                 tal:content='col.name'>
                                                 urn:some:pubcol
                                             </a>
