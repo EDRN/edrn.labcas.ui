@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8'?> 
+<!DOCTYPE html>
+<html
+    xmlns='http://www.w3.org/1999/xhtml'
+    xmlns:tal='http://xml.zope.org/namespaces/tal'
+    xmlns:metal='http://xml.zope.org/namespaces/metal'
+    lang='en'
+    xml:lang='en'
+    metal:use-macro='load:edrn.labcas.ui:templates/master.pt'>
+    <head>
+        <title>Home</title>
+        <!--
+            provided names:
+        -->
+    </head>
+    <body>
+        <div metal:fill-slot='content'>
+            <div class='jumbotron'>
+                <div class='container'>
+                    <h1>Laboratory data, managed</h1>
+                    <p>LabCAS securely stores your lab results, derives products,
+                        and enables high-speed processing pipelines for faster discovery.
+                    </p>
+                </div>
+            </div>
+            <div class='container'>
+                <div class='row'>
+                    <div class='col-md-4'>
+                        <h2>My Data</h2>
+                        <p>Here you can view the data you have access to (based on the groups you belong to).
+                            You may be prompted to log in.
+                        </p>
+                        <p>
+                            <a class='btn btn-default' href='#' role='button'
+                                tal:attributes='href python:request.route_url("datasets")'>
+                                <span class='glyphicon glyphicon-folder-close' aria-hidden='true'></span> My Products
+                            </a>
+                        </p>
+                    </div>
+                    <div class='col-md-4'>
+                        <h2>Upload Data</h2>
+                        <p>Got fresh lab results?  Upload your data here for secure storage and processing.
+                        </p>
+                        <p>
+                            <a class='btn btn-default' href='#' role='button'
+                                tal:attributes='href python:request.route_url("upload")'>
+                                <span class='glyphicon glyphicon-cloud-upload' aria-hidden='true'></span> Upload
+                            </a>
+                        </p>
+                    </div>
+                    <div class='col-md-4'>
+                        <h2>Help</h2>
+                        <p>New to LabCAS?  Start here.
+                        </p>
+                        <p>
+                            <a class='btn btn-default' href='#' role='button'>
+                                <span class='glyphicon glyphicon-question-sign' aria-hidden='true'></span> Help
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
