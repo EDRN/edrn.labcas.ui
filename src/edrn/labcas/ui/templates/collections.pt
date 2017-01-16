@@ -82,7 +82,7 @@
                                         <td>
                                             <a href='#'
                                                 tal:attributes='
-                                                    href python:request.current_route_url() + col.identifier
+                                                    href python:request.current_route_url() + u"/" + col.identifier
                                                 '
                                                 tal:content='col.name'>
                                                 urn:some:collection
@@ -116,7 +116,7 @@
                                     <tr tal:repeat='col publicCollections'>
                                         <td>
                                             <a href='#'
-                                                tal:attributes='href python:request.current_route_url() + col.identifier'
+                                                tal:attributes='href python:request.current_route_url() + u"/" + col.identifier'
                                                 tal:content='col.name'>
                                                 urn:some:pubcol
                                             </a>
