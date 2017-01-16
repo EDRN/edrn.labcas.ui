@@ -7,7 +7,6 @@ from ._file import File
 from ._root import Root
 from ._upload import Upload
 
-
 __all__ = (
     Collection,
     Collections,

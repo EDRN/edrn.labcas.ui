@@ -8,6 +8,7 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 0.0.3 — Release Name Here
 -------------------------
 
+• CA-1475, Permissions in LabCAS UI
 • CA-1474, Double collections/collections path in LabCAS UI
 • CA-1473, Remove pre-staged files from aborted uploads
 • CA-1472, Differentiate between upload and non-upload workflows

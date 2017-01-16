@@ -72,5 +72,5 @@ class AuthenticationView(object):
         except KeyError: pass
         self.request.session.flash(u'You are now logged out.', queue='info')
         headers = forget(self.request)
-        url = self.request.route_url('home')
+        url = self.request.route_url('collections')
         return HTTPFound(location=url, headers=headers)

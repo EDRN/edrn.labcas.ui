@@ -69,7 +69,7 @@ class WFMetadataView(object):
                     u'LabCAS is now executng your workflow. It may take some time for results to appear.',
                     'info'
                 )
-                return HTTPFound(self.request.route_url('home'))
+                return HTTPFound(self.request.route_url('collections'))
             except deform.ValidationFailure as ex:
                 return {
                     u'message': u"Some required metadata don't make sense or are missing.",

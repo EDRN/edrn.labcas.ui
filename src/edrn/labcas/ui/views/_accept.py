@@ -46,7 +46,7 @@ class AcceptView(object):
                 u'Your data is now being processed by LabCAS. It may take some time to appear here.',
                 'info'
             )
-            return HTTPFound(self.request.route_url('home'))
+            return HTTPFound(self.request.route_url('collections'))
         else:
             # Presentation
             datasetDir = self.request.session['datasetDir']
