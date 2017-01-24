@@ -25,12 +25,12 @@ _nistMetadataFields = frozenset((u'LabNumber', u'Method', u'RoundNumber'))
 class MetadataView(object):
     def __init__(self, request):
         self.request = request
-    def _getDatasetDir(self, metadata, dir, collection):
+    def _getDatasetDir(self, metadata, dir, collectionName):
         u'''Create and return the path to the dataset directory.'''
         if u'DatasetName' not in metadata:
             raise ValueError(u'DatasetName is a required metadata')
         datasetName = metadata[u'DatasetName'].replace(u' ', u'_')
-        collectionName = collection.name.replace(u' ', u'_')
+        collectionName = collectionName.replace(u' ', u'_')
         datasetDir = os.path.join(dir, collectionName, datasetName)
         if not os.path.isdir(datasetDir):
             os.makedirs(datasetDir, 0775)
@@ -47,7 +47,6 @@ class MetadataView(object):
             wfInfo.get('tasks', [])
         )
         principals = frozenset(self.request.effective_principals)
-        collection = LabCASCollection.get(workflow.collectionName.replace(u' ', u'_'), principals)
         form = deform.Form(createSchema(workflow, self.request), buttons=('submit',))
         if 'submit' in self.request.params:
             try:
@@ -68,7 +67,10 @@ class MetadataView(object):
                     metadataAppstruct[u'DatasetId'] = unicode(uuid.uuid4())
                     if u'DatasetName' not in metadataAppstruct:
                         metadataAppstruct[u'DatasetName'] = metadataAppstruct[u'DatasetId']
-                datasetDir = self._getDatasetDir(metadataAppstruct, backend.getStagingDirectory(), collection)
+                collectionName = workflow.collectionName
+                if not collectionName:
+                    collectionName = metadataAppstruct[u'CollectionName']
+                datasetDir = self._getDatasetDir(metadataAppstruct, backend.getStagingDirectory(), collectionName)
                 if not os.path.isdir(datasetDir):
                     os.makedirs(datasetDir)
                 self.request.session['metadata'] = metadataAppstruct
