@@ -5,9 +5,11 @@ What follows is a history of changes from release to release.  Where issue IDs
 are listed below, you can find out more about them by visiting the issue
 tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 
+
 0.0.3 — Release Name Here
 -------------------------
 
+• CA-1475, LabCAS backend changes caused issues for UI
 • CA-1475, Permissions in LabCAS UI
 • CA-1474, Double collections/collections path in LabCAS UI
 • CA-1473, Remove pre-staged files from aborted uploads

@@ -51,11 +51,13 @@ class AcceptView(object):
             # Presentation
             datasetDir = self.request.session['datasetDir']
             entries = os.listdir(datasetDir)
-            for entry in entries:
-                existingFile = os.path.join(datasetDir, entry)
-                os.unlink(existingFile)
+            if u'nodelete' not in self.request.params:
+                for entry in entries:
+                    existingFile = os.path.join(datasetDir, entry)
+                    os.unlink(existingFile)
+                entries = []
             return {
                 'hasFiles': len(entries) > 0,
-                'currentFiles': [],
+                'currentFiles': entries,
                 'metadataForm': self.request.session['metadataForm']
             }

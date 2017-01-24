@@ -44,11 +44,12 @@ _cnHunter = re.compile(ur'^cn=([^,]+),')
 # with "CAS."
 _metadataToIgnore = frozenset((
     u'_version_',
-    u'CollectionName',
     u'CollectionId',
+    u'CollectionName',
     u'DatasetId',
     u'DatasetName',
     u'DatasetVersion',
+    u'FileDownloadId',
     u'FileLocation',
     u'FileName',
     u'FileSize',
@@ -281,7 +282,7 @@ class LabCASFile(object):
         u'''Construct a LabCASFile with info in the ``mapping``.'''
         identifier = mapping[u'id']
         name = mapping[u'FileName']
-        fileID = mapping[u'FileDownloadId'][0]
+        fileID = mapping[u'FileDownloadId']
         size = mapping[u'FileSize']
         contentType = mapping.get(u'FileType', [u'application/octet-stream'])[0]
         metadata = {}

@@ -20,7 +20,7 @@
                 tal:attributes='src python:request.static_url("edrn.labcas.ui:static/plupload.full.min.js")'></script>
             <script id='anchor-script' type='text/javascript' data-here='/'
                 tal:attributes='data-here python:request.current_route_url()'>
-                var edrnUploadURL = $("#anchor-script").attr("data-here") + "?data";
+                var edrnAcceptURL = $("#anchor-script").attr("data-here");
             </script>
         </metal:javascript>
     </head>
@@ -106,9 +106,15 @@
                     </div>
                 </div>
                 <script type='text/javascript'>
+                    var uploadURL = edrnAcceptURL.slice(0);
+                    var i = uploadURL.indexOf("?nodelete=1");
+                    if (i >= 0) {
+                        uploadURL = uploadURL.slice(0, i);
+                    }
+                    uploadURL = uploadURL + "?data=1";
                     var uploader = new plupload.Uploader({
                         browse_button: 'browse-button',
-                        url: edrnUploadURL,
+                        url: uploadURL,
                         max_retries: 5,
                         drop_element: 'uploadContainer',
                         filters: {
@@ -118,7 +124,10 @@
                             UploadComplete: function(up, files) {
                                 up.splice();
                                 up.refresh();
-                                document.location.reload(true);
+                                if (edrnAcceptURL.indexOf("?nodelete=1") == -1) {
+                                    edrnAcceptURL = edrnAcceptURL + "?nodelete=1";
+                                }
+                                window.location.replace(edrnAcceptURL);
                             }
                         }
                     });
