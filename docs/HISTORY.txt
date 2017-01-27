@@ -6,8 +6,8 @@ are listed below, you can find out more about them by visiting the issue
 tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 
 
-0.0.3 — Release Name Here
--------------------------
+0.0.3 — Yes I Would Care to Make a Release
+------------------------------------------
 
 • CA-1475, LabCAS backend changes caused issues for UI
 • CA-1475, Permissions in LabCAS UI
