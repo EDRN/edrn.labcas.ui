@@ -13,8 +13,8 @@ class _LoginSchema(colander.MappingSchema):
     u'''Schema for a login page'''
     username = colander.SchemaNode(
         colander.String(),
-        title=u'EDRN Username',
-        description=u'Your account name within the Early Detection Research Network.',
+        title=u'Username',
+        description=u'Your account name within the consortium.',
         validator=colander.Length(min=1)
     )
     password = colander.SchemaNode(
