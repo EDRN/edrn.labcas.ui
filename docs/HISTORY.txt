@@ -9,6 +9,7 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 1.0.0 — TBD
 -----------
 
+• CA-1478, Supress display of LabCAS Product and ECAS Product
 • CA-1479, Replace EDRN with MCL
 • CA-1480, Remove mentions of collaborative groups since MCL doesn't have them
 

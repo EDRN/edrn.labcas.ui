@@ -5,6 +5,9 @@ from edrn.labcas.ui import PACKAGE_NAME
 from edrn.labcas.ui.utils import LabCASCollection
 
 
+_suppressedCollections = (u'ECAS Product', u'LabCAS Product')
+
+
 @view_defaults(renderer=PACKAGE_NAME + ':templates/collections.pt')
 class CollectionsView(object):
     def __init__(self, request):
@@ -16,6 +19,7 @@ class CollectionsView(object):
         allCollections = LabCASCollection.get(principals=principals)
         collections, publicCollections = [], []
         for collection in allCollections:
+            if collection.name in _suppressedCollections: continue
             collections.append(collection)
             if collection.isPublic():
                 publicCollections.append(collection)
