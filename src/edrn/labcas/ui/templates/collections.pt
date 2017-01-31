@@ -75,7 +75,7 @@
                         <div tal:condition='hasCollections'>
                             <table class='table table-hover'>
                                 <thead>
-                                    <tr><th>Collection</th><th>Lead PI</th><th>Organ</th><th>Collaborative Group</th></tr>
+                                    <tr><th>Collection</th><th>Lead PI</th><th>Organ</th></tr>
                                 </thead>
                                 <tbody>
                                     <tr tal:repeat='col collections'>
@@ -94,9 +94,6 @@
                                         <td tal:content='python:u", ".join(col.organSites)'>
                                             Anus
                                         </td>
-                                        <td tal:content='col.collaborativeGroup'>
-                                            Anal Group
-                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -110,7 +107,7 @@
                         <div tal:condition='hasPublicCollections'>
                             <table class='table table-hover'>
                                 <thead>
-                                    <tr><th>Collection</th><th>Lead PI</th><th>Organ</th><th>Collaborative Group</th></tr>
+                                    <tr><th>Collection</th><th>Lead PI</th><th>Organ</th></tr>
                                 </thead>
                                 <tbody>
                                     <tr tal:repeat='col publicCollections'>
@@ -126,9 +123,6 @@
                                         </td>
                                         <td tal:content='u", ".join(col.organSites)'>
                                             Public Anus
-                                        </td>
-                                        <td tal:content='col.collaborativeGroup'>
-                                            Public Anal Group
                                         </td>
                                     </tr>
                                 </tbody>

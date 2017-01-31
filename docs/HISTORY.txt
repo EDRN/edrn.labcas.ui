@@ -6,6 +6,12 @@ are listed below, you can find out more about them by visiting the issue
 tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 
 
+1.0.0 — TBD
+-----------
+
+• CA-1480, Remove mentions of collaborative groups since MCL doesn't have them
+
+
 0.0.3 — Yes I Would Care to Make a Release
 ------------------------------------------
 

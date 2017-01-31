@@ -46,8 +46,10 @@
                     </dd>
                     <dt>Lead PI:</dt>
                     <dd tal:content='collection.leadPI'>Joe Schmoe</dd>
+<!-- CA-1480
                     <dt>Collaborative Group:</dt>
                     <dd tal:content='collection.collaborativeGroup'>Lung</dd>
+-->                    
                     <dt>Organ Sites:</dt>
                     <dd tal:content='python:u", ".join(collection.organSites)'>Lung, Trachea</dd>
                     <dt>Protocol ID:</dt>
