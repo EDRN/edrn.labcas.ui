@@ -100,10 +100,7 @@ UTC = _UTC()
 
 class LabCASCollection(object):
     u'''A collection of datasets stored in LabCAS'''
-    def __init__(
-        self, identifier, qaState, owners, name, title, description, leadPI, collaborativeGroup, organSites,
-        protocolID, protocolName, dataCustodianName, dataCustodianEmail, discipline, referenceID, referenceURL
-    ):
+    def __init__(self, identifier, qaState, owners, name, title, description, leadPI, organs, metadata):
         self.identifier = identifier
         self.qaState = qaState
         self.owners = owners
@@ -111,18 +108,15 @@ class LabCASCollection(object):
         self.title = title
         self.description = description
         self.leadPI = leadPI
-        self.collaborativeGroup = collaborativeGroup
-        self.organSites = organSites
-        self.protocolID = protocolID
-        self.protocolName = protocolName
-        self.dataCustodianName = dataCustodianName
-        self.dataCustodianEmail = dataCustodianEmail
-        self.discipline = discipline
-        self.referenceID = referenceID
-        self.referenceURL = referenceURL
+        self.organs = organs
+        self.metadata = metadata
         self.datasetMapping = None
     def isPublic(self):
         return self.qaState == u'Public'
+    def getMetadata(self):
+        metadata = self.metadata.items()
+        metadata.sort(lambda a, b: cmp(a[0], b[0]))
+        return metadata
     def datasets(self, datasetID=None):
         if self.datasetMapping is None:
             self.datasetMapping = {}
@@ -154,19 +148,15 @@ class LabCASCollection(object):
             title = _getSingleValue(u'Title', mapping, u'UNKNOWN')
             description = mapping.get(u'CollectionDescription', u'UNKNOWN')
             leadPI = _getSingleValue(u'LeadPI', mapping, u'UNKNOWN')
-            collaborativeGroup = _getSingleValue(u'CollaborativeGroup', mapping, u'UNKNOWN')
-            organSites = _getMultipleValues(u'OrganSite', mapping, [])
-            protocolID = _getSingleValue(u'ProtocolId', mapping, u'')
-            protocolName = _getSingleValue(u'ProtocolName', mapping, u'')
-            dataCustodianName = _getSingleValue(u'DataCustodian', mapping, u'')
-            dataCustodianEmail = _getSingleValue(u'DataCustodianEmail', mapping, u'')
-            discipline = _getSingleValue(u'Discpline', mapping, u'')
-            referenceID = _getSingleValue(u'ReferenceId', mapping, u'')
-            referenceURL = _getSingleValue(u'ReferenceUrl', mapping, u'')
-            return LabCASCollection(
-                identifier, qaState, owners, name, title, description, leadPI, collaborativeGroup, organSites,
-                protocolID, protocolName, dataCustodianName, dataCustodianEmail, discipline, referenceID, referenceURL
-            )
+            organs = _getMultipleValues(u'Organ', mapping, [])
+            metadata = {}
+            for key, values in mapping.iteritems():
+                if key in (u'CollectionName', u'Title', u'CollectionDescription', u'LeadPI', u'Organ'): continue
+                if key in _metadataToIgnore: continue
+                if not isinstance(values, list) and not isinstance(values, basestring):
+                    values = [values]
+                metadata[key] = [unicode(i) for i in values]
+            return LabCASCollection(identifier, qaState, owners, name, title, description, leadPI, organs, metadata)
         else:
             # Sorry pal, try when you get better permissions
             return None

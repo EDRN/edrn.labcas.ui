@@ -16,6 +16,7 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 • CA-1482, Do not display both Title and Name for a Collection (they are the
   same)
 • CA-1483, Do not display UNKNOWN fields
+• CA-1484, Missing metadata fields in UI display
 
 
 0.0.3 — Yes I Would Care to Make a Release
