@@ -15,6 +15,7 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 • CA-1481, Replace OrganSite with Organ
 • CA-1482, Do not display both Title and Name for a Collection (they are the
   same)
+• CA-1483, Do not display UNKNOWN fields
 
 
 0.0.3 — Yes I Would Care to Make a Release

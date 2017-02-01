@@ -91,8 +91,11 @@
                                         <td tal:content='col.leadPI'>
                                             Joe Schmoe
                                         </td>
-                                        <td tal:content='python:u", ".join(col.organSites)'>
-                                            Anus
+                                        <td tal:define='numOrgans python:len(col.organSites)'>
+                                            <span tal:condition='numOrgans' tal:omit-tag=''
+                                                tal:content='python:u", ".join(col.organSites)'>
+                                                Anus, Rectum
+                                            </span>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -121,8 +124,11 @@
                                         <td tal:content='col.leadPI'>
                                             Joe Public Exposure
                                         </td>
-                                        <td tal:content='u", ".join(col.organSites)'>
-                                            Public Anus
+                                        <td tal:define='numOrgans python:len(col.organSites)'>
+                                            <span tal:condition='numOrgans' tal:omit-tag=''
+                                                tal:content='u", ".join(col.organSites)'>
+                                                Public Anus, Public Rectum
+                                            </span>
                                         </td>
                                     </tr>
                                 </tbody>

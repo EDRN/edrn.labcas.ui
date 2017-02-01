@@ -48,27 +48,40 @@
                     <dt>Collaborative Group:</dt>
                     <dd tal:content='collection.collaborativeGroup'>Lung</dd>
 -->                    
-                    <dt>Organs:</dt>
-                    <dd tal:content='python:u", ".join(collection.organSites)'>Lung, Trachea</dd>
-                    <dt>Protocol ID:</dt>
-                    <dd tal:content='collection.protocolID'>123</dd>
-                    <dt>Protocol Name:</dt>
-                    <dd tal:content='collection.protocolName'>Lung Stuff</dd>
-                    <dt>Data Custodian Name:</dt>
-                    <dd>
-                        <a href='#' tal:attributes='href python:u"mailto:{}".format(collection.dataCustodianEmail)'
-                            tal:content='collection.dataCustodianName'>
-                            Some Other Joe
-                        </a>
-                    </dd>
-                    <dt>Discipline:</dt>
-                    <dd tal:content='collection.discipline'>Well discplined</dd>
-                    <dt>Reference:</dt>
-                    <dd>
-                        <a href='#' tal:attributes='href collection.referenceURL' tal:content='collection.referenceID'>
-                            Some ID
-                        </a>
-                    </dd>
+                    <tal:if condition='python:len(collection.organSites)'>
+                        <dt>Organs:</dt>
+                        <dd tal:content='python:u", ".join(collection.organSites)'>Lung, Trachea</dd>
+                    </tal:if>
+                    <tal:if condition='python:collection.protocolID'>
+                        <dt>Protocol ID:</dt>
+                        <dd tal:content='collection.protocolID'>123</dd>
+                    </tal:if>
+                    <tal:if condition='python:collection.protocolName'>
+                        <dt>Protocol Name:</dt>
+                        <dd tal:content='collection.protocolName'>Lung Stuff</dd>
+                    </tal:if>
+                    <tal:if condition='python:collection.dataCustodianEmail and collection.dataCustodianName'>
+                        <dt>Data Custodian Name:</dt>
+                        <dd>
+                            <a href='#' tal:attributes='href python:u"mailto:{}".format(collection.dataCustodianEmail)'
+                                tal:content='collection.dataCustodianName'>
+                                Some Other Joe
+                            </a>
+                        </dd>
+                    </tal:if>
+                    <tal:if condition='python:collection.discipline'>
+                        <dt>Discipline:</dt>
+                        <dd tal:content='collection.discipline'>Well discplined</dd>
+                    </tal:if>
+                    <tal:if condition='python:collection.referenceURL and collection.referenceID'>
+                        <dt>Reference:</dt>
+                        <dd>
+                            <a href='#' tal:attributes='href collection.referenceURL'
+                                tal:content='collection.referenceID'>
+                                Some ID
+                            </a>
+                        </dd>
+                    </tal:if>
                 </dl>
 
                 <h3>Datasets in this Collection</h3>

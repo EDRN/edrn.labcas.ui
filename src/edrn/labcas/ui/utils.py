@@ -155,14 +155,14 @@ class LabCASCollection(object):
             description = mapping.get(u'CollectionDescription', u'UNKNOWN')
             leadPI = _getSingleValue(u'LeadPI', mapping, u'UNKNOWN')
             collaborativeGroup = _getSingleValue(u'CollaborativeGroup', mapping, u'UNKNOWN')
-            organSites = _getMultipleValues(u'OrganSite', mapping, [u'UNKNOWN'])
-            protocolID = _getSingleValue(u'ProtocolId', mapping, u'UNKNOWN')
-            protocolName = _getSingleValue(u'ProtocolName', mapping, u'UNKNOWN')
-            dataCustodianName = _getSingleValue(u'DataCustodian', mapping, u'UNKNOWN')
-            dataCustodianEmail = _getSingleValue(u'DataCustodianEmail', mapping, u'UNKNOWN')
-            discipline = _getSingleValue(u'Discpline', mapping, u'UNKNOWN')
-            referenceID = _getSingleValue(u'ReferenceId', mapping, u'UNKNOWN')
-            referenceURL = _getSingleValue(u'ReferenceUrl', mapping, u'UNKNOWN')
+            organSites = _getMultipleValues(u'OrganSite', mapping, [])
+            protocolID = _getSingleValue(u'ProtocolId', mapping, u'')
+            protocolName = _getSingleValue(u'ProtocolName', mapping, u'')
+            dataCustodianName = _getSingleValue(u'DataCustodian', mapping, u'')
+            dataCustodianEmail = _getSingleValue(u'DataCustodianEmail', mapping, u'')
+            discipline = _getSingleValue(u'Discpline', mapping, u'')
+            referenceID = _getSingleValue(u'ReferenceId', mapping, u'')
+            referenceURL = _getSingleValue(u'ReferenceUrl', mapping, u'')
             return LabCASCollection(
                 identifier, qaState, owners, name, title, description, leadPI, collaborativeGroup, organSites,
                 protocolID, protocolName, dataCustodianName, dataCustodianEmail, discipline, referenceID, referenceURL
@@ -240,6 +240,7 @@ class LabCASDataset(object):
         name = mapping.get(u'DatasetName', u'UNKNOWN')
         metadata = {}
         for key, value in mapping.iteritems():
+            if key == u'OwnerPrincipal': continue
             if isinstance(value, list) and not isinstance(value, basestring):
                 metadata[key] = value
         return LabCASDataset(identifier, name, metadata)
