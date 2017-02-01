@@ -13,6 +13,8 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 • CA-1479, Replace EDRN with MCL
 • CA-1480, Remove mentions of collaborative groups since MCL doesn't have them
 • CA-1481, Replace OrganSite with Organ
+• CA-1482, Do not display both Title and Name for a Collection (they are the
+  same)
 
 
 0.0.3 — Yes I Would Care to Make a Release

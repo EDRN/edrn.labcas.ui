@@ -27,8 +27,6 @@
                 </ol>
 
                 <dl class='dl-horizontal'>
-                    <dt>Title:</dt>
-                    <dd tal:content='collection.title'>The Blah Collection</dd>
                     <dt>Name:</dt>
                     <dd tal:content='collection.name'>BlahCollection</dd>
                     <dt>Identifier:</dt>
