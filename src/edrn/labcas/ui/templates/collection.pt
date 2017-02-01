@@ -50,7 +50,7 @@
                     <dt>Collaborative Group:</dt>
                     <dd tal:content='collection.collaborativeGroup'>Lung</dd>
 -->                    
-                    <dt>Organ Sites:</dt>
+                    <dt>Organs:</dt>
                     <dd tal:content='python:u", ".join(collection.organSites)'>Lung, Trachea</dd>
                     <dt>Protocol ID:</dt>
                     <dd tal:content='collection.protocolID'>123</dd>
