@@ -36,6 +36,7 @@ _externalRequirements = [
     'pyramid_debugtoolbar',
     'pyramid_ldap',
     'rdflib',
+    'six',
     'solrpy',
     'waitress',
     'zope.component',

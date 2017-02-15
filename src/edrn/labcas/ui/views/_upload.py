@@ -16,9 +16,10 @@ class UploadView(object):
         backend = getUtility(IBackend)
         workflows = []
         for availableWorkflow in backend.getWorkflowMgr().getWorkflows():
-            # Include only workflows that have a task with order 1:
+            if availableWorkflow.get('id', u'unknown') == 'urn:edrn:LabcasUpload2Workflow': continue  # CA-1485
             tasks = availableWorkflow.get('tasks', [])
             for task in tasks:
+                # Include only workflows that have a task with order 1:
                 if task.get('order', '-1') == '1':
                     workflow = LabCASWorkflow(
                         availableWorkflow.get('id', u'unknown'),
