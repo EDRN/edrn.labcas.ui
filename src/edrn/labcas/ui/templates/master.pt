@@ -4,6 +4,7 @@
     xmlns='http://www.w3.org/1999/xhtml'
     xmlns:tal='http://xml.zope.org/namespaces/tal'
     xmlns:metal='http://xml.zope.org/namespaces/metal'>
+    <?python from edrn.labcas.ui.interfaces import ILabCASSettings ?>
     <head>
         <meta charset='utf-8'/>
         <meta http-equiv='X-UA-Compatible' content='IE=edge'/>
@@ -28,13 +29,15 @@
         message message|nothing;
         fullName python:request.session["fullName"]|nothing;
         infoFlashes python:request.session.pop_flash("info");
+        settings python:request.registry.getUtility(ILabCASSettings);
+        siteName python:settings.getSiteName();
     '>
         <nav class='navbar navbar-default' role='navigation' style='background-color: white;'>
             <div class='container-fluid'>
                 <div class='navbar-header'>
                     <a class='navbar-brand' href='#' tal:attributes='href python:request.route_url("collections")'>
-                        <img src='#' alt='MCL'
-                            tal:attributes='src python:request.static_url("edrn.labcas.ui:static/mcl.png")'/>
+                        <img src='#' alt='Site Name Here'
+                            tal:attributes='src python:request.static_url("edrn.labcas.ui:static/mcl.png"); alt siteName;'/>
                     </a>
                 </div>
                 <div class='navbar-text navbar-right'>

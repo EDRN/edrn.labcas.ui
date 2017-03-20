@@ -4,16 +4,16 @@
 
 u'''EDRN LabCAS User Interface'''
 
-from .interfaces import IBackend
-from .resources import Root, Dataset, Upload, Collections, Collection, File
+from .interfaces import IBackend, ILabCASSettings
+from .resources import Root, Dataset, Upload, Collections, Collection, File, Management
 from .vocabularies import Vocabularies
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid_ldap import groupfinder
-from zope.component import provideUtility
+from zope.component import provideUtility, getGlobalSiteManager
 from zope.interface import implements
-import xmlrpclib, solr
+import xmlrpclib, solr, cPickle
 
 
 PACKAGE_NAME = __name__
@@ -38,9 +38,27 @@ class _Backend(object):
         return solr.Solr(self.solrURL + u'/' + kind)
 
 
+class _Settings(object):
+    implements(ILabCASSettings)
+    siteName = u'Unknown Site'
+    def __init__(self, settingsPath):
+        self.settingsPath = settingsPath
+    def getSiteName(self):
+        return self.siteName
+    def setSiteName(self, siteName):
+        if siteName != self.siteName:
+            self.siteName = siteName
+            self.update()
+    def update(self):
+        with open(self.settingsPath, 'wb') as f:
+            cPickle.dump(self, f)
+
+
 def main(global_config, **settings):
     u'''Return a WSGI application using the Pyramid framework that implements the LabCAS user interface.'''
-    config = Configurator(settings=settings, root_factory=Root)
+    globalReg = getGlobalSiteManager()
+    config = Configurator(registry=globalReg, root_factory=Root)
+    config.setup_registry(settings=settings)
     config.include('pyramid_chameleon')
     config.include('pyramid_beaker')
     config.include('pyramid_ldap')
@@ -79,7 +97,15 @@ def main(global_config, **settings):
     config.add_route('people', '/people')
     config.add_route('protocols', '/protocols')
     config.add_route('ldapGroups', '/ldapGroups')
+    config.add_route('manage', '/manage', factory=Management)
     config.scan()
+    try:
+        with open(settings['labcas.settings'], 'rb') as f:
+            labCASSettings = cPickle.load(f)
+    except:
+        labCASSettings = _Settings(settings['labcas.settings'])
+        labCASSettings.update()
+    provideUtility(labCASSettings)
     provideUtility(_Backend(
         settings['labcas.filemgr'],
         settings['labcas.workflow'],

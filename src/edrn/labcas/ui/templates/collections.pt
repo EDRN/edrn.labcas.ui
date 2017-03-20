@@ -16,6 +16,7 @@
             - hasCollections = true if we have something for "My Collections"
             - hasPublicCollections = the same, but true if there are public collections
             - canUpload = boolean if we can upload files and create a new dataset in this collection
+            - canManage = boolean if logged in user can manage LabCAS
         -->
     </head>
     <body>
@@ -136,6 +137,12 @@
                         </div> <!-- /hasPubProducts -->
                     </div>
                 </div>
+                <p tal:condition='canManage'>
+                    <a class='btn btn-default' href='#' role='button'
+                        tal:attributes='href python:request.route_url("manage")'>
+                        <span class='glyphicon glyphicon-cog' aria-hidden='true'></span> Manage LabCAS
+                    </a>
+                </p>
             </div>
         </div>
     </body>

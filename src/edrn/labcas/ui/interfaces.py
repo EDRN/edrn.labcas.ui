@@ -23,3 +23,11 @@ class IVocabularies(Interface):
         u'''Returns a sequence of people working on EDRN'''
     def getProtocols():
         u'''Returns a sequence of EDRN protocol names'''
+
+
+class ILabCASSettings(Interface):
+    u'''Various settings for LabCAS'''
+    def getSiteName():
+        u'''Returns a unicode name of the site'''
+    def setSiteName(siteName):
+        u'''Set the name of the site'''
