@@ -10,6 +10,7 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 -----------
 
 • CA-1485, Do not display LabcasUpload2Workflow
+• CA-1503, Controlled vocabularies for discipline, institution, organ, species, specimen type
 
 
 1.0.0 — Wait, That's Not His First Name?

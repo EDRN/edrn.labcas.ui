@@ -4,21 +4,40 @@
 
 u'''EDRN LabCAS User Interface: vocabularies'''
 
-from .interfaces import IVocabularies
-from .utils import UTC
+from .interfaces import IVocabularies, ILabCASSettings
+from .utils import UTC, Settings
 from zope.interface import implements
-import os.path, cPickle, datetime, rdflib, ConfigParser, argparse, os, os.path, sys, urlparse, logging
+from zope.component import getUtility, provideUtility
+import os.path, cPickle, datetime, rdflib, ConfigParser, argparse, os, sys, urlparse, logging
 
 _logger = logging.getLogger(__name__)
 
 
-_peopleRDF             = u'https://edrn.jpl.nasa.gov/cancerdataexpo/rdf-data/registered-person/@@rdf'
-_personType            = rdflib.term.URIRef(u'http://edrn.nci.nih.gov/rdf/types.rdf#Person')
 _surnamePredicateURI   = rdflib.term.URIRef(u'http://xmlns.com/foaf/0.1/surname')
 _givenNamePredicateURI = rdflib.term.URIRef(u'http://xmlns.com/foaf/0.1/givenname')
-_protocolsRDF          = u'https://edrn.jpl.nasa.gov/cancerdataexpo/rdf-data/protocols/@@rdf'
-_protocolType          = rdflib.term.URIRef(u'http://edrn.nci.nih.gov/rdf/types.rdf#Protocol')
 _dcTitlePredicateURI   = rdflib.term.URIRef(u'http://purl.org/dc/terms/title')
+_personTypes = (
+    rdflib.term.URIRef(u'http://cancer.jpl.nasa.gov/rdf/types.rdf#Person'),
+    rdflib.term.URIRef(u'http://edrn.nci.nih.gov/rdf/types.rdf#Person')
+)
+_protocolTypes = (
+    rdflib.term.URIRef(u'http://cancer.jpl.nasa.gov/rdf/types.rdf#Protocol'),
+    rdflib.term.URIRef(u'http://edrn.nci.nih.gov/rdf/types.rdf#Protocol')
+)
+_siteTypes = (
+    rdflib.term.URIRef(u'https://cancer.jpl.nasa.gov/rdf/types.rdf#FundedSite'),
+    rdflib.term.URIRef(u'http://edrn.nci.nih.gov/rdf/types.rdf#Site')
+)
+_organTypes = (
+    rdflib.term.URIRef(u'https://cancer.jpl.nasa.gov/rdf/types.rdf#Organ'),
+    rdflib.term.URIRef(u'http://edrn.nci.nih.gov/rdf/types.rdf#BodySystem')
+)
+_disciplineTypes = (
+    rdflib.term.URIRef(u'https://cancer.jpl.nasa.gov/rdf/types.rdf#Discipline'),
+)
+_speciesTypes = (
+    rdflib.term.URIRef(u'https://cancer.jpl.nasa.gov/rdf/types.rdf#Species'),
+)
 
 
 class Vocabularies(object):
@@ -26,9 +45,8 @@ class Vocabularies(object):
     implements(IVocabularies)
     def __init__(self, vocabDir):
         self.vocabDir = vocabDir
-        self.peopleTimestamp = self.protocolsTimestamp = datetime.datetime(
-            datetime.MINYEAR, 1, 1, 0, 0, 0, 0, UTC
-        )
+        self.peopleTimestamp = self.protocolsTimestamp = self.sitesTimestamp = self.organsTimestamp \
+            = self.speciesTimestamp = datetime.datetime(datetime.MINYEAR, 1, 1, 0, 0, 0, 0, UTC)
     def _loadVocabulary(self, vocabName):
         vocabFile = os.path.join(self.vocabDir, vocabName)
         _logger.info(u'Loading vocabulary from %s', vocabFile)
@@ -50,6 +68,24 @@ class Vocabularies(object):
             self.protocols = self._loadVocabulary(u'protocols')
             self.protocolsTimestamp = timestamp
         return self.protocols
+    def getSites(self):
+        timestamp = self._getLastUpdate(u'sites')
+        if timestamp > self.sitesTimestamp:
+            self.sites = self._loadVocabulary(u'sites')
+            self.sitesTimestamp = timestamp
+        return self.sites
+    def getOrgans(self):
+        timestamp = self._getLastUpdate(u'organs')
+        if timestamp > self.organsTimestamp:
+            self.organs = self._loadVocabulary(u'organs')
+            self.organsTimestamp = timestamp
+        return self.organs
+    def getSpecies(self):
+        timestamp = self._getLastUpdate(u'species')
+        if timestamp > self.speciesTimestamp:
+            self.species = self._loadVocabulary(u'species')
+            self.speciesTimestamp = timestamp
+        return self.species
 
 
 def _parseRDF(graph):
@@ -75,20 +111,24 @@ def _getStatements(url):
 
 
 def _dumpFile(vocabDir, obj, name):
-    dest = os.path.join(vocabDir, name)
+    dest = os.path.join(vocabDir, name + '.dump')
     with open(dest, 'wb') as f:
         cPickle.dump(obj, f)
+    os.rename(dest, os.path.join(vocabDir, name))
     tsFile = os.path.join(vocabDir, name + u'.timestamp')
     with open(tsFile, 'wb') as f:
         cPickle.dump(datetime.datetime.now(UTC), f)
 
 
 def _dumpPeople(vocabDir):
+    settings = getUtility(ILabCASSettings)
     people = {}
-    statements = _getStatements(_peopleRDF)
+    url = settings.getPeopleRDFURL()
+    _logger.info('Dumping people from %s', url)
+    statements = _getStatements(url)
     for subjectURI, predicates in statements.iteritems():
         objectType = predicates[rdflib.RDF.type][0]
-        if objectType != _personType: continue
+        if objectType not in _personTypes: continue
         givenName = unicode(predicates.get(_givenNamePredicateURI, [u''])[0])
         surname = unicode(predicates.get(_surnamePredicateURI, [u''])[0])
         personID = os.path.basename(urlparse.urlparse(subjectURI).path)
@@ -98,11 +138,14 @@ def _dumpPeople(vocabDir):
 
 
 def _dumpProtocols(vocabDir):
+    settings = getUtility(ILabCASSettings)
     protocols = {}
-    statements = _getStatements(_protocolsRDF)
+    url = settings.getProtocolRDFURL()
+    _logger.info('Dumping protocols from %s', url)
+    statements = _getStatements(url)
     for subjectURI, predicates in statements.iteritems():
         objectType = predicates[rdflib.RDF.type][0]
-        if objectType != _protocolType: continue
+        if objectType not in _protocolTypes: continue
         title = predicates.get(_dcTitlePredicateURI, None)
         if not title: continue
         protocolID = os.path.basename(urlparse.urlparse(subjectURI).path)
@@ -111,17 +154,98 @@ def _dumpProtocols(vocabDir):
     _dumpFile(vocabDir, protocols, u'protocols')
 
 
+def _dumpSites(vocabDir):
+    settings = getUtility(ILabCASSettings)
+    sites = {}
+    url = settings.getSiteRDFURL()
+    _logger.info('Dumping sites from %s', url)
+    statements = _getStatements(url)
+    for subjectURI, predicates in statements.iteritems():
+        objectType = predicates[rdflib.RDF.type][0]
+        if objectType not in _siteTypes: continue
+        title = predicates.get(_dcTitlePredicateURI, None)
+        if not title: continue
+        siteID = os.path.basename(urlparse.urlparse(subjectURI).path)
+        name = u'{} ({})'.format(unicode(title[0]), siteID)
+        sites[siteID] = name
+    _dumpFile(vocabDir, sites, u'sites')
+
+
+def _dumpOrgans(vocabDir):
+    settings = getUtility(ILabCASSettings)
+    organs = {}
+    url = settings.getOrganRDFURL()
+    _logger.info('Dumping organs from %s', url)
+    statements = _getStatements(url)
+    for subjectURI, predicates in statements.iteritems():
+        objectType = predicates[rdflib.RDF.type][0]
+        if objectType not in _organTypes: continue
+        title = predicates.get(_dcTitlePredicateURI, None)
+        if not title: continue
+        organID = os.path.basename(urlparse.urlparse(subjectURI).path)
+        name = u'{} ({})'.format(unicode(title[0]), organID)
+        organs[organID] = name
+    _dumpFile(vocabDir, organs, u'organs')
+
+
+def _dumpDisciplines(vocabDir):
+    settings = getUtility(ILabCASSettings)
+    disciplines = {}
+    url = settings.getDisciplineRDFURL()
+    _logger.info('Dumping disciplines from %s', url)
+    statements = _getStatements(url)
+    for subjectURI, predicates in statements.iteritems():
+        objectType = predicates[rdflib.RDF.type][0]
+        if objectType not in _disciplineTypes: continue
+        title = predicates.get(_dcTitlePredicateURI, None)
+        if not title: continue
+        discID = os.path.basename(urlparse.urlparse(subjectURI).path)
+        name = u'{} ({})'.format(unicode(title[0]), discID)
+        disciplines[discID] = name
+    _dumpFile(vocabDir, disciplines, u'disciplines')
+
+
+def _dumpSpecies(vocabDir):
+    settings = getUtility(ILabCASSettings)
+    species = {}
+    url = settings.getSpeciesRDFURL()
+    _logger.info('Dumping species from %s', url)
+    statements = _getStatements(url)
+    for subjectURI, predicates in statements.iteritems():
+        objectType = predicates[rdflib.RDF.type][0]
+        if objectType not in _speciesTypes: continue
+        title = predicates.get(_dcTitlePredicateURI, None)
+        if not title: continue
+        specID = os.path.basename(urlparse.urlparse(subjectURI).path)
+        name = u'{} ({})'.format(unicode(title[0]), specID)
+        species[specID] = name
+    _dumpFile(vocabDir, species, u'species')
+
+
 def main():
+    logging.basicConfig(level=logging.INFO)
     parser = argparse.ArgumentParser(description=u'Update the LabCAS UI vocabulary files')
     parser.add_argument('config', help=u'Path to LabCAS UI "Paste" configuration file')
     args = parser.parse_args()
     config = ConfigParser.SafeConfigParser()
     config.read(args.config)
     vocabDir = config.get('app:main', 'labcas.vocabularies')
+    settingsFile = config.get('app:main',  'labcas.settings')
     if not os.path.isdir(vocabDir):
         os.makedirs(vocabDir)
+    try:
+        with open(config.get(settingsFile, 'rb')) as f:
+            labCASSettings = cPickle.load(f)
+    except:
+        labCASSettings = Settings(settingsFile)
+        labCASSettings.update()
+    provideUtility(labCASSettings)
     _dumpPeople(vocabDir)
     _dumpProtocols(vocabDir)
+    _dumpSites(vocabDir)
+    _dumpOrgans(vocabDir)
+    _dumpDisciplines(vocabDir)
+    _dumpSpecies(vocabDir)
     return 0
 
 

@@ -2,10 +2,11 @@
 # Copyright 2015 California Institute of Technology. ALL RIGHTS
 # RESERVED. U.S. Government Sponsorship acknowledged.
 
-from edrn.labcas.ui.interfaces import IBackend
+from .interfaces import IBackend, ILabCASSettings
 from pyramid_ldap import get_ldap_connector
 from zope.component import getUtility
-import colander, re, datetime, logging, deform
+from zope.interface import implements
+import colander, re, datetime, logging, deform, cPickle
 
 # Logging
 _logger = logging.getLogger(__name__)
@@ -61,7 +62,20 @@ _metadataToIgnore = frozenset((
     u'Version',
 ))
 
+# Default settings
+_defaultMetadata = {
+}
+_defaultDatatypes = {
+}
+DEFAULT_SITE_RDF_URL       = u'https://edrn.jpl.nasa.gov/cancerdataexpo/rdf-data/sites/@@rdf'
+DEFAULT_PROTOCOL_RDF_URL   = u'https://edrn.jpl.nasa.gov/cancerdataexpo/rdf-data/protocols/@@rdf'
+DEFAULT_PEOPLE_RDF_URL     = u'https://edrn.jpl.nasa.gov/cancerdataexpo/rdf-data/registered-person/@@rdf'
+DEFAULT_ORGAN_RDF_URL      = u'https://edrn.jpl.nasa.gov/cancerdataexpo/rdf-data/body-systems/@@rdf'
+DEFAULT_DISCIPLINE_RDF_URL = u'https://mcl.jpl.nasa.gov/ksdb/publishrdf/?filterby=program&filterval=1&rdftype=discipline'
+DEFAULT_SPECIES_RDF_URL    = u'https://mcl.jpl.nasa.gov/ksdb/publishrdf/?filterby=program&filterval=1&rdftype=species'
 
+
+# Functions
 def _getSingleValue(key, mapping, default=None):
     u'''Get a single value with the matching ``key`` that maps to an array
     of values in ``mapping``; but we want just one-and-only value.  Return
@@ -84,6 +98,204 @@ def _getMultipleValues(key, mapping, default=None):
     return default
 
 
+def computeCollaborativeGroupURL(product):
+    return COLLABORATIVE_GROUPS.get(product.cg)
+
+
+def createSchema(workflow, request):
+    # Find the task with order 1:
+    schema = colander.SchemaNode(colander.Mapping())
+    for task in workflow.tasks:
+        if task.get('order', '-1') == '1':
+            # build the form
+            conf = task.get('configuration', {})
+            for fieldName in task.get('requiredMetFields', []):
+                # CA-1394, LabCAS UI will generate dataset IDs
+                if fieldName == 'DatasetId': continue
+                title = conf.get(u'input.dataset.{}.title'.format(fieldName), u'Unknown Field')
+                description = conf.get(u'input.dataset.{}.description'.format(fieldName), u'Not sure what to put here.')
+                dataType = conf.get(u'input.dataset.{}.type'.format(fieldName), u'http://www.w3.org/2001/XMLSchema/string')
+                missing = colander.required if conf.get(u'input.dataset.{}.required'.format(fieldName)) == u'true' else None
+                # FIXME:
+                if dataType in (
+                    u'http://www.w3.org/2001/XMLSchema/string',
+                ):
+                    # Check for enumerated values
+                    if u'input.dataset.{}.value.1'.format(fieldName) in conf:
+                        # Collect the values
+                        exp = re.compile(u'input.dataset.{}.value.[0-9]+'.format(fieldName))
+                        values = []
+                        for key, val in conf.items():
+                            if exp.match(key) is not None:
+                                values.append((val, val))
+                        values.sort()
+                        schema.add(colander.SchemaNode(
+                            colander.String(),
+                            name=fieldName,
+                            title=title,
+                            description=description,
+                            validator=colander.OneOf([i[0] for i in values]),
+                            widget=deform.widget.RadioChoiceWidget(values=values, inline=True),
+                            missing=missing
+                        ))
+                    else:
+                        schema.add(colander.SchemaNode(
+                            colander.String(),
+                            name=fieldName,
+                            title=title,
+                            description=description,
+                            missing=missing
+                        ))
+                elif dataType == u'http://cancer.jpl.nasa.gov/xml/schema/types.xml#text':
+                    schema.add(colander.SchemaNode(
+                        colander.String(),
+                        name=fieldName,
+                        title=title,
+                        description=description,
+                        missing=missing,
+                        widget=deform.widget.RichTextWidget()
+                    ))
+                elif dataType == u'http://cancer.jpl.nasa.gov/xml/schema/types.xml#nistDatasetId':
+                    # Skip this; we generated this dataset ID based on other fields
+                    pass
+                elif dataType == u'http://cancer.jpl.nasa.gov/xml/schema/types.xml#participatingSiteId':
+                    # Skip this; we'll capture it based on the "http://…#participatingSite" value
+                    pass
+                elif dataType == u'http://cancer.jpl.nasa.gov/xml/schema/types.xml#participatingSite':
+                    schema.add(colander.SchemaNode(
+                        colander.String(),
+                        name=fieldName,
+                        title=title,
+                        description=description,
+                        missing=missing,
+                        widget=deform.widget.AutocompleteInputWidget(values=request.route_url('sites'))
+                    ))
+                elif dataType == u'http://cancer.jpl.nasa.gov/xml/schema/types.xml#organ':
+                    schema.add(colander.SchemaNode(
+                        colander.String(),
+                        name=fieldName,
+                        title=title,
+                        description=description,
+                        missing=missing,
+                        widget=deform.widget.AutocompleteInputWidget(values=request.route_url('organs'))
+                    ))
+                elif dataType == u'http://cancer.jpl.nasa.gov/xml/schema/types.xml#discipline':
+                    schema.add(colander.SchemaNode(
+                        colander.String(),
+                        name=fieldName,
+                        title=title,
+                        description=description,
+                        missing=missing,
+                        widget=deform.widget.AutocompleteInputWidget(values=request.route_url('disciplines'))
+                    ))
+                elif dataType == u'http://cancer.jpl.nasa.gov/xml/schema/types.xml#species':
+                    schema.add(colander.SchemaNode(
+                        colander.String(),
+                        name=fieldName,
+                        title=title,
+                        description=description,
+                        missing=missing,
+                        widget=deform.widget.AutocompleteInputWidget(values=request.route_url('species'))
+                    ))
+                elif dataType == u'http://cancer.jpl.nasa.gov/xml/schema/types.xml#collaborativeGroup':
+                    # CA-1356 ugly fix but I'm in a hurry and these groups haven't changed in 10 years.
+                    # FIXME: correct solution: use IVocabularies
+                    schema.add(colander.SchemaNode(
+                        colander.String(),
+                        name=fieldName,
+                        title=title,
+                        description=description,
+                        missing=missing,
+                        validator=colander.OneOf(_collaborativeGroups),
+                        widget=deform.widget.RadioChoiceWidget(values=[(i, i) for i in _collaborativeGroups])
+                    ))
+                elif dataType == u'urn:ldap:attributes:dn':
+                    principals = [
+                        _cnHunter.match(i).group(1).strip() for i in request.effective_principals
+                        if i.startswith(u'cn=')
+                    ]
+                    principals.sort()
+                    c = get_ldap_connector(request)
+                    ldapGroups = [
+                        _cnHunter.match(i).group(1).strip() for i, attrs in c.user_groups(u'uid=*')
+                        if i.startswith(u'cn=')
+                    ]
+                    group = colander.SchemaNode(
+                        colander.String(),
+                        widget=deform.widget.AutocompleteInputWidget(values=request.route_url('ldapGroups')),
+                        name='group',
+                        title=u'Group',
+                        description=u'Name of an EDRN group that should be able to access this data'
+                    )
+                    groups = colander.SchemaNode(
+                        colander.Sequence(),
+                        group,
+                        validator=colander.ContainsOnly(ldapGroups),
+                        name=fieldName,
+                        title=title,
+                        description=description,
+                        missing=missing,
+                        default=principals
+                    )
+                    schema.add(groups)
+                elif dataType == u'http://cancer.jpl.nasa.gov/xml/schema/types.xml#principalInvestigator':
+                    schema.add(colander.SchemaNode(
+                        colander.String(),
+                        name=fieldName,
+                        title=title,
+                        description=description,
+                        missing=missing,
+                        widget=deform.widget.AutocompleteInputWidget(values=request.route_url('people'))
+                    ))
+                elif dataType == u'http://cancer.jpl.nasa.gov/xml/schema/types.xml#protocolName':
+                    schema.add(colander.SchemaNode(
+                        colander.String(),
+                        name=fieldName,
+                        title=title,
+                        description=description,
+                        missing=missing,
+                        widget=deform.widget.AutocompleteInputWidget(values=request.route_url('protocols'))
+                    ))
+                elif dataType == u'http://www.w3.org/2001/XMLSchema/integer':
+                    schema.add(colander.SchemaNode(
+                        colander.Int(),
+                        name=fieldName,
+                        title=title,
+                        description=description,
+                        missing=missing
+                    ))
+                elif dataType == u'http://www.w3.org/2001/XMLSchema/boolean':
+                    schema.add(colander.SchemaNode(
+                        colander.Boolean(),
+                        name=fieldName,
+                        title=title,
+                        description=description,
+                        missing=missing
+                    ))
+                elif dataType == u'http://www.w3.org/2001/XMLSchema/anyURI':
+                    schema.add(colander.SchemaNode(
+                        colander.String(),
+                        name=fieldName,
+                        title=title,
+                        description=description,
+                        missing=missing,
+                        validator=colander.Regex(re_python_rfc3986_URI_reference)
+                    ))
+                elif dataType == u'http://www.w3.org/2001/XMLSchema/date':
+                    schema.add(colander.SchemaNode(
+                        colander.Date(),
+                        name=fieldName,
+                        title=title,
+                        description=description,
+                        missing=missing
+                    ))
+                else:
+                    _logger.warn(u'Unknown data type "%s" for field "%s"', dataType, fieldName)
+            break
+    return schema
+
+
+# Classes
 class _UTC(datetime.tzinfo):
     u'''Time zone for Coordinated Universal Time (UTC); for more information, please see
     https://docs.python.org/2.7/library/datetime.html#tzinfo-objects
@@ -317,164 +529,104 @@ class LabCASWorkflow(object):
         return hash(self.identifier)
 
 
-def computeCollaborativeGroupURL(product):
-    return COLLABORATIVE_GROUPS.get(product.cg)
+class Settings(object):
+    implements(ILabCASSettings)
+    program = u'EDRN'
+    metadata = _defaultMetadata
+    datatypes = _defaultDatatypes
+    siteRDFURL = DEFAULT_SITE_RDF_URL
+    protocolRDFURL = DEFAULT_PROTOCOL_RDF_URL
+    peopleRDFURL = DEFAULT_PEOPLE_RDF_URL
+    organRDFURL = DEFAULT_ORGAN_RDF_URL
+    disciplineRDFURL = DEFAULT_DISCIPLINE_RDF_URL
+    speciesRDFURL = DEFAULT_SPECIES_RDF_URL
+    def __init__(self, settingsPath):
+        self.settingsPath = settingsPath
+    def getProgram(self):
+        return self.program
+    def setProgram(self, program):
+        if program != self.program:
+            self.program = program
+            self.update()
+    def getSpeciesRDFURL(self):
+        return self.speciesRDFURL
+    def setSpeciesRDFURL(self, url):
+        if url != self.speciesRDFURL:
+            self.speciesRDFURL = url
+            self.update()
+    def getDisciplineRDFURL(self):
+        return self.disciplineRDFURL
+    def setDisciplineRDFURL(self, url):
+        if url != self.disciplineRDFURL:
+            self.disciplineRDFURL = url
+            self.update()
+    def getSiteRDFURL(self):
+        return self.siteRDFURL
+    def setSiteRDFURL(self, url):
+        if url != self.siteRDFURL:
+            self.siteRDFURL = url
+            self.update()
+    def getOrganRDFURL(self):
+        return self.organRDFURL
+    def setOrganRDFURL(self, url):
+        if url != self.organRDFURL:
+            self.organRDFURL = url
+            self.update()
+    def getProtocolRDFURL(self):
+        return self.protocolRDFURL
+    def setProtocolRDFURL(self, url):
+        if url != self.protocolRDFURL:
+            self.protocolRDFURL = url
+            self.update()
+    def getPeopleRDFURL(self):
+        return self.peopleRDFURL
+    def setPeopleRDFURL(self, url):
+        if url != self.peopleRDFURL:
+            self.peopleRDFURL = url
+            self.update()
+    def getMetadataElements(self):
+        return self.metadata
+    def deleteMetadataElement(self, identifier):
+        try:
+            del self.metadata[identifier]
+            self.update()
+        except KeyError:
+            pass
+    def addMetadataElement(self, element):
+        self.metadata[element.identifier] = element
+        self.update()
+    def getDataTypes(self):
+        return self.datatypes
+    def deleteDataType(self, identifier):
+        try:
+            del self.datatypes[identifier]
+            self.update()
+        except KeyError:
+            pass
+    def addDataType(self, datatype):
+        self.datatypes[datatype.identifier] = datatype
+        self.update()
+    def update(self):
+        with open(self.settingsPath, 'wb') as f:
+            cPickle.dump(self, f)
 
 
-def createSchema(workflow, request):
-    # Find the task with order 1:
-    schema = colander.SchemaNode(colander.Mapping())
-    for task in workflow.tasks:
-        if task.get('order', '-1') == '1':
-            # build the form
-            conf = task.get('configuration', {})
-            for fieldName in task.get('requiredMetFields', []):
-                # CA-1394, LabCAS UI will generate dataset IDs
-                if fieldName == 'DatasetId': continue
-                title = conf.get(u'input.dataset.{}.title'.format(fieldName), u'Unknown Field')
-                description = conf.get(u'input.dataset.{}.description'.format(fieldName), u'Not sure what to put here.')
-                dataType = conf.get(u'input.dataset.{}.type'.format(fieldName), u'http://www.w3.org/2001/XMLSchema/string')
-                missing = colander.required if conf.get(u'input.dataset.{}.required'.format(fieldName)) == u'true' else None
-                # FIXME:
-                if dataType in (
-                    u'http://www.w3.org/2001/XMLSchema/string',
-                    u'http://edrn.nci.nih.gov/xml/schema/types.xml#discipline',
-                    u'http://edrn.nci.nih.gov/xml/schema/types.xml#organSite',
-                ):
-                    # Check for enumerated values
-                    if u'input.dataset.{}.value.1'.format(fieldName) in conf:
-                        # Collect the values
-                        exp = re.compile(u'input.dataset.{}.value.[0-9]+'.format(fieldName))
-                        values = []
-                        for key, val in conf.items():
-                            if exp.match(key) is not None:
-                                values.append((val, val))
-                        values.sort()
-                        schema.add(colander.SchemaNode(
-                            colander.String(),
-                            name=fieldName,
-                            title=title,
-                            description=description,
-                            validator=colander.OneOf([i[0] for i in values]),
-                            widget=deform.widget.RadioChoiceWidget(values=values, inline=True),
-                            missing=missing
-                        ))
-                    else:
-                        schema.add(colander.SchemaNode(
-                            colander.String(),
-                            name=fieldName,
-                            title=title,
-                            description=description,
-                            missing=missing
-                        ))
-                elif dataType == u'http://edrn.nci.nih.gov/xml/schema/types.xml#text':
-                    schema.add(colander.SchemaNode(
-                        colander.String(),
-                        name=fieldName,
-                        title=title,
-                        description=description,
-                        missing=missing,
-                        widget=deform.widget.RichTextWidget()
-                    ))
-                elif dataType == u'http://edrn.nci.nih.gov/xml/schema/types.xml#nistDatasetId':
-                    # Skip this; we generated this dataset ID based on other fields
-                    pass
-                elif dataType == u'http://edrn.nci.nih.gov/xml/schema/types.xml#collaborativeGroup':
-                    # CA-1356 ugly fix but I'm in a hurry and these groups haven't changed in 10 years.
-                    # FIXME: correct solution: use IVocabularies
-                    schema.add(colander.SchemaNode(
-                        colander.String(),
-                        name=fieldName,
-                        title=title,
-                        description=description,
-                        missing=missing,
-                        validator=colander.OneOf(_collaborativeGroups),
-                        widget=deform.widget.RadioChoiceWidget(values=[(i, i) for i in _collaborativeGroups])
-                    ))
-                elif dataType == u'urn:ldap:attributes:dn':
-                    principals = [
-                        _cnHunter.match(i).group(1).strip() for i in request.effective_principals
-                        if i.startswith(u'cn=')
-                    ]
-                    principals.sort()
-                    c = get_ldap_connector(request)
-                    ldapGroups = [
-                        _cnHunter.match(i).group(1).strip() for i, attrs in c.user_groups(u'uid=*')
-                        if i.startswith(u'cn=')
-                    ]
-                    group = colander.SchemaNode(
-                        colander.String(),
-                        widget=deform.widget.AutocompleteInputWidget(values=request.route_url('ldapGroups')),
-                        name='group',
-                        title=u'Group',
-                        description=u'Name of an EDRN group that should be able to access this data'
-                    )
-                    groups = colander.SchemaNode(
-                        colander.Sequence(),
-                        group,
-                        validator=colander.ContainsOnly(ldapGroups),
-                        name=fieldName,
-                        title=title,
-                        description=description,
-                        missing=missing,
-                        default=principals
-                    )
-                    schema.add(groups)
-                elif dataType == u'http://edrn.nci.nih.gov/xml/schema/types.xml#principalInvestigator':
-                    schema.add(colander.SchemaNode(
-                        colander.String(),
-                        name=fieldName,
-                        title=title,
-                        description=description,
-                        missing=missing,
-                        widget=deform.widget.AutocompleteInputWidget(values=request.route_url('people'))
-                    ))
-                elif dataType == u'http://edrn.nci.nih.gov/xml/schema/types.xml#protocolName':
-                    schema.add(colander.SchemaNode(
-                        colander.String(),
-                        name=fieldName,
-                        title=title,
-                        description=description,
-                        missing=missing,
-                        widget=deform.widget.AutocompleteInputWidget(values=request.route_url('protocols'))
-                    ))
-                elif dataType == u'http://www.w3.org/2001/XMLSchema/integer':
-                    schema.add(colander.SchemaNode(
-                        colander.Int(),
-                        name=fieldName,
-                        title=title,
-                        description=description,
-                        missing=missing
-                    ))
-                elif dataType == u'http://www.w3.org/2001/XMLSchema/boolean':
-                    schema.add(colander.SchemaNode(
-                        colander.Boolean(),
-                        name=fieldName,
-                        title=title,
-                        description=description,
-                        missing=missing
-                    ))
-                elif dataType == u'http://www.w3.org/2001/XMLSchema/anyURI':
-                    schema.add(colander.SchemaNode(
-                        colander.String(),
-                        name=fieldName,
-                        title=title,
-                        description=description,
-                        missing=missing,
-                        validator=colander.Regex(re_python_rfc3986_URI_reference)
-                    ))
-                elif dataType == u'http://www.w3.org/2001/XMLSchema/date':
-                    schema.add(colander.SchemaNode(
-                        colander.Date(),
-                        name=fieldName,
-                        title=title,
-                        description=description,
-                        missing=missing
-                    ))
-                else:
-                    _logger.warn(u'Unknown data type "%s" for field "%s"', dataType, fieldName)
-            break
-    return schema
+class DataType(object):
+    def __init__(self, identifier):
+        self.identifier = identifier
+    def __cmp__(self, other):
+        return cmp(self.identifier, other.identifier)
+    def __repr__(self):
+        return u'{}:{}'.format(self.__class__.__name__, self.identifier)
+
+
+class MetadataElement(object):
+    def __init__(self, identifier):
+        self.identifier = identifier
+    def __cmp__(self, other):
+        return cmp(self.identifier, other.identifier)
+    def __repr__(self):
+        return u'{}:{}'.format(self.__class__.__name__, self.identifier)
 
 
 # Sincere gratitude to http://jmrware.com/articles/2009/uri_regexp/URI_regex.html

@@ -7,6 +7,7 @@ u'''EDRN LabCAS User Interface'''
 from .interfaces import IBackend, ILabCASSettings
 from .resources import Root, Dataset, Upload, Collections, Collection, File, Management
 from .vocabularies import Vocabularies
+from .utils import Settings
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
@@ -36,22 +37,6 @@ class _Backend(object):
         return self.archiveDir
     def getSearchEngine(self, kind):
         return solr.Solr(self.solrURL + u'/' + kind)
-
-
-class _Settings(object):
-    implements(ILabCASSettings)
-    siteName = u'Unknown Site'
-    def __init__(self, settingsPath):
-        self.settingsPath = settingsPath
-    def getSiteName(self):
-        return self.siteName
-    def setSiteName(self, siteName):
-        if siteName != self.siteName:
-            self.siteName = siteName
-            self.update()
-    def update(self):
-        with open(self.settingsPath, 'wb') as f:
-            cPickle.dump(self, f)
 
 
 def main(global_config, **settings):
@@ -96,6 +81,10 @@ def main(global_config, **settings):
     config.add_route('logout', '/logout')
     config.add_route('people', '/people')
     config.add_route('protocols', '/protocols')
+    config.add_route('sites', '/sites')
+    config.add_route('organs', '/organs')
+    config.add_route('disciplines', '/disciplines')
+    config.add_route('species', '/species')
     config.add_route('ldapGroups', '/ldapGroups')
     config.add_route('manage', '/manage', factory=Management)
     config.scan()
@@ -103,7 +92,7 @@ def main(global_config, **settings):
         with open(settings['labcas.settings'], 'rb') as f:
             labCASSettings = cPickle.load(f)
     except:
-        labCASSettings = _Settings(settings['labcas.settings'])
+        labCASSettings = Settings(settings['labcas.settings'])
         labCASSettings.update()
     provideUtility(labCASSettings)
     provideUtility(_Backend(

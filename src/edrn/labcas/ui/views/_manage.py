@@ -2,7 +2,10 @@
 
 from edrn.labcas.ui import PACKAGE_NAME
 from edrn.labcas.ui.interfaces import ILabCASSettings
-from edrn.labcas.ui.utils import LabCASWorkflow
+from edrn.labcas.ui.utils import (
+    LabCASWorkflow, DEFAULT_SITE_RDF_URL, DEFAULT_PROTOCOL_RDF_URL, DEFAULT_PEOPLE_RDF_URL, DEFAULT_ORGAN_RDF_URL,
+    DEFAULT_DISCIPLINE_RDF_URL, DEFAULT_SPECIES_RDF_URL
+)
 from pyramid.view import view_config, view_defaults
 from zope.component import getUtility
 import colander, deform
@@ -18,19 +21,79 @@ class ManageView(object):
         schema = colander.SchemaNode(colander.Mapping())
         schema.add(colander.SchemaNode(
             colander.String(),
-            name='siteName',
-            title=u'Site Name',
-            description=u'The name of this LabCAS installation.',
-            validator=colander.Length(min=1),
-            default=settings.getSiteName()
+            name='program',
+            title=u'Program',
+            description=u'Which program this LabCAS installation is for.',
+            default=u'EDRN',
+            widget=deform.widget.RadioChoiceWidget(values=((u'EDRN', u'EDRN'), (u'MCL', u'MCL')), inline=True)
+        ))
+        schema.add(colander.SchemaNode(
+            colander.String(),
+            name='disciplineRDFURL',
+            title=u'Discipline RDF URL',
+            description=u'URL to the Resource Description Framework knowledge source of disciplines.',
+            default=DEFAULT_DISCIPLINE_RDF_URL,
+        ))
+        schema.add(colander.SchemaNode(
+            colander.String(),
+            name='organRDFURL',
+            title=u'Organ RDF URL',
+            description=u'URL to the Resource Description Framework knowledge source of organs (body systems).',
+            default=DEFAULT_ORGAN_RDF_URL,
+        ))
+        schema.add(colander.SchemaNode(
+            colander.String(),
+            name='peopleRDFURL',
+            title=u'People RDF URL',
+            description=u'URL to the Resource Description Framework knowledge source of people.',
+            default=DEFAULT_PEOPLE_RDF_URL,
+        ))
+        schema.add(colander.SchemaNode(
+            colander.String(),
+            name='protocolRDFURL',
+            title=u'Protocol RDF URL',
+            description=u'URL to the Resource Description Framework knowledge source of protocols.',
+            default=DEFAULT_PROTOCOL_RDF_URL,
+        ))
+        schema.add(colander.SchemaNode(
+            colander.String(),
+            name='siteRDFURL',
+            title=u'Site RDF URL',
+            description=u'URL to the Resource Description Framework knowledge source of sites.',
+            default=DEFAULT_PROTOCOL_RDF_URL,
+        ))
+        schema.add(colander.SchemaNode(
+            colander.String(),
+            name='speciesRDFURL',
+            title=u'Species RDF URL',
+            description=u'URL to the Resource Description Framework knowledge source of species, like left sharks.',
+            default=DEFAULT_species_RDF_URL,
         ))
         form = deform.Form(schema, buttons=('submit',))
         if 'submit' in self.request.params:
             try:
                 metadataAppstruct = form.validate(self.request.POST.items())
-                siteName = metadataAppstruct['siteName']
-                if siteName != settings.getSiteName():
-                    settings.setSiteName(siteName)
+                program           = metadataAppstruct['program']
+                peopleRDFURL      = metadataAppstruct['peopleRDFURL']
+                protocolRDFURL    = metadataAppstruct['protocolRDFURL']
+                siteRDFURL        = metadataAppstruct['siteRDFURL']
+                organRDFURL       = metadataAppstruct['organRDFURL']
+                disciplineRDFURL  = metadataAppstruct['disciplineRDFURL']
+                speciesRDFURL     = metadataAppstruct['speciesRDFURL']
+                if program != settings.getProgram() \
+                    or peopleRDFURL != settings.getPeopleRDFURL() \
+                    or protocolRDFURL != settings.getProtocolRDFURL() \
+                    or siteRDFURL != settings.getSiteRDFURL() \
+                    or organRDFURL != settings.getOrganRDFURL() \
+                    or disciplineRDFURL != settings.getDisciplineRDFURL() \
+                    or speciesRDFURL != settings.getSpeciesRDFURL():
+                    settings.setProgram(program)
+                    settings.setPeopleRDFURL(peopleRDFURL)
+                    settings.setProtocolRDFURL(protocolRDFURL)
+                    settings.setSiteRDFURL(siteRDFURL)
+                    settings.setOrganRDFURL(organRDFURL)
+                    settings.setDisciplineRDFURL(disciplineRDFURL)
+                    settings.setSpeciesRDFURL(speciesRDFURL)
                     self.request.session.flash(u'Changes saved.', 'info')
                 else:
                     self.request.session.flash(u'No changes made.', 'info')

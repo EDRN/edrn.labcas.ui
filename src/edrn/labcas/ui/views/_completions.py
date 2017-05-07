@@ -44,6 +44,34 @@ class ProtocolCompletionsView(_CompletionsView):
         return self._getMatches(getUtility(IVocabularies).getProtocols().values())
 
 
+class SitesCompletionsView(_CompletionsView):
+    u'''Completions for sites.'''
+    @view_config(route_name='sites', renderer='json')
+    def __call__(self):
+        return self._getMatches(getUtility(IVocabularies).getSites().values())
+
+
+class OrgansCompletionsView(_CompletionsView):
+    u'''Completions for Organs.'''
+    @view_config(route_name='organs', renderer='json')
+    def __call__(self):
+        return self._getMatches(getUtility(IVocabularies).getOrgans().values())
+
+
+class DisciplinesCompletionsView(_CompletionsView):
+    u'''Completions for Disciplines.'''
+    @view_config(route_name='disciplines', renderer='json')
+    def __call__(self):
+        return self._getMatches(getUtility(IVocabularies).getDisciplines().values())
+
+
+class SpeciesCompletionsView(_CompletionsView):
+    u'''Completions for species.'''
+    @view_config(route_name='species', renderer='json')
+    def __call__(self):
+        return self._getMatches(getUtility(IVocabularies).getSpecies().values())
+
+
 class LDAPGroupsCompletionsView(_CompletionsView):
     u'''Completions for LDAP groups in EDRN.'''
     @view_config(route_name='ldapGroups', renderer='json')

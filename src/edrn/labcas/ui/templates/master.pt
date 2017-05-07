@@ -30,14 +30,18 @@
         fullName python:request.session["fullName"]|nothing;
         infoFlashes python:request.session.pop_flash("info");
         settings python:request.registry.getUtility(ILabCASSettings);
-        siteName python:settings.getSiteName();
+        program python:settings.getProgram();
+        isEDRN python:program == u"EDRN";
     '>
         <nav class='navbar navbar-default' role='navigation' style='background-color: white;'>
             <div class='container-fluid'>
                 <div class='navbar-header'>
                     <a class='navbar-brand' href='#' tal:attributes='href python:request.route_url("collections")'>
-                        <img src='#' alt='Site Name Here'
-                            tal:attributes='src python:request.static_url("edrn.labcas.ui:static/mcl.png"); alt siteName;'/>
+                        <img tal:condition='isEDRN' src='#' alt='Early Detection Research Network'
+                            tal:attributes='src python:request.static_url("edrn.labcas.ui:static/edrn.png")'/>
+                        <img tal:condition='not:isEDRN' src='#'
+                            alt='Consortium for Molecular and Cellular Characterization of Screen-Detected Lesions'
+                            tal:attributes='src python:request.static_url("edrn.labcas.ui:static/mcl.png")'/>
                     </a>
                 </div>
                 <div class='navbar-text navbar-right'>
