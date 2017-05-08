@@ -67,7 +67,7 @@ class ManageView(object):
             name='speciesRDFURL',
             title=u'Species RDF URL',
             description=u'URL to the Resource Description Framework knowledge source of species, like left sharks.',
-            default=DEFAULT_species_RDF_URL,
+            default=DEFAULT_SPECIES_RDF_URL,
         ))
         form = deform.Form(schema, buttons=('submit',))
         if 'submit' in self.request.params:

@@ -46,7 +46,8 @@ class Vocabularies(object):
     def __init__(self, vocabDir):
         self.vocabDir = vocabDir
         self.peopleTimestamp = self.protocolsTimestamp = self.sitesTimestamp = self.organsTimestamp \
-            = self.speciesTimestamp = datetime.datetime(datetime.MINYEAR, 1, 1, 0, 0, 0, 0, UTC)
+            = self.speciesTimestamp = self.disciplinesTimestamp \
+            = datetime.datetime(datetime.MINYEAR, 1, 1, 0, 0, 0, 0, UTC)
     def _loadVocabulary(self, vocabName):
         vocabFile = os.path.join(self.vocabDir, vocabName)
         _logger.info(u'Loading vocabulary from %s', vocabFile)
@@ -86,6 +87,12 @@ class Vocabularies(object):
             self.species = self._loadVocabulary(u'species')
             self.speciesTimestamp = timestamp
         return self.species
+    def getDisciplines(self):
+        timestamp = self._getLastUpdate(u'disciplines')
+        if timestamp > self.disciplinesTimestamp:
+            self.disciplines = self._loadVocabulary(u'disciplines')
+            self.disciplinesTimestamp = timestamp
+        return self.disciplines
 
 
 def _parseRDF(graph):
@@ -120,6 +127,15 @@ def _dumpFile(vocabDir, obj, name):
         cPickle.dump(datetime.datetime.now(UTC), f)
 
 
+def _getID(url):
+    u'''Get the identifying numeric component from an MCL- or EDRN-specific RDF subject URI.'''
+    last, query = os.path.basename(urlparse.urlparse(url).path), urlparse.urlparse(url).query
+    if query.startswith(u'id='):
+        return query[3:]
+    else:
+        return last
+
+
 def _dumpPeople(vocabDir):
     settings = getUtility(ILabCASSettings)
     people = {}
@@ -131,7 +147,7 @@ def _dumpPeople(vocabDir):
         if objectType not in _personTypes: continue
         givenName = unicode(predicates.get(_givenNamePredicateURI, [u''])[0])
         surname = unicode(predicates.get(_surnamePredicateURI, [u''])[0])
-        personID = os.path.basename(urlparse.urlparse(subjectURI).path)
+        personID = _getID(subjectURI)
         name = u'{}, {} ({})'.format(surname, givenName, personID)
         people[personID] = name
     _dumpFile(vocabDir, people, u'people')
@@ -148,7 +164,7 @@ def _dumpProtocols(vocabDir):
         if objectType not in _protocolTypes: continue
         title = predicates.get(_dcTitlePredicateURI, None)
         if not title: continue
-        protocolID = os.path.basename(urlparse.urlparse(subjectURI).path)
+        protocolID = _getID(subjectURI)
         name = u'{} ({})'.format(unicode(title[0]), protocolID)
         protocols[protocolID] = name
     _dumpFile(vocabDir, protocols, u'protocols')
@@ -165,7 +181,7 @@ def _dumpSites(vocabDir):
         if objectType not in _siteTypes: continue
         title = predicates.get(_dcTitlePredicateURI, None)
         if not title: continue
-        siteID = os.path.basename(urlparse.urlparse(subjectURI).path)
+        siteID = _getID(subjectURI)
         name = u'{} ({})'.format(unicode(title[0]), siteID)
         sites[siteID] = name
     _dumpFile(vocabDir, sites, u'sites')
@@ -182,7 +198,7 @@ def _dumpOrgans(vocabDir):
         if objectType not in _organTypes: continue
         title = predicates.get(_dcTitlePredicateURI, None)
         if not title: continue
-        organID = os.path.basename(urlparse.urlparse(subjectURI).path)
+        organID = _getID(subjectURI)
         name = u'{} ({})'.format(unicode(title[0]), organID)
         organs[organID] = name
     _dumpFile(vocabDir, organs, u'organs')
@@ -199,7 +215,7 @@ def _dumpDisciplines(vocabDir):
         if objectType not in _disciplineTypes: continue
         title = predicates.get(_dcTitlePredicateURI, None)
         if not title: continue
-        discID = os.path.basename(urlparse.urlparse(subjectURI).path)
+        discID = _getID(subjectURI)
         name = u'{} ({})'.format(unicode(title[0]), discID)
         disciplines[discID] = name
     _dumpFile(vocabDir, disciplines, u'disciplines')
@@ -216,7 +232,7 @@ def _dumpSpecies(vocabDir):
         if objectType not in _speciesTypes: continue
         title = predicates.get(_dcTitlePredicateURI, None)
         if not title: continue
-        specID = os.path.basename(urlparse.urlparse(subjectURI).path)
+        specID = _getID(subjectURI)
         name = u'{} ({})'.format(unicode(title[0]), specID)
         species[specID] = name
     _dumpFile(vocabDir, species, u'species')

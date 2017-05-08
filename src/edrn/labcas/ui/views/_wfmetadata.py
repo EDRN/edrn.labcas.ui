@@ -54,10 +54,11 @@ class WFMetadataView(object):
                     nm = metadataAppstruct[u'Method']
                     rn = metadataAppstruct[u'RoundNumber']
                     metadataAppstruct[u'DatasetName'] = u'Lab{}_{}_R{}'.format(ln, nm, rn)
+                elif u'DatasetName' in metadataAppstruct.keys():
+                    metadataAppstruct[u'DatasetId'] = metadataAppstruct[u'DatasetName'].replace(u' ', u'_')
                 else:
                     metadataAppstruct[u'DatasetId'] = unicode(uuid.uuid4())
-                    if u'DatasetName' not in metadataAppstruct:
-                        metadataAppstruct[u'DatasetName'] = metadataAppstruct[u'DatasetId']
+                    metadataAppstruct[u'DatasetName'] = metadataAppstruct[u'DatasetId']
                 # Transform date objects into strings
                 for key, value in metadataAppstruct.items():
                     if isinstance(value, datetime.date):
