@@ -197,6 +197,15 @@ def createSchema(workflow, request):
                         missing=missing,
                         widget=deform.widget.AutocompleteInputWidget(values=request.route_url('species'))
                     ))
+                elif dataType == u'http://cancer.jpl.nasa.gov/xml/schema/types.xml#currentLogin':                    
+                    schema.add(colander.SchemaNode(
+                        colander.String(),
+                        name=fieldName,
+                        title=title,
+                        description=description,
+                        missing=missing,
+                        default=request.authenticated_userid.split(u',')[0][4:]
+                    ))
                 elif dataType == u'http://cancer.jpl.nasa.gov/xml/schema/types.xml#collaborativeGroup':
                     # CA-1356 ugly fix but I'm in a hurry and these groups haven't changed in 10 years.
                     # FIXME: correct solution: use IVocabularies
