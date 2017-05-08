@@ -41,6 +41,9 @@ _collaborativeGroups = [
 # Capture the common name (cn) at the front of an LDAP distinguished name (dn)
 _cnHunter = re.compile(ur'^cn=([^,]+),')
 
+# Capture the ID number in parentheses at the end of a "Name name name (ID number)" string
+ID_NUMBER_HUNTER = re.compile(ur'\((\d+)\)$')
+
 # Metadata we ignore in LabCAS files in addition to anything starting
 # with "CAS."
 _metadataToIgnore = frozenset((
@@ -302,6 +305,32 @@ def createSchema(workflow, request):
                     _logger.warn(u'Unknown data type "%s" for field "%s"', dataType, fieldName)
             break
     return schema
+
+
+def addIdentifiersForStringFields(metadata):
+    u'''For those fields which are entered by name, add their matching identifiers.'''
+    # CA-1354 ugly kludge
+    protocolName = metadata.get('ProtocolName', None)
+    if protocolName:
+        match = ID_NUMBER_HUNTER.search(protocolName)
+        if match:
+            metadata['ProtocolId'] = match.group(1)
+    # More ugly kludges
+    organName = metadata.get('Organ', None)
+    if organName:
+        match = ID_NUMBER_HUNTER.search(organName)
+        if match:
+            metadata['OrganId'] = match.group(1)
+    leadPI = metadata.get('LeadPI', None)
+    if leadPI:
+        match = ID_NUMBER_HUNTER.search(leadPI)
+        if match:
+            metadata['LeadPIId'] = match.group(1)
+    institution = metadata.get('Institution', None)
+    if institution:
+        match = ID_NUMBER_HUNTER.search(institution)
+        if match:
+            metadata['InstitutionId'] = match.group(1)
 
 
 # Classes

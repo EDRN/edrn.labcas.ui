@@ -4,19 +4,15 @@ u'''Workflow Metadata'''
 
 from edrn.labcas.ui import PACKAGE_NAME
 from edrn.labcas.ui.interfaces import IBackend
-from edrn.labcas.ui.utils import LabCASWorkflow, createSchema
+from edrn.labcas.ui.utils import LabCASWorkflow, createSchema, addIdentifiersForStringFields
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, view_defaults
 from zope.component import getUtility
-import re, deform, logging, uuid, datetime
+import deform, logging, uuid, datetime
 
 
 # Logging
 _logger = logging.getLogger(__name__)
-
-
-# Capture the ID number in parentheses at the end of a "Name name name (ID number)" string
-_idNumberHunter = re.compile(ur'\((\d+)\)$')
 
 
 # Metadata fields for NIST pipelines that generate dataset IDs
@@ -42,12 +38,6 @@ class WFMetadataView(object):
         if 'submit' in self.request.params:
             try:
                 metadataAppstruct = form.validate(self.request.POST.items())
-                # CA-1354 ugly kludge
-                protocolName = metadataAppstruct.get('ProtocolName', None)
-                if protocolName:
-                    match = _idNumberHunter.search(metadataAppstruct['ProtocolName'])
-                    if match:
-                        metadataAppstruct['ProtocolId'] = match.group(1)
                 # CA-1382 ugly kludge
                 if _nistMetadataFields <= frozenset(metadataAppstruct.keys()):
                     ln = metadataAppstruct[u'LabNumber']
@@ -59,6 +49,7 @@ class WFMetadataView(object):
                 else:
                     metadataAppstruct[u'DatasetId'] = unicode(uuid.uuid4())
                     metadataAppstruct[u'DatasetName'] = metadataAppstruct[u'DatasetId']
+                addIdentifiersForStringFields(metadataAppstruct)
                 # Transform date objects into strings
                 for key, value in metadataAppstruct.items():
                     if isinstance(value, datetime.date):

@@ -2,19 +2,18 @@
 
 from edrn.labcas.ui import PACKAGE_NAME
 from edrn.labcas.ui.interfaces import IBackend
-from edrn.labcas.ui.utils import LabCASWorkflow, re_python_rfc3986_URI_reference, LabCASCollection, createSchema
+from edrn.labcas.ui.utils import (
+    LabCASWorkflow, re_python_rfc3986_URI_reference, LabCASCollection, createSchema, addIdentifiersForStringFields,
+    ID_NUMBER_HUNTER
+)
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, view_defaults
 from zope.component import getUtility
-import re, deform, os, os.path, logging, uuid
+import deform, os, os.path, logging, uuid
 
 
 # Logging
 _logger = logging.getLogger(__name__)
-
-
-# Capture the ID number in parentheses at the end of a "Name name name (ID number)" string
-_idNumberHunter = re.compile(ur'\((\d+)\)$')
 
 
 # Metadata fields for NIST pipelines that generate dataset IDs
@@ -51,12 +50,6 @@ class MetadataView(object):
         if 'submit' in self.request.params:
             try:
                 metadataAppstruct = form.validate(self.request.POST.items())
-                # CA-1354 ugly kludge
-                protocolName = metadataAppstruct.get('ProtocolName', None)
-                if protocolName:
-                    match = _idNumberHunter.search(metadataAppstruct['ProtocolName'])
-                    if match:
-                        metadataAppstruct['ProtocolId'] = match.group(1)
                 # CA-1382 ugly kludge
                 if _nistMetadataFields <= frozenset(metadataAppstruct.keys()):
                     ln = metadataAppstruct[u'LabNumber']
@@ -68,6 +61,7 @@ class MetadataView(object):
                 else:
                     metadataAppstruct[u'DatasetId'] = unicode(uuid.uuid4())
                     metadataAppstruct[u'DatasetName'] = metadataAppstruct[u'DatasetId']
+                addIdentifiersForStringFields(metadataAppstruct)
                 collectionName = workflow.collectionName
                 if not collectionName:
                     collectionName = metadataAppstruct[u'CollectionName']
