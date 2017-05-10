@@ -44,6 +44,9 @@ _cnHunter = re.compile(ur'^cn=([^,]+),')
 # Capture the ID number in parentheses at the end of a "Name name name (ID number)" string
 ID_NUMBER_HUNTER = re.compile(ur'\((\d+)\)$')
 
+# Capture the field name and meta-meta item of a metadata item from the LabCAS backend
+_fieldGrabber = re.compile(ur'^input\.dataset\.([^.]+)\.([^.]+)')
+
 # Metadata we ignore in LabCAS files in addition to anything starting
 # with "CAS."
 _metadataToIgnore = frozenset((
@@ -112,9 +115,17 @@ def createSchema(workflow, request):
         if task.get('order', '-1') == '1':
             # build the form
             conf = task.get('configuration', {})
-            for fieldName in task.get('requiredMetFields', []):
+            fieldNames = []
+            for k, v in conf.iteritems():
+                matches = _fieldGrabber.search(k)
+                if matches and matches.group(2) == u'order':
+                    fieldNames.append((matches.group(1), v))
+            fieldNames.sort(lambda a, b: cmp(a[1], b[1]))
+            for fieldName in [i[0] for i in fieldNames]:
                 # CA-1394, LabCAS UI will generate dataset IDs
                 if fieldName == 'DatasetId': continue
+                visible = conf.get(u'input.dataset.{}.visible'.format(fieldName), u'true') == u'true'
+                if not visible: continue
                 title = conf.get(u'input.dataset.{}.title'.format(fieldName), u'Unknown Field')
                 description = conf.get(u'input.dataset.{}.description'.format(fieldName), u'Not sure what to put here.')
                 dataType = conf.get(u'input.dataset.{}.type'.format(fieldName), u'http://www.w3.org/2001/XMLSchema/string')

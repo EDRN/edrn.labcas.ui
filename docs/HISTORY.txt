@@ -14,6 +14,7 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 • CA-1505, Pass identifiers based on names selected
 • CA-1506, DataCustodian should default
 • CA-1508, DatasetId should not be a UUID if a name is given
+• CA-1530, Use input.dataset.FIELD.order and input.dataset.FIELD.visible
 
 
 1.0.0 — Wait, That's Not His First Name?
