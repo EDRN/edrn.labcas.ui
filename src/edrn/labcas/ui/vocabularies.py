@@ -38,6 +38,9 @@ _disciplineTypes = (
 _speciesTypes = (
     rdflib.term.URIRef(u'https://cancer.jpl.nasa.gov/rdf/types.rdf#Species'),
 )
+_specimenTypesTypes = (
+    rdflib.term.URIRef(u'https://cancer.jpl.nasa.gov/rdf/types.rdf#SpecimenType'),
+)
 
 
 class Vocabularies(object):
@@ -46,7 +49,7 @@ class Vocabularies(object):
     def __init__(self, vocabDir):
         self.vocabDir = vocabDir
         self.peopleTimestamp = self.protocolsTimestamp = self.sitesTimestamp = self.organsTimestamp \
-            = self.speciesTimestamp = self.disciplinesTimestamp \
+            = self.speciesTimestamp = self.disciplinesTimestamp = self.specimenTypesTimestamp \
             = datetime.datetime(datetime.MINYEAR, 1, 1, 0, 0, 0, 0, UTC)
     def _loadVocabulary(self, vocabName):
         vocabFile = os.path.join(self.vocabDir, vocabName)
@@ -93,6 +96,12 @@ class Vocabularies(object):
             self.disciplines = self._loadVocabulary(u'disciplines')
             self.disciplinesTimestamp = timestamp
         return self.disciplines
+    def getSpecimenTypes(self):
+        timestamp = self._getLastUpdate(u'specimenTypes')
+        if timestamp > self.specimenTypesTimestamp:
+            self.specimenTypes = self._loadVocabulary(u'specimenTypes')
+            self.specimenTypesTimestamp = timestamp
+        return self.specimenTypes
 
 
 def _parseRDF(graph):
@@ -238,6 +247,23 @@ def _dumpSpecies(vocabDir):
     _dumpFile(vocabDir, species, u'species')
 
 
+def _dumpSpecimenTypes(vocabDir):
+    settings = getUtility(ILabCASSettings)
+    specs = {}
+    url = settings.getSpecimenTypeRDFURL()
+    _logger.info('Dumping specimen types from %s', url)
+    statements = _getStatements(url)
+    for subjectURI, predicates in statements.iteritems():
+        objectType = predicates[rdflib.RDF.type][0]
+        if objectType not in _specimenTypesTypes: continue
+        title = predicates.get(_dcTitlePredicateURI, None)
+        if not title: continue
+        specID = _getID(subjectURI)
+        name = u'{} ({})'.format(unicode(title[0]), specID)
+        specs[specID] = name
+    _dumpFile(vocabDir, specs, u'specimenTypes')
+
+
 def main():
     logging.basicConfig(level=logging.INFO)
     parser = argparse.ArgumentParser(description=u'Update the LabCAS UI vocabulary files')
@@ -262,6 +288,7 @@ def main():
     _dumpOrgans(vocabDir)
     _dumpDisciplines(vocabDir)
     _dumpSpecies(vocabDir)
+    _dumpSpecimenTypes(vocabDir)
     return 0
 
 

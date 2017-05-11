@@ -85,6 +85,7 @@ def main(global_config, **settings):
     config.add_route('organs', '/organs')
     config.add_route('disciplines', '/disciplines')
     config.add_route('species', '/species')
+    config.add_route('specimenTypes', '/specimenTypes')
     config.add_route('ldapGroups', '/ldapGroups')
     config.add_route('manage', '/manage', factory=Management)
     config.scan()

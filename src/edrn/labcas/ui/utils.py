@@ -2,7 +2,7 @@
 # Copyright 2015 California Institute of Technology. ALL RIGHTS
 # RESERVED. U.S. Government Sponsorship acknowledged.
 
-from .interfaces import IBackend, ILabCASSettings
+from .interfaces import IBackend, ILabCASSettings, IVocabularies
 from pyramid_ldap import get_ldap_connector
 from zope.component import getUtility
 from zope.interface import implements
@@ -79,6 +79,7 @@ DEFAULT_PEOPLE_RDF_URL     = u'https://edrn.jpl.nasa.gov/cancerdataexpo/rdf-data
 DEFAULT_ORGAN_RDF_URL      = u'https://edrn.jpl.nasa.gov/cancerdataexpo/rdf-data/body-systems/@@rdf'
 DEFAULT_DISCIPLINE_RDF_URL = u'https://mcl.jpl.nasa.gov/ksdb/publishrdf/?filterby=program&filterval=1&rdftype=discipline'
 DEFAULT_SPECIES_RDF_URL    = u'https://mcl.jpl.nasa.gov/ksdb/publishrdf/?filterby=program&filterval=1&rdftype=species'
+DEFAULT_SPEC_TYPES_RDF_URL = u'https://mcl.jpl.nasa.gov/ksdb/publishrdf/?filterby=program&filterval=1&rdftype=specimentype'
 
 
 # Functions
@@ -279,6 +280,27 @@ def createSchema(workflow, request):
                         missing=missing,
                         widget=deform.widget.AutocompleteInputWidget(values=request.route_url('protocols'))
                     ))
+                elif dataType == u'http://cancer.jpl.nasa.gov/xml/schema/types.xml#qaState':
+                    values = (('Public', 'Public'), ('Under Review', 'Under Review'))
+                    schema.add(colander.SchemaNode(
+                        colander.String(),
+                        name=fieldName,
+                        title=title,
+                        description=description,
+                        missing=missing,
+                        widget=deform.widget.RadioChoiceWidget(values=values, inline=True)
+                    ))
+                elif dataType == u'http://cancer.jpl.nasa.gov/xml/schema/types.xml#specimenType':
+                    values = [(i, i) for i in getUtility(IVocabularies).getSpecimenTypes().values()]
+                    values.sort()
+                    schema.add(colander.SchemaNode(
+                        colander.Set(),
+                        name=fieldName,
+                        title=title,
+                        description=description,
+                        missing=missing,
+                        widget=deform.widget.CheckboxChoiceWidget(values=values, inline=True)
+                    ))
                 elif dataType == u'http://www.w3.org/2001/XMLSchema/url':
                     schema.add(colander.SchemaNode(
                         colander.String(),
@@ -351,6 +373,12 @@ def addIdentifiersForStringFields(metadata):
         match = ID_NUMBER_HUNTER.search(institution)
         if match:
             metadata['InstitutionId'] = match.group(1)
+    # CA-1533
+    species = metadata.get('Species', None)
+    if species:
+        match = ID_NUMBER_HUNTER.search(species)
+        if match:
+            metadata['SpeciesId'] = match.group(1)
 
 
 # Classes
@@ -598,6 +626,7 @@ class Settings(object):
     organRDFURL = DEFAULT_ORGAN_RDF_URL
     disciplineRDFURL = DEFAULT_DISCIPLINE_RDF_URL
     speciesRDFURL = DEFAULT_SPECIES_RDF_URL
+    specimenTypeRDFURL = DEFAULT_SPEC_TYPES_RDF_URL
     def __init__(self, settingsPath):
         self.settingsPath = settingsPath
     def getProgram(self):
@@ -605,6 +634,12 @@ class Settings(object):
     def setProgram(self, program):
         if program != self.program:
             self.program = program
+            self.update()
+    def getSpecimenTypeRDFURL(self):
+        return self.specimenTypeRDFURL
+    def setSpecimenTypeRDFURL(self, url):
+        if url != self.specimenTypeRDFURL:
+            self.specimenTypeRDFURL = url
             self.update()
     def getSpeciesRDFURL(self):
         return self.speciesRDFURL

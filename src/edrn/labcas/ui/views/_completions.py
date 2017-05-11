@@ -72,6 +72,13 @@ class SpeciesCompletionsView(_CompletionsView):
         return self._getMatches(getUtility(IVocabularies).getSpecies().values())
 
 
+class SpecimenTypesCompletionsView(_CompletionsView):
+    u'''Completions for specimen types.'''
+    @view_config(route_name='specimenTypes', renderer='json')
+    def __call__(self):
+        return self._getMatches(getUtility(IVocabularies).getSpecimenTypes().values())
+
+
 class LDAPGroupsCompletionsView(_CompletionsView):
     u'''Completions for LDAP groups in EDRN.'''
     @view_config(route_name='ldapGroups', renderer='json')

@@ -31,6 +31,8 @@ class IVocabularies(Interface):
         u'''Returns a sequence of MCL disciplines.'''
     def getSpecies():
         u'''Return a sequence of species, like left shark or human.'''
+    def getSpecimenTypes():
+        u'''Return a sequence of types of specimens, like blood.'''
 
 
 class ILabCASSettings(Interface):
@@ -39,6 +41,10 @@ class ILabCASSettings(Interface):
         u'''Returns either EDRN or MCL'''
     def setProgram(program):
         u'''Set whether this is for EDRN or MCL'''
+    def getSpecimenTypeRDFURL():
+        u'''Get the URL to specimen type information'''
+    def setSpecimenTypeRDFURL(url):
+        u'''Set the URL to specimen type information'''
     def getSpeciesRDFURL():
         u'''Get the URL to Species information'''
     def setSpeciesRDFURL(url):
