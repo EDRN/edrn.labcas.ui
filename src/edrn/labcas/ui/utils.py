@@ -119,7 +119,7 @@ def createSchema(workflow, request):
             for k, v in conf.iteritems():
                 matches = _fieldGrabber.search(k)
                 if matches and matches.group(2) == u'order':
-                    fieldNames.append((matches.group(1), v))
+                    fieldNames.append((matches.group(1), int(v)))
             fieldNames.sort(lambda a, b: cmp(a[1], b[1]))
             for fieldName in [i[0] for i in fieldNames]:
                 # CA-1394, LabCAS UI will generate dataset IDs
@@ -278,6 +278,15 @@ def createSchema(workflow, request):
                         description=description,
                         missing=missing,
                         widget=deform.widget.AutocompleteInputWidget(values=request.route_url('protocols'))
+                    ))
+                elif dataType == u'http://www.w3.org/2001/XMLSchema/url':
+                    schema.add(colander.SchemaNode(
+                        colander.String(),
+                        name=fieldName,
+                        title=title,
+                        description=description,
+                        missing=missing,
+                        validator=colander.url
                     ))
                 elif dataType == u'http://www.w3.org/2001/XMLSchema/integer':
                     schema.add(colander.SchemaNode(
