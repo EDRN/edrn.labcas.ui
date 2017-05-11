@@ -11,6 +11,7 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 
 • CA-1485, Do not display LabcasUpload2Workflow
 • CA-1503, Controlled vocabularies for discipline, institution, organ, species, specimen type
+• CA-1504, ProtoocolName metadata field doesn't appear
 • CA-1505, Pass identifiers based on names selected
 • CA-1506, DataCustodian should default
 • CA-1508, DatasetId should not be a UUID if a name is given
