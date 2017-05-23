@@ -25,7 +25,9 @@ class FileView(object):
         params = self.request.params
         if 'download' in params:
             # Download the file
-            return HTTPFound(self.request.host_url + u'/fmprod/data?productID=' + f.fileID)
+            response = HTTPFound(self.request.host_url + u'/fmprod/data?productID=' + f.fileID)
+            response.set_cookie(u'labcasProductIDcookie', f.fileID, 3600, secure=True)
+            return response
         else:
             # View the file metadata
             return {
