@@ -15,12 +15,16 @@
             - widgetResources: dict of css + js resources to support form rendering
         -->
         <metal:style-slot fill-slot='style_slot'>
+            <link rel='stylesheet' type='text/css' href='#'
+                tal:attributes='href python:request.static_url("edrn.labcas.ui:static/custom/nist-custom.css")'/>
             <tal:repeat repeat='url python:widgetResources["css"]'>
                 <link rel='stylesheet' type='text/css' href='#'
                     tal:attributes='href python:request.static_url(url)'/>
             </tal:repeat>
         </metal:style-slot>
         <metal:javascript fill-slot='javascript_head_slot'>
+            <script type='text/javascript' src='#'
+                tal:attributes='src python:request.static_url("edrn.labcas.ui:static/custom/nist-custom.js")'></script>
             <tal:repeat repeat='url python:widgetResources["js"]'>
                 <script type='text/javascript' src='#' tal:attributes='src python:request.static_url(url)'></script>
             </tal:repeat>
