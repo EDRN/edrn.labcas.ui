@@ -30,6 +30,7 @@ _externalRequirements = [
     'setuptools',
     'deform >= 2.0a1',
     'humanize',
+    'M2Crypto',
     'pyramid',
     'pyramid_beaker',
     'pyramid_chameleon',

@@ -4,7 +4,8 @@ from edrn.labcas.ui import PACKAGE_NAME
 from edrn.labcas.ui.utils import LabCASCollection
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, view_defaults
-import humanize, os, os.path
+from M2Crypto import EVP
+import humanize, base64
 
 
 @view_defaults(renderer=PACKAGE_NAME + ':templates/file.pt')
@@ -26,7 +27,11 @@ class FileView(object):
         if 'download' in params:
             # Download the file
             response = HTTPFound(self.request.host_url + u'/fmprod/data?productID=' + f.fileID)
-            response.set_cookie(u'labcasProductIDcookie', f.fileID, 3600, secure=True)
+            key = EVP.load_key(self.request.registry.settings['labcas.hostkey'])
+            key.reset_context(md='sha1')
+            key.sign_init()
+            key.sign_update(f.fileID)
+            response.set_cookie(u'labcasProductIDcookie', base64.b64encode(key.sign_final()), 3600, secure=True)
             return response
         else:
             # View the file metadata
