@@ -17,7 +17,7 @@ _logger = logging.getLogger(__name__)
 
 
 # Metadata fields for NIST pipelines that generate dataset IDs
-_nistMetadataFields = frozenset((u'LabNumber', u'Method', u'RoundNumber'))
+_nistMetadataFields = frozenset((u'LabNumber', u'ProtocolName', u'SampleId'))
 
 
 @view_defaults(renderer=PACKAGE_NAME + ':templates/metadata.pt')
@@ -50,12 +50,12 @@ class MetadataView(object):
         if 'submit' in self.request.params:
             try:
                 metadataAppstruct = form.validate(self.request.POST.items())
-                # CA-1382 ugly kludge
+                # CA-1382 ugly kludge, CA-1540 reformat
                 if _nistMetadataFields <= frozenset(metadataAppstruct.keys()):
                     ln = metadataAppstruct[u'LabNumber']
-                    nm = metadataAppstruct[u'Method']
-                    rn = metadataAppstruct[u'RoundNumber']
-                    metadataAppstruct[u'DatasetName'] = u'Lab{}_{}_R{}'.format(ln, nm, rn)
+                    pn = metadataAppstruct[u'ProtocolName']
+                    si = metadataAppstruct[u'SampleId']
+                    metadataAppstruct[u'DatasetName'] = metadataAppstruct[u'DatasetId'] = u'{}_{}_R{}'.format(ln, pn, si)
                 elif u'DatasetName' in metadataAppstruct.keys():
                     metadataAppstruct[u'DatasetId'] = metadataAppstruct[u'DatasetName'].replace(u' ', u'_')
                 else:
