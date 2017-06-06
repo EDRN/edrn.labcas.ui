@@ -176,6 +176,9 @@ def createSchema(workflow, request):
                 elif dataType == u'http://cancer.jpl.nasa.gov/xml/schema/types.xml#participatingSiteId':
                     # Skip this; we'll capture it based on the "http://…#participatingSite" value
                     pass
+                elif dataType == u'http://edrn.nci.nih.gov/xml/schema/types.xml#nistDatasetId':
+                    # Skip this; it's generated based on other fields
+                    pass
                 elif dataType == u'http://cancer.jpl.nasa.gov/xml/schema/types.xml#participatingSite':
                     schema.add(colander.SchemaNode(
                         colander.String(),

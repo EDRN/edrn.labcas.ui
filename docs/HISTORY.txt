@@ -19,6 +19,7 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 • CA-1530, Use input.dataset.FIELD.order and input.dataset.FIELD.visible
 • CA-1532, Metadata ordering and URL type
 • CA-1533, SpeciesId, SpecimenType, and QAState not being sent
+• CA-1540, Update UI for NIST workflow
 
 
 1.0.0 — Wait, That's Not His First Name?
