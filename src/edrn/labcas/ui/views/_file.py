@@ -5,7 +5,9 @@ from edrn.labcas.ui.utils import LabCASCollection
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, view_defaults
 from M2Crypto import EVP
-import humanize, base64
+import humanize, base64, logging
+
+_logger = logging.getLogger(__name__)
 
 
 @view_defaults(renderer=PACKAGE_NAME + ':templates/file.pt')
@@ -30,8 +32,10 @@ class FileView(object):
             key = EVP.load_key(self.request.registry.settings['labcas.hostkey'])
             key.reset_context(md='sha1')
             key.sign_init()
-            key.sign_update(f.fileID)
-            response.set_cookie(u'labcasProductIDcookie', base64.b64encode(key.sign_final()), 3600, secure=True)
+            key.sign_update(f.fileID.encode('utf-8'))
+            final = unicode(base64.b64encode(key.sign_final()))
+            _logger.info(u'For file %s the cookie is %s', f.fileID, final)
+            response.set_cookie(u'labcasProductIDcookie', final, 3600, secure=True)
             return response
         else:
             # View the file metadata
