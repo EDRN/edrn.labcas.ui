@@ -33,9 +33,9 @@ class FileView(object):
             key.reset_context(md='sha1')
             key.sign_init()
             key.sign_update(f.fileID.encode('utf-8'))
-            final = unicode(base64.b64encode(key.sign_final()))
-            _logger.info(u'For file %s the cookie is %s', f.fileID, final)
-            response.set_cookie(u'labcasProductIDcookie', u'"{}"'.format(final), 3600, secure=True)
+            final = base64.b64encode(key.sign_final())
+            _logger.info('For file %s the cookie is %s', f.fileID, final)
+            response.set_cookie('labcasProductIDcookie', final, 3600, secure=True, overwrite=True)
             return response
         else:
             # View the file metadata
