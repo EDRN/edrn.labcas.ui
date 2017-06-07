@@ -1,4 +1,4 @@
-var combos; //Variable containing combinations of radio buttons
+var combos; //Variable containing combinations of radio buttons, needs to be initialzed in calling script
 
 //Disable all radio buttons that are siblings to the radbio button with values in the list
 function disable_siblings(list){
@@ -19,10 +19,6 @@ function disable_siblings(list){
 }
 
 $( document ).ready(function() {
-    //initialize radio button combinations for NIST workflow
-    $.getJSON("/static/custom/metadata_combinations.json", function(json) {
-        combos = json;
-    });
     //Any input radio button clicked will trigger to check if combinations are correct
     $("input:radio").click(function() {
         var available_list = [];
