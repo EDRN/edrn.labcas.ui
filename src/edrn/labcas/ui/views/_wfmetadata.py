@@ -43,7 +43,7 @@ class WFMetadataView(object):
                     ln = metadataAppstruct[u'LabNumber']
                     pn = metadataAppstruct[u'ProtocolName']
                     si = metadataAppstruct[u'SampleId']
-                    metadataAppstruct[u'DatasetName'] = metadataAppstruct[u'DatasetId'] = u'{}_{}_R{}'.format(ln, pn, si)
+                    metadataAppstruct[u'DatasetName'] = metadataAppstruct[u'DatasetId'] = u'{}_{}_{}'.format(ln, pn, si)
                 elif u'DatasetName' in metadataAppstruct.keys():
                     metadataAppstruct[u'DatasetId'] = metadataAppstruct[u'DatasetName'].replace(u' ', u'_')
                 else:
