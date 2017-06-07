@@ -35,7 +35,7 @@ class FileView(object):
             key.sign_update(f.fileID.encode('utf-8'))
             final = unicode(base64.b64encode(key.sign_final()))
             _logger.info(u'For file %s the cookie is %s', f.fileID, final)
-            response.set_cookie(u'labcasProductIDcookie', final, 3600, secure=True)
+            response.set_cookie(u'labcasProductIDcookie', u'"{}"'.format(final), 3600, secure=True)
             return response
         else:
             # View the file metadata
