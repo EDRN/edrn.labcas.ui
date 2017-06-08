@@ -25,6 +25,12 @@
         <metal:javascript fill-slot='javascript_head_slot'>
             <script type='text/javascript' src='#'
                 tal:attributes='src python:request.static_url("edrn.labcas.ui:static/custom/nist-custom.js")'></script>
+            <script type='text/javascript'>
+                //initialize radio button combinations for NIST workflow
+                $.getJSON("${request.static_url('edrn.labcas.ui:static/custom/metadata_combinations.json')}", function(json) {
+                    combos = json;
+                });
+            </script>
             <tal:repeat repeat='url python:widgetResources["js"]'>
                 <script type='text/javascript' src='#' tal:attributes='src python:request.static_url(url)'></script>
             </tal:repeat>
