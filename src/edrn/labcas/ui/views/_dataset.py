@@ -34,7 +34,7 @@ class DatasetView(object):
             with zipfile.ZipFile(os.fdopen(zipFileDesc, 'w'), 'w', zipfile.ZIP_DEFLATED, allowZip64=True) as z:
                 for i in ids:
                     f = dataset.files(i)
-                    os.chdir(f.physicalLocation)
+                    os.chdir(f.directory)
                     z.write(f.name)
             remover = threading.Timer(_tempFileRemovalTimeout, os.remove, (zipFileName,))
             remover.daemon = True
