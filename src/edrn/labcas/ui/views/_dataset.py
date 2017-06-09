@@ -39,7 +39,9 @@ class DatasetView(object):
             remover = threading.Timer(_tempFileRemovalTimeout, os.remove, (zipFileName,))
             remover.daemon = True
             remover.start()
-            return FileResponse(zipFileName, self.request, content_type='application/zip')
+            fr = FileResponse(zipFileName, self.request, content_type='application/zip')
+            fr.content_disposition = u'attachement; filename="{}.zip"'.format(datasetID)
+            return fr
         else:
             # View files
             return {
