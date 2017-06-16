@@ -21,10 +21,20 @@
         '>
 
             <div class='container'>
-                <ol class='breadcrumb'>
-                    <li><a href='#' tal:attributes='href python:request.route_url("collections")'>Collections</a></li>
-                    <li class='active' tal:content='python:collection.name'>Some Collection Name</li>
-                </ol>
+                <div class='row'>
+                    <ol class='breadcrumb col-md-8'>
+                        <li><a href='#' tal:attributes='href python:request.route_url("collections")'>Collections</a></li>
+                        <li class='active' tal:content='python:collection.name'>Some Collection Name</li>
+                    </ol>
+                    <form class='col-md-4' action='#'>
+                        <div class='input-group'>
+                            <input type='text' name='search' class='form-control' placeholder='Search datasets'/>
+                            <span class='input-group-btn'>
+                                <button class='btn btn-default' type='button'>Submit</button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
 
                 <dl class='dl-horizontal'>
                     <dt>Name:</dt>

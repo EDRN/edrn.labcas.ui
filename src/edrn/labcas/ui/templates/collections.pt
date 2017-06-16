@@ -23,9 +23,19 @@
         <div metal:fill-slot='content'>
 
             <div class='container'>
-                <ol class='breadcrumb'>
-                    <li class='active'>Collections</li>
-                </ol>
+                <div class='row'>
+                    <ol class='breadcrumb col-md-8'>
+                        <li class='active'>Collections</li>
+                    </ol>
+                    <form class='col-md-4' action='#'>
+                        <div class='input-group'>
+                            <input type='text' name='search' class='form-control' placeholder='Search collections'/>
+                            <span class='input-group-btn'>
+                                <button class='btn btn-default' type='button'>Submit</button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
 
                 <h3>Manage Workflows</h3>
                 <p tal:condition='canUpload'>
