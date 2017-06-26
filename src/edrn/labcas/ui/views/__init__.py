@@ -8,6 +8,7 @@ from ._completions import PeopleCompletionsView, ProtocolCompletionsView, LDAPGr
 from ._dataset import DatasetView
 from ._file import FileView
 from ._metadata import MetadataView
+from ._search import SearchView
 from ._upload import UploadView
 from ._wfmetadata import WFMetadataView
 
@@ -23,6 +24,7 @@ __all__ = (
     MetadataView,
     PeopleCompletionsView,
     ProtocolCompletionsView,
+    SearchView,
     UploadView,
     WFMetadataView
 )

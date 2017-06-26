@@ -32,6 +32,9 @@
         settings python:request.registry.getUtility(ILabCASSettings);
         program python:settings.getProgram();
         isEDRN python:program == u"EDRN";
+        routeName python:request.matched_route.name;
+        noSearch python:("upload", "start", "wfmetadata", "metadata", "accept", "login", "logout", "manage");
+        showSearch python:not request.session.get("login", False) and routeName not in noSearch;
     '>
         <nav class='navbar navbar-default' role='navigation' style='background-color: white;'>
             <div class='container-fluid'>
@@ -67,6 +70,18 @@
             <div tal:repeat='infoFlash infoFlashes' class='alert alert-info' role='alert'>
                 <span tal:replace='infoFlash'>Some info here</span>
             </div>
+        </div>
+        <div tal:condition='showSearch' class='row' style='margin-bottom: 1em;'>
+            <div class='col-md-8'></div>
+            <form class='col-md-3' action='#' tal:attributes='action python:request.route_url("search")' method='POST'>
+                <div class='input-group'>
+                    <input type='text' name='search' class='form-control' placeholder='Search…'/>
+                    <span class='input-group-btn'>
+                        <input class='btn btn-default' type='submit' value='Submit'/>
+                    </span>
+                </div>
+            </form>
+            <div class='col-md-1'></div>
         </div>
         <metal:content-slot define-slot='content'/>
         <footer role='contentinfo' class='labcas-footer' tal:define='

@@ -68,6 +68,7 @@ def main(global_config, **settings):
     config.add_static_view('static', 'static', cache_max_age=3600)  # use ini?
     config.add_static_view('deform_static', 'deform:static')
     config.add_route('home', '/')
+    config.add_route('search', '/search', factory=Collections)
     config.add_route('collections', '/c', factory=Collections)
     config.add_route('collection', '/c/{collectionID}', factory=Collection)
     config.add_route('dataset', '/c/{collectionID}/{datasetID}', factory=Dataset)

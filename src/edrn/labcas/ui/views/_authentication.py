@@ -54,11 +54,13 @@ class AuthenticationView(object):
                 fullName = result[1].get(u'cn', result[1][u'uid'])
                 fullName = fullName[0]
                 self.request.session['fullName'] = fullName
+                del self.request.session['login']
                 self.request.session.flash(u'Welcome {}. You are now logged in.'.format(fullName), 'info')
                 headers = remember(self.request, dn)
                 return HTTPFound(location=cameFrom, headers=headers)
             else:
                 message = 'Login failed'
+        self.request.session['login'] = True
         return dict(
             url=self.request.application_url + '/login',
             cameFrom=cameFrom,
