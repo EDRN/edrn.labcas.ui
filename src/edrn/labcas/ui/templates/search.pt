@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8'?> 
+<!DOCTYPE html>
+<html
+    xmlns='http://www.w3.org/1999/xhtml'
+    xmlns:tal='http://xml.zope.org/namespaces/tal'
+    xmlns:metal='http://xml.zope.org/namespaces/metal'
+    lang='en'
+    xml:lang='en'
+    metal:use-macro='load:edrn.labcas.ui:templates/master.pt'>
+    <head>
+        <title>Search Results</title>
+        <!--
+            provided names:
+        -->
+    </head>
+    <body>
+        <div metal:fill-slot='content'>
+            <div class='container'>
+                <ol class='breadcrumb'>
+                    <li class='active'>Search Results</li>
+                </ol>
+                <h3>Search Results</h3>
+                <div class='row'>
+                    <div class='col-md-2'>
+                        <h6>Facets</h6>
+                        <form method='POST' action='#'>
+                            <div class='checkbox'>
+                                <label><input type='checkbox' checked='true'/>&#x00a0;Collections</label>
+                            </div>
+                            <div class='checkbox'>
+                                <label><input type='checkbox' checked='true'/>&#x00a0;Datasets</label>
+                            </div>
+                            <div class='checkbox'>
+                                <label><input type='checkbox' checked='true'/>&#x00a0;Files</label>
+                            </div>
+                        </form>
+                    </div>
+                    <div class='col-md-10'>
+                        <h6>Results</h6>
+                        <p class='text-muted'>
+                            No matching results.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
