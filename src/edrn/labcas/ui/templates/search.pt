@@ -11,10 +11,20 @@
         <title>Search Results</title>
         <!--
             provided names:
+            - collections: sequence of dicts of matching collections
+            - datasets: sequence of dicts of matching datasets
+            - files: sequence of dicts of matching files
+            - everything: sequence of (a, b) where ``a`` is a string from the set {collection, dataset, file}
+              and ``b`` is a dict describing a collection, dataset, or a file
         -->
     </head>
     <body>
-        <div metal:fill-slot='content'>
+        <div metal:fill-slot='content' tal:define='
+            numCollections python:len(collections);
+            numDatasets python:len(datasets);
+            numFiles python:len(files);
+            numMatches python:len(everything);
+        '>
             <div class='container'>
                 <ol class='breadcrumb'>
                     <li class='active'>Search Results</li>
@@ -37,9 +47,34 @@
                     </div>
                     <div class='col-md-10'>
                         <h6>Results</h6>
-                        <p class='text-muted'>
+                        <p class='text-muted' tal:condition='not:numMatches'>
                             No matching results.
                         </p>
+                        <div tal:condition='numMatches'>
+                            <tal:repeat repeat='match everything'>
+                                <tal:define define='
+                                    kind python:match[0];
+                                    name python:match[1][u"name"];
+                                    url python:match[1][u"url"];
+                                '>
+                                    <p class='collection dataset file' tal:attributes='class kind'>
+                                        <span tal:condition='python:kind == u"collection"' class='label label-default'>
+                                            Collection
+                                        </span>
+                                        <span tal:condition='python:kind == u"dataset"' class='label label-default'>
+                                            Dataset
+                                        </span>
+                                        <span tal:condition='python:kind == u"file"' class='label label-default'>
+                                            File
+                                        </span>
+                                        &#x00a0;
+                                        <a href='#' tal:attributes='href url' tal:content='name'>
+                                            Some matching object
+                                        </a>
+                                    </p>
+                                </tal:define>
+                            </tal:repeat>
+                        </div>
                     </div>
                 </div>
             </div>
