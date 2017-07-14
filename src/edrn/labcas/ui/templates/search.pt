@@ -11,17 +11,23 @@
         <title>Search Results</title>
         <!--
             provided names:
-            - collections: sequence of dicts of matching collections
-            - datasets: sequence of dicts of matching datasets
-            - files: sequence of dicts of matching files
+            • searchMacros - macros to show collections, datasets, and files
+            • numCollections - total matching collections
+            • top10Collections - first ten best matching collections
+            • collections - the rest of the matching collections
+            • numRemainingCollections - how many of those remain
+            • numDatasets - total matching datasets
+            • top10Datasets - first ten best matching datasets
+            • datasets - the rest of the matching datasets
+            • numRemainingDatasets - how many of those remain
+            • numFiles - total matching files
+            • top10Files - first ten best matching files
+            • files - the rest of the matching files
+            • numRemainingFiles - how many of those remain
         -->
     </head>
     <body>
-        <div metal:fill-slot='content' tal:define='
-            numCollections python:len(collections);
-            numDatasets python:len(datasets);
-            numFiles python:len(files);
-        '>
+        <div metal:fill-slot='content'>
             <div class='container'>
                 <ol class='breadcrumb'>
                     <li class='active'>Search Results</li>
@@ -37,130 +43,170 @@
                     </div>
                     <div class='col-md-10'>
 
-                        <h4 id='collections'>Collections</h4>
-                        <p class='text-muted' tal:condition='not:numCollections'>
-                            No matching collections.
-                        </p>
-                        <tal:repeat repeat='match collections'>
-                            <p tal:define='
-                                name python:match[u"name"];
-                                url python:match[u"url"];
-                                pi python:match[u"pi"];
-                                desc python:match[u"desc"];
-                                score python:match[u"score"];
-                            '>
-                                <a href='#' tal:attributes='href url' tal:content='name'>
-                                    Collection of Parts
-                                </a>&#x00a0;<small tal:content='score'>29%</small>
-                                <br/>
-                                <span tal:condition='pi' tal:replace='python:u", ".join(pi)'>
-                                    Jeri Blow, Jo Blow
-                                </span>
-                                <span tal:condition='not:pi' class='text-muted'>Unknown PI</span>
-                                <br/>
-                                <small tal:condition='desc' tal:content='desc'>
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                                    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                                    proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                                </small>
-                                <small tal:condition='not:desc' class='text-muted'>
-                                    No description available.
-                                </small>
-                            </p>
-                        </tal:repeat>
+                        <div class='panel-group' id='collections' role='tablist' aria-multiselectable='true'>
+                            <div class='panel panel-default'>
+                                <div class='panel-heading' role='tab' id='top10CollectionsHeading'>
+                                    <h4 class='panel-title'>
+                                        <a role='button' data-toggle='collapse' data-parent='#collections'
+                                            href='#top10Collections' aria-expanded='true'
+                                            aria-controls='top10Collections'>
+                                            Collections
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id='top10Collectionss' class='panel-collapse collapse in' role='tabpanel'
+                                    aria-labelledby='top10CollectionsHeading'>
+                                    <div class='panel-body'>
+                                        <p class='text-muted' tal:condition='not:numCollections'>
+                                            No matching collections.
+                                        </p>
+                                        <tal:repeat repeat='match top10Collections'>
+                                            <p metal:use-macro='python:searchMacros.macros["displayCollection"]'>
+                                                Collection here
+                                            </p>
+                                        </tal:repeat>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='panel panel-default' tal:condition='numRemainingCollections'>
+                                <div class='panel-heading' role='tab' id='remainingCollectionsHeading'>
+                                    <h4 class='panel-title'>
+                                        <a class='collapsed' role='button' data-toggle='collapse'
+                                            data-parent='#collections' href='#remainingCollections'
+                                            aria-expanded='false' aria-controls='remainingCollections'>
+                                            <tal:if condition='python:numRemainingCollections == 1'>
+                                                One more matching collection…
+                                            </tal:if>
+                                            <tal:if condition='python:numRemainingCollections &gt; 1'>
+                                                <span tal:replace='numRemainingCollections'>66</span>
+                                                more matching collections…
+                                            </tal:if>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id='remainingCollections' class='panel-collapse collapse' role='tabpanel'
+                                    aria-labelledby='remainingCollectionsHeading'>
+                                    <div class='panel-body'>
+                                        <tal:repeat repeat='match collections'>
+                                            <p metal:use-macro='python:searchMacros.macros["displayCollection"]'>
+                                                Collection here
+                                            </p>
+                                        </tal:repeat>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                        <h4 id='collections'>Datasets</h4>
-                        <p class='text-muted' tal:condition='not:numDatasets'>
-                            No matching datasets.
-                        </p>
-                        <tal:repeat repeat='match datasets'>
-                            <p tal:define='
-                                name python:match[u"name"];
-                                url python:match[u"url"];
-                                cohort python:match[u"cohort"];
-                                version python:match[u"version"];
-                                desc python:match[u"desc"];
-                                score python:match[u"score"];
-                            '>
-                                <a href='#' tal:attributes='href url' tal:content='name'>
-                                    Part Data
-                                </a>&#x00a0;<small tal:content='score'>19%</small>
-                                <br/>
-                                <span tal:condition='cohort' tal:replace='python:u", ".join(cohort)'>
-                                    One tenth of a legion
-                                </span>
-                                <span tal:condition='not:cohort' class='text-muted'>
-                                    Unknown cohort
-                                </span>
-                                <br/>
-                                <span tal:condition='version' tal:replace='string:V${version}'>
-                                    V1
-                                </span>
-                                <span tal:condition='not:version' class='text-muted'>
-                                    Unknown version
-                                </span>
-                                <br/>
-                                <small tal:condition='desc' tal:content='desc'>
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                                    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                                    proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                                </small>
-                                <small tal:condition='not:desc' class='text-muted'>
-                                    No description available.
-                                </small>
-                           </p>
-                        </tal:repeat>
+                        <br/>
 
-                        <h4 id='files'>Files</h4>
-                        <p class='text-muted' tal:condition='not:numFiles'>
-                            No matching files.
-                        </p>
-                        <tal:repeat repeat='match files'>
-                            <p tal:define='
-                                name python:match[u"name"];
-                                url python:match[u"url"];
-                                size python:match[u"size"];
-                                cohort python:match[u"cohort"];
-                                desc python:match[u"desc"];
-                                score python:match[u"score"];
-                            '>
-                                <a href='#' tal:attributes='href url' tal:content='name'>
-                                    File Part
-                                </a>&#x00a0;<small tal:content='score'>19%</small>
-                                <br/>
-                                <span tal:condition='size' tal:replace='size'>
-                                    123 MB
-                                </span>
-                                <span tal:condition='not:size' class='text-muted'>
-                                    Unknown size
-                                </span>
-                                <br/>
-                                <span tal:condition='cohort' tal:replace='python:u", ".join(cohort)'>
-                                    One tenth of a legion
-                                </span>
-                                <span tal:condition='not:cohort' class='text-muted'>
-                                    Unknown cohort
-                                </span>
-                                <br/>
-                                <small tal:condition='desc' tal:content='python:u"; ".join(desc)'>
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                                    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                                    proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                                </small>
-                                <small tal:condition='not:desc' class='text-muted'>
-                                    No description available.
-                                </small>
-                           </p>
-                        </tal:repeat>
+                        <div class='panel-group' id='datasets' role='tablist' aria-multiselectable='true'>
+                            <div class='panel panel-default'>
+                                <div class='panel-heading' role='tab' id='top10DatasetsHeading'>
+                                    <h4 class='panel-title'>
+                                        <a role='button' data-toggle='collapse' data-parent='#datasets'
+                                            href='#top10Datasets' aria-expanded='true' aria-controls='top10Datasets'>
+                                            Datasets
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id='top10Datasets' class='panel-collapse collapse in' role='tabpanel'
+                                    aria-labelledby='top10DatasetsHeading'>
+                                    <div class='panel-body'>
+                                        <p class='text-muted' tal:condition='not:numDatasets'>
+                                            No matching datasets.
+                                        </p>
+                                        <tal:repeat repeat='match top10Datasets'>
+                                            <p metal:use-macro='python:searchMacros.macros["displayDataset"]'>
+                                                Dataset here
+                                            </p>
+                                        </tal:repeat>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='panel panel-default' tal:condition='numRemainingDatasets'>
+                                <div class='panel-heading' role='tab' id='remainingDatasetsHeading'>
+                                    <h4 class='panel-title'>
+                                        <a class='collapsed' role='button' data-toggle='collapse'
+                                            data-parent='#datasets' href='#remainingDatasets' aria-expanded='false'
+                                            aria-controls='remainingDatasets'>
+                                            <tal:if condition='python:numRemainingDatasets == 1'>
+                                                One more matching dataset…
+                                            </tal:if>
+                                            <tal:if condition='python:numRemainingDatasets &gt; 1'>
+                                                <span tal:replace='numRemainingDatasets'>45</span>
+                                                more matching datasets…
+                                            </tal:if>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id='remainingDatases' class='panel-collapse collapse' role='tabpanel'
+                                    aria-labelledby='remainingDatasetsHeading'>
+                                    <div class='panel-body'>
+                                        <tal:repeat repeat='match datasets'>
+                                            <p metal:use-macro='python:searchMacros.macros["displayDataset"]'>
+                                                Dataset here
+                                            </p>
+                                        </tal:repeat>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <br/>
+
+                        <div class='panel-group' id='files' role='tablist' aria-multiselectable='true'>
+                            <div class='panel panel-default'>
+                                <div class='panel-heading' role='tab' id='top10FilesHeading'>
+                                    <h4 class='panel-title'>
+                                        <a role='button' data-toggle='collapse' data-parent='#files'
+                                            href='#top10Files' aria-expanded='true' aria-controls='top10Files'>
+                                            Files
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id='top10Files' class='panel-collapse collapse in' role='tabpanel'
+                                    aria-labelledby='top10FilesHeading'>
+                                    <div class='panel-body'>
+                                        <p class='text-muted' tal:condition='not:numFiles'>
+                                            No matching files.
+                                        </p>
+                                        <tal:repeat repeat='match top10Files'>
+                                            <p metal:use-macro='python:searchMacros.macros["displayFile"]'>
+                                                File here
+                                            </p>
+                                        </tal:repeat>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='panel panel-default' tal:condition='numRemainingFiles'>
+                                <div class='panel-heading' role='tab' id='remainingFilesHeading'>
+                                    <h4 class='panel-title'>
+                                        <a class='collapsed' role='button' data-toggle='collapse'
+                                            data-parent='#files' href='#remainingFiles' aria-expanded='false'
+                                            aria-controls='remainingFiles'>
+                                            <tal:if condition='python:numRemainingFiles == 1'>
+                                                One more matching file…
+                                            </tal:if>
+                                            <tal:if condition='python:numRemainingFiles &gt; 1'>
+                                                <span tal:replace='numRemainingFiles'>23</span>
+                                                more matching files…
+                                            </tal:if>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id='remainingFiles' class='panel-collapse collapse' role='tabpanel'
+                                    aria-labelledby='remainingFilesHeading'>
+                                    <div class='panel-body'>
+                                        <tal:repeat repeat='match files'>
+                                            <p metal:use-macro='python:searchMacros.macros["displayFile"]'>
+                                                File here
+                                            </p>
+                                        </tal:repeat>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
