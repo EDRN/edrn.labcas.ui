@@ -504,8 +504,8 @@ class LabCASCollection(object):
 
 class LabCASDataset(object):
     u'''A dataset stored in a LabCASCollection'''
-    def __init__(self, identifier, name, metadata):
-        self.identifier, self.name, self.metadata = identifier, name, metadata
+    def __init__(self, identifier, name, description, metadata):
+        self.identifier, self.name, self.description, self.metadata = identifier, name, description, metadata
         self.fileMapping = None
     def getMetadata(self):
         metadata = self.metadata.items()
@@ -530,11 +530,14 @@ class LabCASDataset(object):
         identifier = mapping[u'id']
         name = mapping.get(u'DatasetName', u'UNKNOWN')
         metadata = {}
+        description = None
         for key, value in mapping.iteritems():
             if key == u'OwnerPrincipal': continue
+            if key == u'DatasetDescription' and value is not None:
+                description = value
             if isinstance(value, list) and not isinstance(value, basestring):
                 metadata[key] = value
-        return LabCASDataset(identifier, name, metadata)
+        return LabCASDataset(identifier, name, description, metadata)
     @staticmethod
     def get(collectionID):
         u'''Get the LabCAS datasets belonging to the collection with the given

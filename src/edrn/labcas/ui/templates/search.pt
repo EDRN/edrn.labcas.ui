@@ -14,8 +14,6 @@
             - collections: sequence of dicts of matching collections
             - datasets: sequence of dicts of matching datasets
             - files: sequence of dicts of matching files
-            - everything: sequence of (a, b) where ``a`` is a string from the set {collection, dataset, file}
-              and ``b`` is a dict describing a collection, dataset, or a file
         -->
     </head>
     <body>
@@ -23,7 +21,6 @@
             numCollections python:len(collections);
             numDatasets python:len(datasets);
             numFiles python:len(files);
-            numMatches python:len(everything);
         '>
             <div class='container'>
                 <ol class='breadcrumb'>
@@ -32,49 +29,138 @@
                 <h3>Search Results</h3>
                 <div class='row'>
                     <div class='col-md-2'>
-                        <h6>Facets</h6>
-                        <form method='POST' action='#'>
-                            <div class='checkbox'>
-                                <label><input type='checkbox' checked='true'/>&#x00a0;Collections</label>
-                            </div>
-                            <div class='checkbox'>
-                                <label><input type='checkbox' checked='true'/>&#x00a0;Datasets</label>
-                            </div>
-                            <div class='checkbox'>
-                                <label><input type='checkbox' checked='true'/>&#x00a0;Files</label>
-                            </div>
-                        </form>
+                        <ul>
+                            <li><a href='#collections'>Collections</a>: <span tal:replace='numCollections'>123</span></li>
+                            <li><a href='#datasets'>Datasets</a>: <span tal:replace='numDatasets'>456</span></li>
+                            <li><a href='#files'>Files</a>: <span tal:replace='numFiles'>789</span></li>
+                        </ul>
                     </div>
                     <div class='col-md-10'>
-                        <h6>Results</h6>
-                        <p class='text-muted' tal:condition='not:numMatches'>
-                            No matching results.
+
+                        <h4 id='collections'>Collections</h4>
+                        <p class='text-muted' tal:condition='not:numCollections'>
+                            No matching collections.
                         </p>
-                        <div tal:condition='numMatches'>
-                            <tal:repeat repeat='match everything'>
-                                <tal:define define='
-                                    kind python:match[0];
-                                    name python:match[1][u"name"];
-                                    url python:match[1][u"url"];
-                                '>
-                                    <p class='collection dataset file' tal:attributes='class kind'>
-                                        <span tal:condition='python:kind == u"collection"' class='label label-default'>
-                                            Collection
-                                        </span>
-                                        <span tal:condition='python:kind == u"dataset"' class='label label-default'>
-                                            Dataset
-                                        </span>
-                                        <span tal:condition='python:kind == u"file"' class='label label-default'>
-                                            File
-                                        </span>
-                                        &#x00a0;
-                                        <a href='#' tal:attributes='href url' tal:content='name'>
-                                            Some matching object
-                                        </a>
-                                    </p>
-                                </tal:define>
-                            </tal:repeat>
-                        </div>
+                        <tal:repeat repeat='match collections'>
+                            <p tal:define='
+                                name python:match[u"name"];
+                                url python:match[u"url"];
+                                pi python:match[u"pi"];
+                                desc python:match[u"desc"];
+                                score python:match[u"score"];
+                            '>
+                                <a href='#' tal:attributes='href url' tal:content='name'>
+                                    Collection of Parts
+                                </a>&#x00a0;<small tal:content='score'>29%</small>
+                                <br/>
+                                <span tal:condition='pi' tal:replace='python:u", ".join(pi)'>
+                                    Jeri Blow, Jo Blow
+                                </span>
+                                <span tal:condition='not:pi' class='text-muted'>Unknown PI</span>
+                                <br/>
+                                <small tal:condition='desc' tal:content='desc'>
+                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                                    proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                </small>
+                                <small tal:condition='not:desc' class='text-muted'>
+                                    No description available.
+                                </small>
+                            </p>
+                        </tal:repeat>
+
+                        <h4 id='collections'>Datasets</h4>
+                        <p class='text-muted' tal:condition='not:numDatasets'>
+                            No matching datasets.
+                        </p>
+                        <tal:repeat repeat='match datasets'>
+                            <p tal:define='
+                                name python:match[u"name"];
+                                url python:match[u"url"];
+                                cohort python:match[u"cohort"];
+                                version python:match[u"version"];
+                                desc python:match[u"desc"];
+                                score python:match[u"score"];
+                            '>
+                                <a href='#' tal:attributes='href url' tal:content='name'>
+                                    Part Data
+                                </a>&#x00a0;<small tal:content='score'>19%</small>
+                                <br/>
+                                <span tal:condition='cohort' tal:replace='python:u", ".join(cohort)'>
+                                    One tenth of a legion
+                                </span>
+                                <span tal:condition='not:cohort' class='text-muted'>
+                                    Unknown cohort
+                                </span>
+                                <br/>
+                                <span tal:condition='version' tal:replace='string:V${version}'>
+                                    V1
+                                </span>
+                                <span tal:condition='not:version' class='text-muted'>
+                                    Unknown version
+                                </span>
+                                <br/>
+                                <small tal:condition='desc' tal:content='desc'>
+                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                                    proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                </small>
+                                <small tal:condition='not:desc' class='text-muted'>
+                                    No description available.
+                                </small>
+                           </p>
+                        </tal:repeat>
+
+                        <h4 id='files'>Files</h4>
+                        <p class='text-muted' tal:condition='not:numFiles'>
+                            No matching files.
+                        </p>
+                        <tal:repeat repeat='match files'>
+                            <p tal:define='
+                                name python:match[u"name"];
+                                url python:match[u"url"];
+                                size python:match[u"size"];
+                                cohort python:match[u"cohort"];
+                                desc python:match[u"desc"];
+                                score python:match[u"score"];
+                            '>
+                                <a href='#' tal:attributes='href url' tal:content='name'>
+                                    File Part
+                                </a>&#x00a0;<small tal:content='score'>19%</small>
+                                <br/>
+                                <span tal:condition='size' tal:replace='size'>
+                                    123 MB
+                                </span>
+                                <span tal:condition='not:size' class='text-muted'>
+                                    Unknown size
+                                </span>
+                                <br/>
+                                <span tal:condition='cohort' tal:replace='python:u", ".join(cohort)'>
+                                    One tenth of a legion
+                                </span>
+                                <span tal:condition='not:cohort' class='text-muted'>
+                                    Unknown cohort
+                                </span>
+                                <br/>
+                                <small tal:condition='desc' tal:content='python:u"; ".join(desc)'>
+                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                                    proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                </small>
+                                <small tal:condition='not:desc' class='text-muted'>
+                                    No description available.
+                                </small>
+                           </p>
+                        </tal:repeat>
                     </div>
                 </div>
             </div>
