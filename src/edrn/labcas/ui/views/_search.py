@@ -32,8 +32,8 @@ class SearchView(object):
         collections = [{
             u'name': i[u'CollectionName'],
             u'url':  self.request.route_url('collection', collectionID=i[u'id']),
-            u'pi':   i[u'LeadPI'] if i.get(u'LeadPI') else None,
-            u'desc': i[u'CollectionDescription'] if i.get(u'CollectionDescription') else None,
+            u'pi':   i.get(u'LeadPI'),
+            u'desc': i.get(u'CollectionDescription'),
             u'score': self.percent(i[u'score'])
             # Other potential metadata to include here:
             # Discipline, Organ, InstitutionId, ProtocolId, CollaborativeGroup, LeadPI, Consortium, QAState,
@@ -51,9 +51,9 @@ class SearchView(object):
         datasets = [{
             u'name': i[u'DatasetName'],
             u'url': self.request.route_url('dataset', collectionID=i[u'CollectionId'], datasetID=i[u'id']),
-            u'cohort': i[u'Cohort'] if i.get(u'Cohort') else None,
-            u'version': i[u'DatasetVersion'] if i.get(u'DatasetVersion') else None,
-            u'desc': i[u'DatasetDescription'] if i.get(u'DatasetDescription') else None,
+            u'cohort': i.get(u'Cohort'),
+            u'version': i.get(u'DatasetVersion'),
+            u'desc': i.get(u'DatasetDescription'),
             u'score': self.percent(i[u'score'])
             # Other potential metadata to include here:
             # Cohort, CollectionName, CollectionId, Species, DatasetVersion, DatasetDescription, Sub-Cohort
@@ -72,9 +72,9 @@ class SearchView(object):
             u'url': self.request.route_url(
                 'file', collectionID=i[u'CollectionId'], datasetID=i[u'DatasetId'], fileID=i[u'id']
             ),
-            u'cohort': i[u'Cohort'] if i.get(u'Cohort') else None,
+            u'cohort': i.get(u'Cohort'),
             u'size': self.humanFriendlySize(i[u'FileSize']) if i.get(u'FileSize') else None,
-            u'desc': i[u'GrossDescription'] if i.get(u'GrossDescription') else None,
+            u'desc': i.get(u'GrossDescription'),
             u'score': self.percent(i[u'score'])
         } for i in files.results]
         numFiles, top10Files, files = len(files), files[:10], files[10:]
