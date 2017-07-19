@@ -2,3 +2,4 @@ include *.txt *.ini *.cfg.in *.rst bootstrap.py
 recursive-include src *.ico *.png *.css *.gif *.jpg *.pt *.txt *.mak *.mako *.js *.html *.xml
 graft etc
 graft docs
+graft templates
