@@ -12,7 +12,9 @@
 #
 # Bring it all together.
 [buildout]
-extends = etc/base.cfg
+extends =
+    etc/base.cfg
+    etc/versions/known-good-versions.cfg
 update-versions-file = ${buildout:directory}/var/ops-versions.cfg
 parts =
     python
