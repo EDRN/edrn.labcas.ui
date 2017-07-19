@@ -2,7 +2,9 @@
 
 from pyramid.view import view_config, view_defaults
 from edrn.labcas.ui import PACKAGE_NAME
-from edrn.labcas.ui.utils import LabCASCollection, SUPER_GROUP
+from edrn.labcas.ui.utils import LabCASCollection
+from edrn.labcas.ui.interfaces import ILabCASSettings
+from zope.component import getUtility
 
 
 _suppressedCollections = (u'ECAS Product', u'LabCAS Product')
@@ -16,7 +18,8 @@ class CollectionsView(object):
     def __call__(self):
         principals = frozenset(self.request.effective_principals)
         canUpload = any([i for i in principals if i.startswith('cn=')])
-        canManage = SUPER_GROUP in principals
+        superGroup = getUtility(ILabCASSettings).getSuperGroup()
+        canManage = superGroup in principals
         allCollections = LabCASCollection.get(principals=principals)
         collections, publicCollections = [], []
         for collection in allCollections:

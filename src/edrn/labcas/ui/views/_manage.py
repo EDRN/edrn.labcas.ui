@@ -4,7 +4,7 @@ from edrn.labcas.ui import PACKAGE_NAME
 from edrn.labcas.ui.interfaces import ILabCASSettings
 from edrn.labcas.ui.utils import (
     LabCASWorkflow, DEFAULT_SITE_RDF_URL, DEFAULT_PROTOCOL_RDF_URL, DEFAULT_PEOPLE_RDF_URL, DEFAULT_ORGAN_RDF_URL,
-    DEFAULT_DISCIPLINE_RDF_URL, DEFAULT_SPECIES_RDF_URL
+    DEFAULT_DISCIPLINE_RDF_URL, DEFAULT_SPECIES_RDF_URL, DEFAULT_SUPER_GROUP
 )
 from pyramid.view import view_config, view_defaults
 from zope.component import getUtility
@@ -26,6 +26,13 @@ class ManageView(object):
             description=u'Which program this LabCAS installation is for.',
             default=u'EDRN',
             widget=deform.widget.RadioChoiceWidget(values=((u'EDRN', u'EDRN'), (u'MCL', u'MCL')), inline=True)
+        ))
+        schema.add(colander.SchemaNode(
+            colander.String(),
+            name='superGroup',
+            title=u'Super Group',
+            description=u'What the super group is.',
+            default=DEFAULT_SUPER_GROUP,
         ))
         schema.add(colander.SchemaNode(
             colander.String(),

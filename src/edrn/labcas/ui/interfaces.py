@@ -81,3 +81,7 @@ class ILabCASSettings(Interface):
         u'''Delete the data type with the given identifier'''
     def addDataType(datatype):
         u'''Add the given data type; if such an type has the same identifier as an existing, it's replaced'''
+    def getSuperGroup():
+        u'''Get the LDAP group for the super users'''
+    def setSuperGroup(group):
+        u'''Set the super group'''

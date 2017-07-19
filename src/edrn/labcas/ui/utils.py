@@ -2,7 +2,7 @@
 # Copyright 2015 California Institute of Technology. ALL RIGHTS
 # RESERVED. U.S. Government Sponsorship acknowledged.
 
-from .interfaces import IBackend, ILabCASSettings, IVocabularies
+from .interfaces import IBackend, ILabCASSettings, IVocabularies, ILabCASSettings
 from pyramid_ldap import get_ldap_connector
 from zope.component import getUtility
 from zope.interface import implements
@@ -12,7 +12,6 @@ import colander, re, datetime, logging, deform, cPickle
 _logger = logging.getLogger(__name__)
 
 # Handy constants
-SUPER_GROUP = u'cn=Super User,dc=edrn,dc=jpl,dc=nasa,dc=gov'
 CG_BASE_URL = u'https://edrn.nci.nih.gov/collaborative-groups/'
 
 # Mapping from the various random formats of EDRN collaborative groups
@@ -80,6 +79,7 @@ DEFAULT_ORGAN_RDF_URL      = u'https://edrn.jpl.nasa.gov/cancerdataexpo/rdf-data
 DEFAULT_DISCIPLINE_RDF_URL = u'https://mcl.jpl.nasa.gov/ksdb/publishrdf/?filterby=program&filterval=1&rdftype=discipline'
 DEFAULT_SPECIES_RDF_URL    = u'https://mcl.jpl.nasa.gov/ksdb/publishrdf/?filterby=program&filterval=1&rdftype=species'
 DEFAULT_SPEC_TYPES_RDF_URL = u'https://mcl.jpl.nasa.gov/ksdb/publishrdf/?filterby=program&filterval=1&rdftype=specimentype'
+DEFAULT_SUPER_GROUP        = u'cn=Super User,dc=edrn,dc=jpl,dc=nasa,dc=gov'
 
 
 # Functions
@@ -442,7 +442,8 @@ class LabCASCollection(object):
         qaState = _getSingleValue(u'QAState', mapping, None)
         public = qaState == u'Public'
         owners = frozenset(_getMultipleValues(u'OwnerPrincipal', mapping, []))
-        if SUPER_GROUP in principals or not principals.isdisjoint(owners) or public:
+        superGroup = getUtility(ILabCASSettings).getSuperGroup()
+        if superGroup in principals or not principals.isdisjoint(owners) or public:
             # The logged in user is allowed access to this collection
             identifier = mapping[u'id']
             name = mapping.get(u'CollectionName', u'UNKNOWN')
@@ -634,8 +635,15 @@ class Settings(object):
     disciplineRDFURL = DEFAULT_DISCIPLINE_RDF_URL
     speciesRDFURL = DEFAULT_SPECIES_RDF_URL
     specimenTypeRDFURL = DEFAULT_SPEC_TYPES_RDF_URL
+    superGroup = DEFAULT_SUPER_GROUP
     def __init__(self, settingsPath):
         self.settingsPath = settingsPath
+    def getSuperGroup(self):
+        return self.superGroup
+    def setSuperGroup(self, group):
+        if self.superGroup != group:
+            self.superGroup = group
+            self.update()
     def getProgram(self):
         return self.program
     def setProgram(self, program):
