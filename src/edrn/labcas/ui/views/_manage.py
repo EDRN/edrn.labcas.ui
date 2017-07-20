@@ -81,11 +81,12 @@ class ManageView(object):
             try:
                 metadataAppstruct = form.validate(self.request.POST.items())
                 program           = metadataAppstruct['program']
+                superGroup        = metadataAppstruct['superGroup']
+                disciplineRDFURL  = metadataAppstruct['disciplineRDFURL']
+                organRDFURL       = metadataAppstruct['organRDFURL']
                 peopleRDFURL      = metadataAppstruct['peopleRDFURL']
                 protocolRDFURL    = metadataAppstruct['protocolRDFURL']
                 siteRDFURL        = metadataAppstruct['siteRDFURL']
-                organRDFURL       = metadataAppstruct['organRDFURL']
-                disciplineRDFURL  = metadataAppstruct['disciplineRDFURL']
                 speciesRDFURL     = metadataAppstruct['speciesRDFURL']
                 if program != settings.getProgram() \
                     or peopleRDFURL != settings.getPeopleRDFURL() \
@@ -93,7 +94,8 @@ class ManageView(object):
                     or siteRDFURL != settings.getSiteRDFURL() \
                     or organRDFURL != settings.getOrganRDFURL() \
                     or disciplineRDFURL != settings.getDisciplineRDFURL() \
-                    or speciesRDFURL != settings.getSpeciesRDFURL():
+                    or speciesRDFURL != settings.getSpeciesRDFURL() \
+                    or superGroup != settings.getSuperGroup():
                     settings.setProgram(program)
                     settings.setPeopleRDFURL(peopleRDFURL)
                     settings.setProtocolRDFURL(protocolRDFURL)
@@ -101,6 +103,7 @@ class ManageView(object):
                     settings.setOrganRDFURL(organRDFURL)
                     settings.setDisciplineRDFURL(disciplineRDFURL)
                     settings.setSpeciesRDFURL(speciesRDFURL)
+                    settings.setSuperGroup(superGroup)
                     self.request.session.flash(u'Changes saved.', 'info')
                 else:
                     self.request.session.flash(u'No changes made.', 'info')
