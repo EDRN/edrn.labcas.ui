@@ -25,6 +25,13 @@ class FileView(object):
         collection = LabCASCollection.get(collectionID, principals)
         dataset = collection.datasets(datasetID)
         f = dataset.files(fileID)
+        viewerURL = viewerType = None
+        if u'FileUrl' in f.metadata:
+            viewerURL = f.metadata[u'FileUrl'][0]
+            del f.metadata[u'FileUrl']
+            if u'FileUrlType' in f.metadata:
+                viewerType = f.metadata[u'FileUrlType'][0]
+                del f.metadata[u'FileUrlType']
         params = self.request.params
         if 'download' in params:
             # Download the file
@@ -42,5 +49,7 @@ class FileView(object):
             return {
                 'collection': collection,
                 'dataset': dataset,
-                'f': f
+                'f': f,
+                'viewerURL': viewerURL,
+                'viewerType': viewerType
             }

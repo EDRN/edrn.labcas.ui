@@ -9,6 +9,7 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 1.0.4 — TBD
 -----------
 
+• CA-1557, Create direct link to LabCAS Viewers
 • CA-1558, Hide "Start Workflow" options if there are no workflows to run
 
 

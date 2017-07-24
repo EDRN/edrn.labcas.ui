@@ -14,6 +14,8 @@
             - collection: parent collection
             - dataset: parent dataset
             - f: current file
+            - viewerURL: URL to an in-browser viewer for these files, may be None
+            - viewerType: name of this in-browser viewer, may be None
         -->
     </head>
     <body>
@@ -60,6 +62,12 @@
                     <a class='btn btn-default' href='#' role='button'
                         tal:attributes='href python:request.current_route_url() + u"?download=true"'>
                         <span class='glyphicon glyphicon-cloud-download' aria-hidden='true'></span> Download this file
+                    </a>
+                    <a class='btn btn-default' href='#' role='button' tal:condition='viewerURL'
+                        tal:attributes='href viewerURL'>
+                        <span class='glyphicon glyphicon-eye-open' aria-hidden='true'></span>
+                        <span tal:condition='viewerType' tal:replace='viewerType'>Some Viewer</span>
+                        <span tal:condition='not:viewerType' tal:omit-tag=''>View this file</span>
                     </a>
                 </p>
 
