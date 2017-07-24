@@ -1,12 +1,13 @@
 Installation
 ============
 
-1. Download the src
-2. Add [versions] in etc/versions/eggs.cfg
-3. Copy ops.cfg.in to ops.cfg; if you re-use last version's ops.cfg, *change* the session and authorization tokens!
-3. Run buildout
-4. Fix cronjob
-5. Run initial cron
-6. Fix symlink
+1.  Download the src
+2.  Add [versions] in etc/versions/eggs.cfg
+3.  Copy ops.cfg.in to ops.cfg; if you re-use last version's ops.cfg, *change*
+    the session and authorization tokens!
+4.  Run buildout
+5.  Fix cronjob
+6.  Run initial cron
+7.  Fix symlink
 
 Maybe when tagging a release we do both setup.py and [versions]?

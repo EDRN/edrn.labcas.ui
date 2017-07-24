@@ -89,8 +89,14 @@
         '>
             <div class='container'>
                 <ul class='labcas-footer-links'>
-                    <li><a href='http://cancer.jpl.nasa.gov/'>Informatics Center</a></li>
-                    <li><a href='https://github.com/EDRN/edrn.labcas.ui'>GitHub</a></li>
+                    <li tal:condition='isEDRN'>
+                        <a href='https://edrn.nci.nih.gov/'>Early Detection Research Network</a>
+                    </li>
+                    <li tal:condition='not:isEDRN'>
+                        <a href='https://mcl.nci.nih.gov/'>
+                            Consortium for Molecular and Cellular Characterization of Screen-Detected Lesions
+                        </a>
+                    </li>
                 </ul>
                 <p>
                     Copyright © 2017 California Institute of Technology. <small>ALL RIGHTS RESERVED.</small>
