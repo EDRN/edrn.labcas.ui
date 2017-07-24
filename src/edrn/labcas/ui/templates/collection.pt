@@ -57,21 +57,23 @@
                 <table class='table' tal:define='metadata python:collection.getMetadata()'>
                     <tbody>
                         <tr tal:repeat='row metadata'>
-                            <td><label tal:content='python:row[0]'>Number of lungs</label></td>
-                            <td tal:define='values python:row[1]'>
-                                <span tal:condition='python:len(values) == 0' class='text-muted'>
-                                    No values.
-                                </span>
-                                <span tal:condition='python:len(values) == 1'
-                                    tal:content='structure python:values[0]'>
-                                    One value
-                                </span>
-                                <ul tal:condition='python:len(values) &gt; 1'>
-                                    <li tal:repeat='value values'>
-                                        <span tal:replace='value'>One of several values</span>
-                                    </li>
-                                </ul>
-                            </td>
+                            <tal:if condition='python:not row[0].endswith("Id")'>
+                                <td><label tal:content='python:row[0]'>Number of lungs</label></td>
+                                <td tal:define='values python:row[1]'>
+                                    <span tal:condition='python:len(values) == 0' class='text-muted'>
+                                        No values.
+                                    </span>
+                                    <span tal:condition='python:len(values) == 1'
+                                        tal:content='structure python:values[0]'>
+                                        One value
+                                    </span>
+                                    <ul tal:condition='python:len(values) &gt; 1'>
+                                        <li tal:repeat='value values'>
+                                            <span tal:replace='value'>One of several values</span>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tal:if>
                         </tr>
                     </tbody>
                 </table>

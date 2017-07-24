@@ -28,7 +28,7 @@
                     <li class='active' tal:content='python:dataset.name'>Some Dataset Name</li>
                 </ol>
 
-                <h1 tal:content='dataset.name'>urn:whatever:blah-blah</h1>
+                <h1>Dataset: <span tal:replace='dataset.name'>urn:whatever:blah-blah</span></h1>
 
                 <dl class='dl-horizontal'>
                     <dt>Identifier:</dt>
@@ -78,8 +78,7 @@
                                 <tr>
                                     <td><input type='checkbox' name='all.include' checked='true'/></td>
                                     <td>Name</td>
-                                    <td>Type</td>
-                                    <td>Size</td>
+                                    <td style='text-align: right;'>Size</td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -97,9 +96,6 @@
                                         <a href='#' tal:attributes='href fileURL' tal:content='f.name'>
                                             Some file name
                                         </a>
-                                    </td>
-                                    <td tal:content='python:f.contentType'>
-                                        application/octet-stream
                                     </td>
                                     <td tal:content='python:view.humanFriendlySize(f.size)'
                                         style='text-align: right;'>
