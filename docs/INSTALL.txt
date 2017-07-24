@@ -9,5 +9,7 @@ Installation
 5.  Fix cronjob
 6.  Run initial cron
 7.  Fix symlink
+8.  Restart web server
+9.  Log in, hit Manage, set the settings
 
 Maybe when tagging a release we do both setup.py and [versions]?
