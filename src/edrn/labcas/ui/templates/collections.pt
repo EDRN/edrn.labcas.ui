@@ -33,7 +33,7 @@
                         tal:attributes='href python:request.route_url("upload")'>
                         <span class='glyphicon glyphicon-cloud-upload' aria-hidden='true'></span> Upload Files
                     </a>
-                    <a class='btn btn-default' href='#' role='button'
+                    <a class='btn btn-default' href='#' role='button' tal:condition='showStartWorkflow'
                         tal:attributes='href python:request.route_url("start")'>
                         <span class='glyphicon glyphicon-play-circle' aria-hidden='true'></span> Start Workflow
                     </a>
