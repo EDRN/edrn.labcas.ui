@@ -3,6 +3,7 @@ Installation
 
 1. Download the src
 2. Add [versions] in etc/versions/eggs.cfg
+3. Copy ops.cfg.in to ops.cfg; if you re-use last version's ops.cfg, *change* the session and authorization tokens!
 3. Run buildout
 4. Fix cronjob
 5. Run initial cron
