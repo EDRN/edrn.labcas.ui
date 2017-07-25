@@ -35,12 +35,14 @@ class AcceptView(object):
             backend = getUtility(IBackend)
             metadata = self.request.session['metadata']
             workflow = self.request.session['workflow']
-            # Transform date objects into strings, and sets into sequences
+            # Transform date objects into strings, and sets into sequences; get rid of Nones
             for key, value in metadata.items():
                 if isinstance(value, datetime.date):
                     metadata[key] = value.isoformat()
                 elif isinstance(value, set) or isinstance(value, frozenset):
                     metadata[key] = list(value)
+                elif value is None:
+                    del metadata[key]
             # See comments on CA-1332; we need a better way to discover this and not hard-code
             tasks = [i['id'] for i in workflow.tasks]
             backend.getWorkflowMgr().executeDynamicWorkflow(tasks, metadata)

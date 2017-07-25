@@ -131,6 +131,8 @@ def createSchema(workflow, request):
                 description = conf.get(u'input.dataset.{}.description'.format(fieldName), u'Not sure what to put here.')
                 dataType = conf.get(u'input.dataset.{}.type'.format(fieldName), u'http://www.w3.org/2001/XMLSchema/string')
                 missing = colander.required if conf.get(u'input.dataset.{}.required'.format(fieldName)) == u'true' else None
+                if missing is colander.required:
+                    title = u'🔴 ' + title  # There's a red circle (U+1F534) and a no-break space U+00A0 in there
                 # FIXME:
                 if dataType in (
                     u'http://www.w3.org/2001/XMLSchema/string',
@@ -168,7 +170,7 @@ def createSchema(workflow, request):
                         title=title,
                         description=description,
                         missing=missing,
-                        widget=deform.widget.RichTextWidget()
+                        widget=deform.widget.TextAreaWidget(rows=6)
                     ))
                 elif dataType == u'http://cancer.jpl.nasa.gov/xml/schema/types.xml#nistDatasetId':
                     # Skip this; we generated this dataset ID based on other fields
@@ -215,7 +217,7 @@ def createSchema(workflow, request):
                         missing=missing,
                         widget=deform.widget.AutocompleteInputWidget(values=request.route_url('species'))
                     ))
-                elif dataType == u'http://cancer.jpl.nasa.gov/xml/schema/types.xml#currentLogin':                    
+                elif dataType == u'http://cancer.jpl.nasa.gov/xml/schema/types.xml#currentLogin':
                     schema.add(colander.SchemaNode(
                         colander.String(),
                         name=fieldName,

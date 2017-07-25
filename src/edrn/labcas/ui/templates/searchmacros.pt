@@ -61,9 +61,9 @@
                     Unknown cohort
                 </span>
                 <br/>
-                <span tal:condition='version' tal:replace='string:V${version}'>
-                    V1
-                </span>
+                <small tal:condition='version' tal:replace='string:v${version}'>
+                    v1
+                </small>
                 <span tal:condition='not:version' class='text-muted'>
                     Unknown version
                 </span>

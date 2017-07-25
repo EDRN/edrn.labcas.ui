@@ -73,7 +73,7 @@
         </div>
         <div tal:condition='showSearch' class='row' style='margin-bottom: 1em;'>
             <div class='col-md-8'></div>
-            <form class='col-md-3' action='#' tal:attributes='action python:request.route_url("search")' method='POST'>
+            <form class='col-md-3' action='#' tal:attributes='action python:request.route_url("search")' method='GET'>
                 <div class='input-group'>
                     <input type='text' name='search' class='form-control' placeholder='Search…'/>
                     <span class='input-group-btn'>
