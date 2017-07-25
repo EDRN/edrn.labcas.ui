@@ -31,7 +31,7 @@ _externalRequirements = [
     'deform >= 2.0a1',
     'humanize',
     'M2Crypto',
-    'pyramid',
+    'pyramid == 1.6',
     'pyramid_beaker',
     'pyramid_chameleon',
     'pyramid_debugtoolbar',

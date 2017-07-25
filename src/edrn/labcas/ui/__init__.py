@@ -62,7 +62,9 @@ def main(global_config, **settings):
         cache_period=int(settings['ldap.group.cache'])
     )
     config.set_authentication_policy(AuthTktAuthenticationPolicy(
-        settings['authtkt.secret'], hashalg=settings['authtkt.hashalg'], callback=groupfinder
+        settings['authtkt.secret'], hashalg=settings['authtkt.hashalg'], callback=groupfinder,
+        secure=settings['session.secure'] == 'true', timeout=settings['session.timeout'],
+        max_age=settings['session.timeout'], wild_domain=False
     ))
     config.set_authorization_policy(ACLAuthorizationPolicy())
     config.add_static_view('static', 'static', cache_max_age=3600)  # use ini?
