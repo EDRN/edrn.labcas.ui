@@ -24,6 +24,9 @@
             tal:attributes='src python:request.static_url("deform:static/scripts/bootstrap.min.js")'></script>
         <metal:style-slot define-slot='style_slot'/>
         <metal:javascript-slot define-slot='javascript_head_slot'/>
+        <title tal:define='title pageTitle|nothing' tal:condition='title' tal:content='title'>
+            Page title here
+        </title>
     </head>
     <body id='public' tal:define='
         message message|nothing;

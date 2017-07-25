@@ -66,7 +66,8 @@ class AuthenticationView(object):
             cameFrom=cameFrom,
             username=username,
             message=message,
-            form=self.form.render()
+            form=self.form.render(),
+            pageTitle=u'LabCAS Login'
         )
     @view_config(route_name='logout')
     def logout(self):

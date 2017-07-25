@@ -52,5 +52,6 @@ class CollectionsView(object):
             'hasPublicCollections': len(publicCollections) > 0,
             'canUpload': canUpload,
             'canManage': canManage,
-            'showStartWorkflow': showStartWorkflow
+            'showStartWorkflow': showStartWorkflow,
+            'pageTitle': u'LabCAS Collections'
         }

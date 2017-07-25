@@ -45,7 +45,6 @@ class MetadataView(object):
             wfInfo.get('conditions', []),
             wfInfo.get('tasks', [])
         )
-        principals = frozenset(self.request.effective_principals)
         form = deform.Form(createSchema(workflow, self.request), buttons=('submit',))
         if 'submit' in self.request.params:
             try:
@@ -77,6 +76,11 @@ class MetadataView(object):
                 return {
                     u'message': u"Some required metadata don't make sense or are missing.",
                     u'form': ex.render(),
-                    u'widgetResources': form.get_widget_resources()
+                    u'widgetResources': form.get_widget_resources(),
+                    u'pageTitle': u'Upload Metadata'
                 }
-        return {u'form': form.render(), u'widgetResources': form.get_widget_resources()}
+        return {
+            u'form': form.render(),
+            u'widgetResources': form.get_widget_resources(),
+            u'pageTitle': u'Upload Metadata'
+        }

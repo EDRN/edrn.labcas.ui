@@ -66,6 +66,11 @@ class WFMetadataView(object):
                 return {
                     u'message': u"Some required metadata don't make sense or are missing.",
                     u'form': ex.render(),
-                    u'widgetResources': form.get_widget_resources()
+                    u'widgetResources': form.get_widget_resources(),
+                    u'pageTitle': u'Workflow Metadata'
                 }
-        return {u'form': form.render(), u'widgetResources': form.get_widget_resources()}
+        return {
+            u'form': form.render(),
+            u'widgetResources': form.get_widget_resources(),
+            u'pageTitle': u'Workflow Metadata'
+        }

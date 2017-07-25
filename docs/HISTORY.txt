@@ -9,7 +9,10 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 1.0.5 — TBD
 -----------
 
+• CA-1531, Internal Server Error when downloading multiple files
 • CA-1556, Session cookie doesn't expire
+• CA-1562, LabCAS UI lacks a favicon.ico, fails to set <title>
+• Email, explain what 🔴 means
 
 
 1.0.4 — The Daily

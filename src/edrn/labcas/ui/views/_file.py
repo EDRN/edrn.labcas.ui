@@ -51,5 +51,6 @@ class FileView(object):
                 'dataset': dataset,
                 'f': f,
                 'viewerURL': viewerURL,
-                'viewerType': viewerType
+                'viewerType': viewerType,
+                'pageTitle': f.name
             }

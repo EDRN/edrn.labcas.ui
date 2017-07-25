@@ -63,5 +63,6 @@ class AcceptView(object):
             return {
                 'hasFiles': len(entries) > 0,
                 'currentFiles': entries,
-                'metadataForm': self.request.session['metadataForm']
+                'metadataForm': self.request.session['metadataForm'],
+                'pageTitle': u'Ready for Files'
             }

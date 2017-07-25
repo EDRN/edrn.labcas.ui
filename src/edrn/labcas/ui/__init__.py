@@ -69,6 +69,8 @@ def main(global_config, **settings):
     config.set_authorization_policy(ACLAuthorizationPolicy())
     config.add_static_view('static', 'static', cache_max_age=3600)  # use ini?
     config.add_static_view('deform_static', 'deform:static')
+    config.add_route('favicon', '/favicon.ico')
+    config.add_view('edrn.labcas.ui.views.favicon_view', route_name='favicon')
     config.add_route('home', '/')
     config.add_route('search', '/search', factory=Collections)
     config.add_route('collections', '/c', factory=Collections)

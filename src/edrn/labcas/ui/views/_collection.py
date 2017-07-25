@@ -14,4 +14,4 @@ class CollectionView(object):
         collectionID = self.request.matchdict['collectionID']
         principals = frozenset(self.request.effective_principals)
         collection = LabCASCollection.get(collectionID, principals)
-        return {'collection': collection}
+        return {'collection': collection, 'pageTitle': collection.name}

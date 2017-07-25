@@ -91,5 +91,6 @@ class SearchView(object):
             u'numFiles': numFiles,
             u'top10Files': top10Files,
             u'files': files,
-            u'numRemainingFiles': len(files)
+            u'numRemainingFiles': len(files),
+            u'pageTitle': u'LabCAS Search'
         }

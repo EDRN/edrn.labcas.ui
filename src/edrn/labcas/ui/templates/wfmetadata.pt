@@ -30,7 +30,10 @@
         <div metal:fill-slot='content'>
             <div class='container'>
                 <h1>Workflow Metadata</h1>
-                <p>We'll need just a few details before we can start your workflow.</p>
+                <p>
+                    We'll need just a few details before we can start your workflow.
+                    <small>🔴 indicates required fields.</small>
+                </p>
                 <form action='#' tal:replace='structure python:form'>
                     Metadata form here.
                 </form>

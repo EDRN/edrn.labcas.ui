@@ -29,4 +29,4 @@ class StartView(object):
                     if not workflow.uploadFiles:
                         workflows.append(workflow)
         workflows.sort(lambda a, b: cmp(a.order, b.order))
-        return {u'hasWorkflows': len(workflows) > 0, u'workflows': workflows}
+        return {u'hasWorkflows': len(workflows) > 0, u'workflows': workflows, u'pageTitle': u'Start Workflow'}

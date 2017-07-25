@@ -46,5 +46,6 @@ class DatasetView(object):
             # View files
             return {
                 'collection': collection,
-                'dataset': dataset
+                'dataset': dataset,
+                'pageTitle': u'Dataset: ' + dataset.name
             }

@@ -115,5 +115,6 @@ class ManageView(object):
                 }
         return {
             'form': form.render(),
-            'widgetResources': form.get_widget_resources()
+            'widgetResources': form.get_widget_resources(),
+            'pageTitle': u'Manage LabCAS'
         }
