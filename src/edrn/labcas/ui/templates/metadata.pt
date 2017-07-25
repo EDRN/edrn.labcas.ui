@@ -40,7 +40,10 @@
         <div metal:fill-slot='content'>
             <div class='container'>
                 <h1>Upload Metadata</h1>
-                <p>We'll need just a few details before we can accept your data.</p>
+                <p>
+                    We'll need just a few details before we can accept your data.
+                    <small>🔴 indicates required fields.</small>
+                </p>
                 <form action='#' tal:replace='structure python:form'>
                     Metadata form here.
                 </form>
