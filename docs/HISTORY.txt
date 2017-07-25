@@ -6,19 +6,19 @@ are listed below, you can find out more about them by visiting the issue
 tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 
 
-1.0.4 — TBD
------------
+1.0.4 — The Daily
+-----------------
 
 • CA-1557, Create direct link to LabCAS Viewers
 • CA-1558, Hide "Start Workflow" options if there are no workflows to run
+• CA-1559, Identify which fields are required when uploading a dataset
+• (Daily, CA-1561) Use plain text boxes instead of rich text fields
 • (Daily) Delete null metadata keys before executing dynamic workflow
 • (Daily) Make the "V" (for version) smaller on search results
 • (Daily) On search, do a GET not a POST; or try a POST, redirect, GET
 • (Daily) On search results, add the breadcrumbs
 • (Daily) Have the UI drop any metadata items with None values, and let Luca
   know as soon as it's available
-• (Daily) Use plain text boxes instead of rich text fields
-• CA-1559, Identify which fields are required when uploading a dataset
 
 
 1.0.3 — Dan's Other Email
