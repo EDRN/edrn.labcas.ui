@@ -8,7 +8,7 @@
     xml:lang='en'
     metal:use-macro='load:edrn.labcas.ui:templates/master.pt'>
     <head>
-        <title>Upload</title>
+        <title>Start Workflow</title>
         <!--
             provided names:
             - hasWorkflows: a boolean that tells if any workflows are available
