@@ -141,7 +141,7 @@
                                         </a>
                                     </h4>
                                 </div>
-                                <div id='remainingDatases' class='panel-collapse collapse' role='tabpanel'
+                                <div id='remainingDatasets' class='panel-collapse collapse' role='tabpanel'
                                     aria-labelledby='remainingDatasetsHeading'>
                                     <div class='panel-body'>
                                         <tal:repeat repeat='match datasets'>
