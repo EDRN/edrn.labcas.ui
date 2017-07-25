@@ -6,8 +6,8 @@ are listed below, you can find out more about them by visiting the issue
 tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 
 
-1.0.5 — TBD
------------
+1.0.5 — Matinée Performance
+---------------------------
 
 • CA-1531, Internal Server Error when downloading multiple files
 • CA-1556, Session cookie doesn't expire
