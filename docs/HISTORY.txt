@@ -6,10 +6,11 @@ are listed below, you can find out more about them by visiting the issue
 tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 
 
-1.0.6 — TBD
------------
+1.0.6 — Tidbits
+---------------
 
 • CA-1564, Wrong bread-crumbing for dataset
+• CA-1565, Show a better form for the FileType
 
 
 1.0.5 — Matinée Performance
