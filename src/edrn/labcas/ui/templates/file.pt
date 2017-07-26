@@ -31,7 +31,7 @@
                     <li>
                         <a href='#' tal:content='dataset.name' tal:attributes='
                             href python:request.route_url(
-                                "collection",
+                                "dataset",
                                 collectionID=collection.identifier,
                                 datasetID=dataset.identifier
                             )
