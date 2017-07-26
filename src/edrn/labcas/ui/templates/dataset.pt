@@ -76,9 +76,10 @@
                         <table class='table'>
                             <thead>
                                 <tr>
-                                    <td><input type='checkbox' name='all.include' checked='true'/></td>
-                                    <td>Name</td>
-                                    <td style='text-align: right;'>Size</td>
+                                    <th><input type='checkbox' name='all.include' checked='true'/></th>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th style='text-align: right;'>Size</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -96,6 +97,9 @@
                                         <a href='#' tal:attributes='href fileURL' tal:content='f.name'>
                                             Some file name
                                         </a>
+                                    </td>
+                                    <td tal:content='python:view.humanFriendlyMimeType(f)'>
+                                        application/get-a-life
                                     </td>
                                     <td tal:content='python:view.humanFriendlySize(f.size)'
                                         style='text-align: right;'>

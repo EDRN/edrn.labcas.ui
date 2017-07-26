@@ -6,7 +6,7 @@ from .interfaces import IBackend, ILabCASSettings, IVocabularies, ILabCASSetting
 from pyramid_ldap import get_ldap_connector
 from zope.component import getUtility
 from zope.interface import implements
-import colander, re, datetime, logging, deform, cPickle
+import colander, re, datetime, logging, deform, cPickle, csv, codecs, os.path
 
 # Logging
 _logger = logging.getLogger(__name__)
@@ -737,6 +737,61 @@ class MetadataElement(object):
         return cmp(self.identifier, other.identifier)
     def __repr__(self):
         return u'{}:{}'.format(self.__class__.__name__, self.identifier)
+
+
+# Courtesy of https://docs.python.org/2/library/csv.html#module-csv
+class UTF8Recoder(object):
+    def __init__(self, f, encoding):
+        self.reader = codecs.getreader(encoding)(f)
+    def __iter__(self):
+        return self
+    def next(self):
+        return self.reader.next().encode('utf-8')
+
+
+class UnicodeReader(object):
+    def __init__(self, f, dialect=csv.excel, encoding='utf-8', **kwds):
+        f = UTF8Recoder(f, encoding)
+        self.reader = csv.reader(f, dialect=dialect, **kwds)
+    def next(self):
+        row = self.reader.next()
+        return [unicode(s, 'utf-8') for s in row]
+    def __iter__(self):
+        return self
+
+
+def _readMimeTypes():
+    mimes = {}
+    with open(os.path.join(os.path.dirname(__file__), 'static', 'mimes.csv'), 'rb') as f:
+        reader = UnicodeReader(f)
+        for row in reader:
+            contentType, description = row[0], row[1]
+            mimes[contentType] = description
+    return mimes
+
+
+def _readExtensions():
+    extensions = {}
+    with open(os.path.join(os.path.dirname(__file__), 'static', 'mimes.csv'), 'rb') as f:
+        reader = UnicodeReader(f)
+        for row in reader:
+            extension, description = row[2], row[1]
+            extensions[extension] = description
+    return extensions
+
+
+MIME_TYPES = _readMimeTypes()
+EXTENSIONS = _readExtensions()
+
+
+def computeHumanReadableContentType(fileName, contentType):
+    desc = MIME_TYPES.get(contentType)
+    if not desc or contentType == u'application/octet-stream':
+        fn, ext = os.path.splitext(fileName)
+        desc = EXTENSIONS.get(ext)
+        if not desc:
+            desc = 'Binary Data'
+    return desc
 
 
 # Sincere gratitude to http://jmrware.com/articles/2009/uri_regexp/URI_regex.html

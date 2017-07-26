@@ -14,6 +14,7 @@
             - collection: parent collection
             - dataset: parent dataset
             - f: current file
+            - contentType: type of file
             - viewerURL: URL to an in-browser viewer for these files, may be None
             - viewerType: name of this in-browser viewer, may be None
         -->
@@ -55,7 +56,7 @@
                         </abbr>
                     </dd>
                     <dt>Content type:</dt>
-                    <dd tal:content='f.contentType'>text/plain</dd>
+                    <dd tal:content='contentType'>text/plain</dd>
                 </dl>
 
                 <p>

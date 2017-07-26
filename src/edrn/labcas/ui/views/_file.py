@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 from edrn.labcas.ui import PACKAGE_NAME
-from edrn.labcas.ui.utils import LabCASCollection
+from edrn.labcas.ui.utils import LabCASCollection, computeHumanReadableContentType
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, view_defaults
 from M2Crypto import EVP
@@ -50,6 +50,7 @@ class FileView(object):
                 'collection': collection,
                 'dataset': dataset,
                 'f': f,
+                'contentType': computeHumanReadableContentType(f.name, f.contentType),
                 'viewerURL': viewerURL,
                 'viewerType': viewerType,
                 'pageTitle': f.name

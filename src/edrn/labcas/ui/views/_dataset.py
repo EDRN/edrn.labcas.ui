@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 from edrn.labcas.ui import PACKAGE_NAME
-from edrn.labcas.ui.utils import LabCASCollection
+from edrn.labcas.ui.utils import LabCASCollection, computeHumanReadableContentType
 from pyramid.httpexceptions import HTTPFound
 from pyramid.response import FileResponse
 from pyramid.view import view_config, view_defaults
@@ -17,6 +17,8 @@ class DatasetView(object):
         self.request = request
     def humanFriendlySize(self, size):
         return unicode(humanize.naturalsize(size)).replace(u' ', u' ')  # There's a NO-BREAK SPACE in there.
+    def humanFriendlyMimeType(self, f):
+        return computeHumanReadableContentType(f.name, f.contentType)
     @view_config(route_name='dataset', permission='view')
     def __call__(self):
         collectionID, datasetID = self.request.matchdict['collectionID'], self.request.matchdict['datasetID']
