@@ -6,8 +6,8 @@ are listed below, you can find out more about them by visiting the issue
 tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 
 
-1.0.7 — TBD
------------
+1.0.7 Descriptive
+-----------------
 
 • CA-1566, Show file-level "Description" field
 
