@@ -1,10 +1,12 @@
 # encoding: utf-8
 
 from edrn.labcas.ui import PACKAGE_NAME
+from edrn.labcas.ui.interfaces import ILabCASSettings
 from edrn.labcas.ui.utils import LabCASCollection, computeHumanReadableContentType
 from pyramid.httpexceptions import HTTPFound
 from pyramid.response import FileResponse
 from pyramid.view import view_config, view_defaults
+from zope.component import getUtility
 import humanize, zipfile, os, os.path, threading, tempfile  # FIXME: if /tmp lacks space, we fail
 
 
@@ -25,6 +27,8 @@ class DatasetView(object):
         principals = frozenset(self.request.effective_principals)
         collection = LabCASCollection.get(collectionID, principals)
         dataset = collection.datasets(datasetID)
+        totalSize = sum([i.size for i in dataset.files()])
+        showCheckboxes = totalSize < getUtility(ILabCASSettings).getZipFileLimit() * 1024L * 1024L
         params = self.request.params
         if 'Download checked files' in params:
             # Download multiple files
@@ -32,7 +36,8 @@ class DatasetView(object):
             ids = [unicode(i[8:]) for i in params if i.startswith(u'include.') and params[i] == u'on']
             if len(ids) == 0:
                 raise HTTPFound(self.request.url, message=u'No files were selected.')
-            zipFileDesc, zipFileName = tempfile.mkstemp(u'.zip', u'labcas-')
+            tmpDir = getUtility(ILabCASSettings).getTmpDir()
+            zipFileDesc, zipFileName = tempfile.mkstemp(u'.zip', u'labcas-', tmpDir)
             with zipfile.ZipFile(os.fdopen(zipFileDesc, 'w'), 'w', zipfile.ZIP_DEFLATED, allowZip64=True) as z:
                 for i in ids:
                     f = dataset.files(i)
@@ -49,5 +54,6 @@ class DatasetView(object):
             return {
                 'collection': collection,
                 'dataset': dataset,
+                'showCheckboxes': showCheckboxes,
                 'pageTitle': u'Dataset: ' + dataset.name
             }

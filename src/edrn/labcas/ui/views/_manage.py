@@ -2,10 +2,6 @@
 
 from edrn.labcas.ui import PACKAGE_NAME
 from edrn.labcas.ui.interfaces import ILabCASSettings
-from edrn.labcas.ui.utils import (
-    LabCASWorkflow, DEFAULT_SITE_RDF_URL, DEFAULT_PROTOCOL_RDF_URL, DEFAULT_PEOPLE_RDF_URL, DEFAULT_ORGAN_RDF_URL,
-    DEFAULT_DISCIPLINE_RDF_URL, DEFAULT_SPECIES_RDF_URL, DEFAULT_SUPER_GROUP
-)
 from pyramid.view import view_config, view_defaults
 from zope.component import getUtility
 import colander, deform
@@ -24,57 +20,71 @@ class ManageView(object):
             name='program',
             title=u'Program',
             description=u'Which program this LabCAS installation is for.',
-            default=u'EDRN',
+            default=getUtility(ILabCASSettings).getProgram(),
             widget=deform.widget.RadioChoiceWidget(values=((u'EDRN', u'EDRN'), (u'MCL', u'MCL')), inline=True)
+        ))
+        schema.add(colander.SchemaNode(
+            colander.Integer(),
+            name='zipFileLimit',
+            title=u'Zip File Limit',
+            description=u'Megabyte limit before we disable download of multiple files in a Zip archive.',
+            default=getUtility(ILabCASSettings).getZipFileLimit()
+        ))
+        schema.add(colander.SchemaNode(
+            colander.String(),
+            name='tmpDir',
+            title=u'Temporary Directory',
+            description=u'Where on the server we can create temporary files.',
+            default=getUtility(ILabCASSettings).getTmpDir(),
         ))
         schema.add(colander.SchemaNode(
             colander.String(),
             name='superGroup',
             title=u'Super Group',
             description=u'What the super group is.',
-            default=DEFAULT_SUPER_GROUP,
+            default=getUtility(ILabCASSettings).getSuperGroup(),
         ))
         schema.add(colander.SchemaNode(
             colander.String(),
             name='disciplineRDFURL',
             title=u'Discipline RDF URL',
             description=u'URL to the Resource Description Framework knowledge source of disciplines.',
-            default=DEFAULT_DISCIPLINE_RDF_URL,
+            default=getUtility(ILabCASSettings).getDisciplineRDFURL(),
         ))
         schema.add(colander.SchemaNode(
             colander.String(),
             name='organRDFURL',
             title=u'Organ RDF URL',
             description=u'URL to the Resource Description Framework knowledge source of organs (body systems).',
-            default=DEFAULT_ORGAN_RDF_URL,
+            default=getUtility(ILabCASSettings).getOrganRDFURL(),
         ))
         schema.add(colander.SchemaNode(
             colander.String(),
             name='peopleRDFURL',
             title=u'People RDF URL',
             description=u'URL to the Resource Description Framework knowledge source of people.',
-            default=DEFAULT_PEOPLE_RDF_URL,
+            default=getUtility(ILabCASSettings).getPeopleRDFURL(),
         ))
         schema.add(colander.SchemaNode(
             colander.String(),
             name='protocolRDFURL',
             title=u'Protocol RDF URL',
             description=u'URL to the Resource Description Framework knowledge source of protocols.',
-            default=DEFAULT_PROTOCOL_RDF_URL,
+            default=getUtility(ILabCASSettings).getProtocolRDFURL(),
         ))
         schema.add(colander.SchemaNode(
             colander.String(),
             name='siteRDFURL',
             title=u'Site RDF URL',
             description=u'URL to the Resource Description Framework knowledge source of sites.',
-            default=DEFAULT_PROTOCOL_RDF_URL,
+            default=getUtility(ILabCASSettings).getSiteRDFURL(),
         ))
         schema.add(colander.SchemaNode(
             colander.String(),
             name='speciesRDFURL',
             title=u'Species RDF URL',
             description=u'URL to the Resource Description Framework knowledge source of species, like left sharks.',
-            default=DEFAULT_SPECIES_RDF_URL,
+            default=getUtility(ILabCASSettings).getSpeciesRDFURL(),
         ))
         form = deform.Form(schema, buttons=('submit',))
         if 'submit' in self.request.params:
@@ -88,6 +98,8 @@ class ManageView(object):
                 protocolRDFURL    = metadataAppstruct['protocolRDFURL']
                 siteRDFURL        = metadataAppstruct['siteRDFURL']
                 speciesRDFURL     = metadataAppstruct['speciesRDFURL']
+                zipFileLimit      = metadataAppstruct['zipFileLimit']
+                tmpDir            = metadataAppstruct['tmpDir']
                 if program != settings.getProgram() \
                     or peopleRDFURL != settings.getPeopleRDFURL() \
                     or protocolRDFURL != settings.getProtocolRDFURL() \
@@ -95,7 +107,9 @@ class ManageView(object):
                     or organRDFURL != settings.getOrganRDFURL() \
                     or disciplineRDFURL != settings.getDisciplineRDFURL() \
                     or speciesRDFURL != settings.getSpeciesRDFURL() \
-                    or superGroup != settings.getSuperGroup():
+                    or superGroup != settings.getSuperGroup() \
+                    or zipFileLimit != settings.getZipFileLimit() \
+                    or tmpDir != settings.getTmpDir():
                     settings.setProgram(program)
                     settings.setPeopleRDFURL(peopleRDFURL)
                     settings.setProtocolRDFURL(protocolRDFURL)
@@ -104,6 +118,8 @@ class ManageView(object):
                     settings.setDisciplineRDFURL(disciplineRDFURL)
                     settings.setSpeciesRDFURL(speciesRDFURL)
                     settings.setSuperGroup(superGroup)
+                    settings.setZipFileLimit(zipFileLimit)
+                    settings.setTmpDir(tmpDir)
                     self.request.session.flash(u'Changes saved.', 'info')
                 else:
                     self.request.session.flash(u'No changes made.', 'info')

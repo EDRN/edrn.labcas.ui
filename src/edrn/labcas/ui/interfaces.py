@@ -37,6 +37,14 @@ class IVocabularies(Interface):
 
 class ILabCASSettings(Interface):
     u'''Various settings for LabCAS'''
+    def getTmpDir():
+        u'''Tells where we can make temporary files on the server'''
+    def setTmpDir(tmpDir):
+        u'''Sets where we can make temporary files on the server'''
+    def getZipFileLimit():
+        u'''Returns the number of megabytes where we disable the zip file download due to space considerations'''
+    def setZipFileLimit(megabytes):
+        u'''Set the number of megabytes where we disable the zip file download due to specimen considerations'''
     def getProgram():
         u'''Returns either EDRN or MCL'''
     def setProgram(program):

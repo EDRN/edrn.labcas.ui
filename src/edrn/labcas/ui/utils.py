@@ -80,6 +80,8 @@ DEFAULT_DISCIPLINE_RDF_URL = u'https://mcl.jpl.nasa.gov/ksdb/publishrdf/?filterb
 DEFAULT_SPECIES_RDF_URL    = u'https://mcl.jpl.nasa.gov/ksdb/publishrdf/?filterby=program&filterval=1&rdftype=species'
 DEFAULT_SPEC_TYPES_RDF_URL = u'https://mcl.jpl.nasa.gov/ksdb/publishrdf/?filterby=program&filterval=1&rdftype=specimentype'
 DEFAULT_SUPER_GROUP        = u'cn=Super User,dc=edrn,dc=jpl,dc=nasa,dc=gov'
+DEFAULT_ZIP_FILE_LIMIT     = 250
+DEFAULT_TMP_DIR            = u'/data/tmp'
 
 
 # Functions
@@ -645,8 +647,22 @@ class Settings(object):
     speciesRDFURL = DEFAULT_SPECIES_RDF_URL
     specimenTypeRDFURL = DEFAULT_SPEC_TYPES_RDF_URL
     superGroup = DEFAULT_SUPER_GROUP
+    zipFileLimit = DEFAULT_ZIP_FILE_LIMIT
+    tmpDir = DEFAULT_TMP_DIR
     def __init__(self, settingsPath):
         self.settingsPath = settingsPath
+    def getTmpDir(self):
+        return self.tmpDir
+    def setTmpDir(self, tmpDir):
+        if self.tmpDir != tmpDir:
+            self.tmpDir = tmpDir
+            self.update()
+    def getZipFileLimit(self):
+        return self.zipFileLimit
+    def setZipFileLimit(self, megabytes):
+        if self.zipFileLimit != megabytes:
+            self.zipFileLimit = megabytes
+            self.update()
     def getSuperGroup(self):
         return self.superGroup
     def setSuperGroup(self, group):

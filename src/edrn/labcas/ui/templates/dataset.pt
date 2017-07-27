@@ -13,7 +13,10 @@
             provided names:
             - collection: parent collection
             - dataset: current dataset
+            - showCheckboxes: boolean indicating if the download checkboxes should be showed
         -->
+        <metal:javascript fill-slot='javascript_head_slot'>
+        </metal:javascript>
     </head>
     <body>
         <div metal:fill-slot='content'>
@@ -73,10 +76,12 @@
                 <h3>Files</h3>
                 <p tal:define='files python:dataset.files()'>
                     <form action='#' method='POST' tal:attributes='action python:request.current_route_url()'>
-                        <table class='table'>
+                        <table class='table' id='file-table'>
                             <thead>
                                 <tr>
-                                    <th><input type='checkbox' name='all.include' checked='true'/></th>
+                                    <th tal:condition='showCheckboxes'>
+                                        <input type='checkbox' name='select-all' id='select-all'></input>
+                                    </th>
                                     <th>Name</th>
                                     <th>Type</th>
                                     <th>Description</th>
@@ -85,8 +90,8 @@
                             </thead>
                             <tbody>
                                 <tr tal:repeat='f python:files'>
-                                    <td>
-                                        <input type='checkbox' name='include.name' checked='true'
+                                    <td tal:condition='showCheckboxes'>
+                                        <input type='checkbox' name='include.name'
                                             tal:attributes='name python:u"include." + f.identifier'/>
                                     </td>
                                     <td tal:define='fileURL python:request.route_url(
@@ -118,7 +123,7 @@
                             </tbody>
                         </table>
                         <button type='submit' class='btn bth-default' name='Download checked files'
-                            value='download'>
+                            value='download' tal:condition='showCheckboxes'>
                             <span class='glyphicon glyphicon-download-alt' aria-hidden='true'></span>
                             Download checked files
                         </button>
@@ -126,5 +131,13 @@
                 </p>
             </div>
         </div>
+        <script type='text/javascript' tal:condition='showCheckboxes'>
+            $(document).ready(function() {
+                $("#select-all").click(function() {
+                    alert("fuck");
+                    $("#file-table input[type='checkbox']").prop('checked', this.checked);
+                });
+            });
+        </script>
     </body>
 </html>
