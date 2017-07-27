@@ -6,12 +6,12 @@ are listed below, you can find out more about them by visiting the issue
 tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 
 
-1.0.8 — TBD
------------
+1.0.8 — Napster Downloads
+-------------------------
 
 • Email, Make temp directory configurable
 • Email, disable downloading of multiple files if size exceeds threshold
-• Email, attempt to make the select-all checkbox work, but fail
+• Email, master checkbox to select all files wasn't toggling child checkboxes
 • Inspection, management control panel using not using saved values as defaults
 
 

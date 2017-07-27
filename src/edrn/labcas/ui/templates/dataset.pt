@@ -16,6 +16,8 @@
             - showCheckboxes: boolean indicating if the download checkboxes should be showed
         -->
         <metal:javascript fill-slot='javascript_head_slot'>
+            <script type='text/javascript' tal:condition='showCheckboxes'>
+            </script>
         </metal:javascript>
     </head>
     <body>
@@ -74,13 +76,13 @@
                 </table>
 
                 <h3>Files</h3>
-                <p tal:define='files python:dataset.files()'>
+                <div tal:define='files python:dataset.files()'>
                     <form action='#' method='POST' tal:attributes='action python:request.current_route_url()'>
                         <table class='table' id='file-table'>
                             <thead>
                                 <tr>
                                     <th tal:condition='showCheckboxes'>
-                                        <input type='checkbox' name='select-all' id='select-all'></input>
+                                        <input type='checkbox' name='select-all' id='select-all'/>
                                     </th>
                                     <th>Name</th>
                                     <th>Type</th>
@@ -128,15 +130,15 @@
                             Download checked files
                         </button>
                     </form>
-                </p>
+                    <script type='text/javascript' tal:condition='showCheckboxes'>
+                        $(document).ready(function() {
+                            $("#select-all").click(function() {
+                                $("#file-table input[type='checkbox']").prop('checked', this.checked);
+                            });
+                        });
+                    </script>
+                </div>
             </div>
         </div>
-        <script type='text/javascript' tal:condition='showCheckboxes'>
-            $(document).ready(function() {
-                $("#select-all").click(function() {
-                    $("#file-table input[type='checkbox']").prop('checked', this.checked);
-                });
-            });
-        </script>
     </body>
 </html>
