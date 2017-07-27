@@ -134,7 +134,6 @@
         <script type='text/javascript' tal:condition='showCheckboxes'>
             $(document).ready(function() {
                 $("#select-all").click(function() {
-                    alert("fuck");
                     $("#file-table input[type='checkbox']").prop('checked', this.checked);
                 });
             });
