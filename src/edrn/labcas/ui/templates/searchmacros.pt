@@ -83,13 +83,15 @@
         </div>
 
         <div metal:define-macro='displayFile'>
-            <p tal:define='
-                name python:match[u"name"];
-                url python:match[u"url"];
-                size python:match[u"size"];
-                cohort python:match[u"cohort"];
-                desc python:match[u"desc"];
-                score python:match[u"score"];
+            <p class='application/octet-stream' tal:attributes='class python:u"c-{}".format(typesToIDs[contentType])'
+                tal:define='
+                    name python:match[u"name"];
+                    url python:match[u"url"];
+                    size python:match[u"size"];
+                    cohort python:match[u"cohort"];
+                    desc python:match[u"desc"];
+                    score python:match[u"score"];
+                    contentType python:match[u"contentType"];
             '>
                 <a href='#' tal:attributes='href url' tal:content='name'>
                     File Part

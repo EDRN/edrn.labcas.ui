@@ -6,6 +6,12 @@ are listed below, you can find out more about them by visiting the issue
 tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 
 
+1.0.9 Proof of Concept
+----------------------
+
+• Meeting, a proof-of-concept of facet controls on search results
+
+
 1.0.8 — Napster Downloads
 -------------------------
 

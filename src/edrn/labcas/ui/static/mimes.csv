@@ -1,7 +1,8 @@
 application/gzip,GZIP Compressed,.gz
 chemical/seq-na-fastq,FASTQ Nucleotide Sequence,.fastq
 image/tiff-aperio,Aperio,.svs
-application/dicom,Digital Imaging and Communications in Medicine (DICOM),.dcm
+application/aperio,Aperio,.svs
+application/dicom,DICOM,.dcm
 application/vnd.hzn-3d-crossword,3D Crossword Plugin,.x3d
 video/3gpp,3GP,.3gp
 video/3gpp2,3GP2,.3g2

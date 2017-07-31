@@ -2,6 +2,7 @@
 
 from edrn.labcas.ui import PACKAGE_NAME
 from edrn.labcas.ui.interfaces import IBackend
+from edrn.labcas.ui.utils import computeHumanReadableContentType
 from pyramid.renderers import get_renderer
 from pyramid.view import view_config, view_defaults
 from zope.component import getUtility
@@ -16,6 +17,8 @@ class SearchView(object):
         return u'{}%'.format(int(round(number * 100, 0)))
     def humanFriendlySize(self, size):
         return unicode(humanize.naturalsize(size)).replace(u' ', u' ')  # There's a NO-BREAK SPACE in there.
+    def humanReadableContentType(self, contentType):
+        return computeHumanReadableContentType(u'dummy.bin', contentType)
     @view_config(route_name='search', permission='view')
     def __call__(self):
         searchMacros = get_renderer(PACKAGE_NAME + ':templates/searchmacros.pt').implementation()
@@ -67,6 +70,24 @@ class SearchView(object):
             start=0,
             rows=99999  # FIXME: we should support pagination
         )
+        contentTypes = set()
+        for i in files.results:
+            contentTypes.add(i.get(u'FileType', [u'application/octet-stream'])[0])
+        contentTypes = list(contentTypes)
+        contentTypes.sort()
+        typesToIDs,idsToTypes, counter, facetCode = {}, {}, 0, [u'$(document).ready(function() {']
+        for contentType in contentTypes:
+            typesToIDs[contentType] = counter
+            idsToTypes[counter] = contentType
+            facetCode.append(u'''$("#c-{}").click(function() {{
+                if ($(this).prop("checked"))
+                    $(".c-{}").show();
+                else
+                    $(".c-{}").hide();
+            }}); '''.format(counter, counter, counter))
+            counter += 1
+        facetCode.append(u'});')
+        facetCode = u'\n'.join(facetCode)
         files = [{
             u'name': i[u'FileName'],
             u'url': self.request.route_url(
@@ -75,7 +96,8 @@ class SearchView(object):
             u'cohort': i.get(u'Cohort'),
             u'size': self.humanFriendlySize(i[u'FileSize']) if i.get(u'FileSize') else None,
             u'desc': i.get(u'GrossDescription'),
-            u'score': self.percent(i[u'score'])
+            u'score': self.percent(i[u'score']),
+            u'contentType': i.get(u'FileType', [u'application/octet-stream'])[0]
         } for i in files.results]
         numFiles, top10Files, files = len(files), files[:10], files[10:]
         return {
@@ -92,5 +114,9 @@ class SearchView(object):
             u'top10Files': top10Files,
             u'files': files,
             u'numRemainingFiles': len(files),
+            u'contentTypes': contentTypes,
+            u'facetCode': facetCode,
+            u'typesToIDs': typesToIDs,
+            u'idsToTypes': idsToTypes,
             u'pageTitle': u'LabCAS Search'
         }

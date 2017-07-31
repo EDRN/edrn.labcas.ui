@@ -24,6 +24,8 @@
             • top10Files - first ten best matching files
             • files - the rest of the matching files
             • numRemainingFiles - how many of those remain
+            • pageTitle - duh
+            • contentTypes - sequence of unique content types amongst the files
         -->
     </head>
     <body>
@@ -37,61 +39,84 @@
                 <h3>Search Results</h3>
                 <div class='row'>
                     <div class='col-md-2'>
-                        <ul>
-                            <li><a href='#collections'>Collections</a>: <span tal:replace='numCollections'>123</span></li>
-                            <li><a href='#datasets'>Datasets</a>: <span tal:replace='numDatasets'>456</span></li>
-                            <li><a href='#files'>Files</a>: <span tal:replace='numFiles'>789</span></li>
+                        <ul class='list-unstyled'>
+                            <li>
+                                <a href='#files'>Files</a> <span class='badge' tal:content='numFiles'>789</span>
+                            </li>
+                            <li>
+                                <a href='#datasets'>Datasets</a>
+                                <span class='badge' tal:content='numDatasets'>456</span>
+                            </li>
+                            <li>
+                                <a href='#collections'>Collections</a>
+                                <span class='badge' tal:content='numCollections'>123</span>
+                            </li>
                         </ul>
+
+                        <br/>
+
+                        <tal:if condition='contentTypes'>
+                            <h6 class='text-uppercase'>FILE TYPES</h6>
+                                <div class='checkbox' tal:repeat='contentType contentTypes'>
+                                    <label>
+                                        <input type='checkbox' name='c-0' id='c-0' checked='true'
+                                            tal:attributes='id python:u"c-{}".format(typesToIDs[contentType])'/>
+                                        <span tal:replace='view.humanReadableContentType(contentType)'>
+                                            Binary Data
+                                        </span>
+                                    </label>
+                                </div>
+                        </tal:if>
+
                     </div>
                     <div class='col-md-10'>
 
-                        <div class='panel-group' id='collections' role='tablist' aria-multiselectable='true'>
+                        <div class='panel-group' id='files' role='tablist' aria-multiselectable='true'>
                             <div class='panel panel-default'>
-                                <div class='panel-heading' role='tab' id='top10CollectionsHeading'>
+                                <div class='panel-heading' role='tab' id='top10FilesHeading'>
                                     <h4 class='panel-title'>
-                                        <a role='button' data-toggle='collapse' data-parent='#collections'
-                                            href='#top10Collections' aria-expanded='true'
-                                            aria-controls='top10Collections'>
-                                            Collections
+                                        <a role='button' data-toggle='collapse' data-parent='#files'
+                                            href='#top10Files' aria-expanded='true' aria-controls='top10Files'>
+                                            Files
                                         </a>
                                     </h4>
                                 </div>
-                                <div id='top10Collectionss' class='panel-collapse collapse in' role='tabpanel'
-                                    aria-labelledby='top10CollectionsHeading'>
+                                <div id='top10Files' class='panel-collapse collapse in' role='tabpanel'
+                                    aria-labelledby='top10FilesHeading'>
                                     <div class='panel-body'>
-                                        <p class='text-muted' tal:condition='not:numCollections'>
-                                            No matching collections.
+                                        <p class='text-muted' tal:condition='not:numFiles'>
+                                            No matching files.
                                         </p>
-                                        <tal:repeat repeat='match top10Collections'>
-                                            <p metal:use-macro='python:searchMacros.macros["displayCollection"]'>
-                                                Collection here
+                                        <tal:repeat repeat='match top10Files'>
+                                            <p metal:use-macro='python:searchMacros.macros["displayFile"]'>
+                                                File here
                                             </p>
                                         </tal:repeat>
                                     </div>
                                 </div>
                             </div>
-                            <div class='panel panel-default' tal:condition='numRemainingCollections'>
-                                <div class='panel-heading' role='tab' id='remainingCollectionsHeading'>
+                            <div class='panel panel-default' tal:condition='numRemainingFiles'>
+                                <div class='panel-heading' role='tab' id='remainingFilesHeading'>
                                     <h4 class='panel-title'>
                                         <a class='collapsed' role='button' data-toggle='collapse'
-                                            data-parent='#collections' href='#remainingCollections'
-                                            aria-expanded='false' aria-controls='remainingCollections'>
-                                            <tal:if condition='python:numRemainingCollections == 1'>
-                                                One more matching collection…
+                                            data-parent='#files' href='#remainingFiles' aria-expanded='false'
+                                            aria-controls='remainingFiles'>
+                                            <tal:if condition='python:numRemainingFiles == 1'>
+                                                One more matching file…
                                             </tal:if>
-                                            <tal:if condition='python:numRemainingCollections &gt; 1'>
-                                                <span tal:replace='numRemainingCollections'>66</span>
-                                                more matching collections…
+                                            <tal:if condition='python:numRemainingFiles &gt; 1'>
+                                                <span tal:replace='numRemainingFiles'>23</span>
+                                                more matching files…
                                             </tal:if>
                                         </a>
                                     </h4>
                                 </div>
-                                <div id='remainingCollections' class='panel-collapse collapse' role='tabpanel'
-                                    aria-labelledby='remainingCollectionsHeading'>
+                                <div id='remainingFiles' class='panel-collapse collapse' role='tabpanel'
+                                    aria-labelledby='remainingFilesHeading'>
                                     <div class='panel-body'>
-                                        <tal:repeat repeat='match collections'>
-                                            <p metal:use-macro='python:searchMacros.macros["displayCollection"]'>
-                                                Collection here
+                                        <tal:repeat repeat='match files'>
+                                            <p metal:use-macro='python:searchMacros.macros["displayFile"]'>
+                                                File here
                                             </p>
                                         </tal:repeat>
                                     </div>
@@ -156,52 +181,53 @@
 
                         <br/>
 
-                        <div class='panel-group' id='files' role='tablist' aria-multiselectable='true'>
+                        <div class='panel-group' id='collections' role='tablist' aria-multiselectable='true'>
                             <div class='panel panel-default'>
-                                <div class='panel-heading' role='tab' id='top10FilesHeading'>
+                                <div class='panel-heading' role='tab' id='top10CollectionsHeading'>
                                     <h4 class='panel-title'>
-                                        <a role='button' data-toggle='collapse' data-parent='#files'
-                                            href='#top10Files' aria-expanded='true' aria-controls='top10Files'>
-                                            Files
+                                        <a role='button' data-toggle='collapse' data-parent='#collections'
+                                            href='#top10Collections' aria-expanded='true'
+                                            aria-controls='top10Collections'>
+                                            Collections
                                         </a>
                                     </h4>
                                 </div>
-                                <div id='top10Files' class='panel-collapse collapse in' role='tabpanel'
-                                    aria-labelledby='top10FilesHeading'>
+                                <div id='top10Collectionss' class='panel-collapse collapse in' role='tabpanel'
+                                    aria-labelledby='top10CollectionsHeading'>
                                     <div class='panel-body'>
-                                        <p class='text-muted' tal:condition='not:numFiles'>
-                                            No matching files.
+                                        <p class='text-muted' tal:condition='not:numCollections'>
+                                            No matching collections.
                                         </p>
-                                        <tal:repeat repeat='match top10Files'>
-                                            <p metal:use-macro='python:searchMacros.macros["displayFile"]'>
-                                                File here
+                                        <tal:repeat repeat='match top10Collections'>
+                                            <p metal:use-macro='python:searchMacros.macros["displayCollection"]'>
+                                                Collection here
                                             </p>
                                         </tal:repeat>
                                     </div>
                                 </div>
                             </div>
-                            <div class='panel panel-default' tal:condition='numRemainingFiles'>
-                                <div class='panel-heading' role='tab' id='remainingFilesHeading'>
+                            <div class='panel panel-default' tal:condition='numRemainingCollections'>
+                                <div class='panel-heading' role='tab' id='remainingCollectionsHeading'>
                                     <h4 class='panel-title'>
                                         <a class='collapsed' role='button' data-toggle='collapse'
-                                            data-parent='#files' href='#remainingFiles' aria-expanded='false'
-                                            aria-controls='remainingFiles'>
-                                            <tal:if condition='python:numRemainingFiles == 1'>
-                                                One more matching file…
+                                            data-parent='#collections' href='#remainingCollections'
+                                            aria-expanded='false' aria-controls='remainingCollections'>
+                                            <tal:if condition='python:numRemainingCollections == 1'>
+                                                One more matching collection…
                                             </tal:if>
-                                            <tal:if condition='python:numRemainingFiles &gt; 1'>
-                                                <span tal:replace='numRemainingFiles'>23</span>
-                                                more matching files…
+                                            <tal:if condition='python:numRemainingCollections &gt; 1'>
+                                                <span tal:replace='numRemainingCollections'>66</span>
+                                                more matching collections…
                                             </tal:if>
                                         </a>
                                     </h4>
                                 </div>
-                                <div id='remainingFiles' class='panel-collapse collapse' role='tabpanel'
-                                    aria-labelledby='remainingFilesHeading'>
+                                <div id='remainingCollections' class='panel-collapse collapse' role='tabpanel'
+                                    aria-labelledby='remainingCollectionsHeading'>
                                     <div class='panel-body'>
-                                        <tal:repeat repeat='match files'>
-                                            <p metal:use-macro='python:searchMacros.macros["displayFile"]'>
-                                                File here
+                                        <tal:repeat repeat='match collections'>
+                                            <p metal:use-macro='python:searchMacros.macros["displayCollection"]'>
+                                                Collection here
                                             </p>
                                         </tal:repeat>
                                     </div>
@@ -210,6 +236,11 @@
                         </div>
 
                     </div>
+
+                    <script type='text/javascript' tal:content='structure facetCode'>
+
+                    </script>
+
                 </div>
             </div>
         </div>
