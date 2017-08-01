@@ -11,21 +11,24 @@
     </head>
     <body>
         <div metal:define-macro='displayCollection'>
-            <p tal:define='
+            <p tal:attributes='class python:u"p-{} o-{}".format(pisToIDs[pi], organsToIDs[organ])' tal:define='
                 name python:match[u"name"];
                 url python:match[u"url"];
                 pi python:match[u"pi"];
                 desc python:match[u"desc"];
                 score python:match[u"score"];
+                organ python:match[u"organ"];
             '>
                 <a href='#' tal:attributes='href url' tal:content='name'>
                     Collection of Parts
                 </a>&#x00a0;<small tal:content='score'>29%</small>
                 <br/>
-                <span tal:condition='pi' tal:replace='python:u", ".join(pi)'>
+                <span tal:condition='pi' tal:replace='pi'>
                     Jeri Blow, Jo Blow
-                </span>
-                <span tal:condition='not:pi' class='text-muted'>Unknown PI</span>
+                </span>,
+                <small tal:content='organ'>
+                    Anus
+                </small>
                 <br/>
                 <small tal:condition='desc' tal:content='desc'>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
@@ -35,38 +38,43 @@
                     cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
                     proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
                 </small>
-                <small tal:condition='not:desc' class='text-muted'>
-                    No description available.
-                </small>
             </p>
         </div>
 
         <div metal:define-macro='displayDataset'>
-            <p tal:define='
+            <p class='s-0' tal:attributes='class python:u"s-{}".format(specsToIDs[species])' tal:define='
                 name python:match[u"name"];
                 url python:match[u"url"];
                 cohort python:match[u"cohort"];
                 version python:match[u"version"];
                 desc python:match[u"desc"];
                 score python:match[u"score"];
+                collection python:match[u"collection"];
+                species python:match[u"species"];
             '>
                 <a href='#' tal:attributes='href url' tal:content='name'>
                     Part Data
                 </a>&#x00a0;<small tal:content='score'>19%</small>
                 <br/>
-                <span tal:condition='cohort' tal:replace='python:u", ".join(cohort)'>
-                    One tenth of a legion
+                <label>Collection:</label>
+                <span tal:condition='collection' tal:replace='collection'>
+                    Some collection
                 </span>
-                <span tal:condition='not:cohort' class='text-muted'>
-                    Unknown cohort
-                </span>
-                <br/>
-                <small tal:condition='version' tal:replace='string:v${version}'>
-                    v1
+                <small><br/></small>
+                <tal:if condition='cohort'>
+                    <span tal:replace='python:u", ".join(cohort)'>
+                        One tenth of a legion
+                    </span>
+                    <br/>
+                </tal:if>
+                <small>
+                    <span tal:replace='string:v${version}'>
+                        v1
+                    </span>,
+                    <span tal:replace='species'>
+                        Rat
+                    </span>
                 </small>
-                <span tal:condition='not:version' class='text-muted'>
-                    Unknown version
-                </span>
                 <br/>
                 <small tal:condition='desc' tal:content='desc'>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
@@ -76,14 +84,11 @@
                     cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
                     proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
                 </small>
-                <small tal:condition='not:desc' class='text-muted'>
-                    No description available.
-                </small>
-           </p>
+            </p>
         </div>
 
         <div metal:define-macro='displayFile'>
-            <p class='application/octet-stream' tal:attributes='class python:u"c-{}".format(typesToIDs[contentType])'
+            <p class='c-0' tal:attributes='class python:u"c-{}".format(typesToIDs[contentType])'
                 tal:define='
                     name python:match[u"name"];
                     url python:match[u"url"];
@@ -92,6 +97,8 @@
                     desc python:match[u"desc"];
                     score python:match[u"score"];
                     contentType python:match[u"contentType"];
+                    dataset python:match[u"dataset"];
+                    collection python:match[u"collection"];
             '>
                 <a href='#' tal:attributes='href url' tal:content='name'>
                     File Part
@@ -100,18 +107,25 @@
                 <span tal:condition='size' tal:replace='size'>
                     123 MB
                 </span>
-                <span tal:condition='not:size' class='text-muted'>
-                    Unknown size
+                <span tal:condition='contentType' tal:replace='view.humanReadableContentType(contentType)'>
+                    Some kind of file
+                </span>
+                <label>Collection:</label>
+                <span tal:condition='collection' tal:content='collection'>
+                    Some collection
+                </span>
+                <label>Dataset:</label>
+                <span tal:condition='dataset' tal:replace='dataset'>
+                    Some dataset
                 </span>
                 <br/>
-                <span tal:condition='cohort' tal:replace='python:u", ".join(cohort)'>
-                    One tenth of a legion
-                </span>
-                <span tal:condition='not:cohort' class='text-muted'>
-                    Unknown cohort
-                </span>
-                <br/>
-                <small tal:condition='desc' tal:content='python:u"; ".join(desc)'>
+                <tal:if tal:condition='cohort'>
+                    <span tal:condition='cohort' tal:replace='python:u", ".join(cohort)'>
+                        One tenth of a legion
+                    </span>
+                    <br/>
+                </tal:if>
+                <small tal:condition='desc' tal:content='desc'>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
                     tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
                     quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
@@ -119,11 +133,7 @@
                     cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
                     proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
                 </small>
-                <small tal:condition='not:desc' class='text-muted'>
-                    No description available.
-                </small>
-           </p>
+            </p>
         </div>
-
     </body>
 </html>

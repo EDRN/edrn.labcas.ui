@@ -1,5 +1,7 @@
+application/vnd.apple.keynote,Apple Keynote,.key
 application/gzip,GZIP Compressed,.gz
 chemical/seq-na-fastq,FASTQ Nucleotide Sequence,.fastq
+chemical/seq-na-fasta,FASTA Nucleotide Sequence,.fastq
 image/tiff-aperio,Aperio,.svs
 application/aperio,Aperio,.svs
 application/dicom,DICOM,.dcm

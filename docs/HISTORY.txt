@@ -6,8 +6,21 @@ are listed below, you can find out more about them by visiting the issue
 tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 
 
-1.0.9 Proof of Concept
-----------------------
+1.0.10 — Meeting
+----------------
+
+• Meeting, Truncate the description in search results with "…"
+• Meeting, In search results, include collection name and dataset name for files; and collection name for datasets
+• Meeting, If description is unavailable, don't show "No description available".
+• Meeting, If cohort is unknown, don't show "Unknown cohort"
+• Meeting, Put collections, datasets, files back in order
+• Meeting, In file search results, add the content type
+• Meeting, Use tabs to separate facet controls
+• Meeting, Additional facets: organ, PI (collection); species (dataset)
+
+
+1.0.9 — Proof of Concept
+------------------------
 
 • Meeting, a proof-of-concept of facet controls on search results
 
