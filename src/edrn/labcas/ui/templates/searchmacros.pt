@@ -99,6 +99,7 @@
                     contentType python:match[u"contentType"];
                     dataset python:match[u"dataset"];
                     collection python:match[u"collection"];
+                    shortDesc python:match[u"shortDesc"];
             '>
                 <a href='#' tal:attributes='href url' tal:content='name'>
                     File Part
@@ -119,8 +120,14 @@
                     Some dataset
                 </span>
                 <br/>
+                <tal:if tal:condition='shortDesc'>
+                    <span tal:replace='shortDesc'>
+                        Short description here
+                    </span>
+                    <br/>
+                </tal:if>
                 <tal:if tal:condition='cohort'>
-                    <span tal:condition='cohort' tal:replace='python:u", ".join(cohort)'>
+                    <span  tal:replace='python:u", ".join(cohort)'>
                         One tenth of a legion
                     </span>
                     <br/>

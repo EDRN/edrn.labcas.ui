@@ -6,6 +6,13 @@ are listed below, you can find out more about them by visiting the issue
 tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 
 
+1.0.11 — Status
+---------------
+
+• Status meeting, Add the File's computed "Description" to the search results for Files
+• Status meeting, Remove the counts since we can't update them as checkboxes are checked/unchecked in search
+
+
 1.0.10 — Meeting
 ----------------
 

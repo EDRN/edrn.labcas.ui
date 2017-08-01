@@ -117,13 +117,7 @@
                                                 <a class='collapsed' role='button' data-toggle='collapse'
                                                     data-parent='#collections' href='#remainingCollections'
                                                     aria-expanded='false' aria-controls='remainingCollections'>
-                                                    <tal:if condition='python:numRemainingCollections == 1'>
-                                                        One more matching collection…
-                                                    </tal:if>
-                                                    <tal:if condition='python:numRemainingCollections &gt; 1'>
-                                                        <span tal:replace='numRemainingCollections'>66</span>
-                                                        more matching collections…
-                                                    </tal:if>
+                                                    More matching collections…
                                                 </a>
                                             </h4>
                                         </div>
@@ -164,7 +158,8 @@
                                         <div class='panel-heading' role='tab' id='top10DatasetsHeading'>
                                             <h4 class='panel-title'>
                                                 <a role='button' data-toggle='collapse' data-parent='#datasets'
-                                                    href='#top10Datasets' aria-expanded='true' aria-controls='top10Datasets'>
+                                                    href='#top10Datasets' aria-expanded='true'
+                                                    aria-controls='top10Datasets'>
                                                     Datasets
                                                 </a>
                                             </h4>
@@ -187,15 +182,9 @@
                                         <div class='panel-heading' role='tab' id='remainingDatasetsHeading'>
                                             <h4 class='panel-title'>
                                                 <a class='collapsed' role='button' data-toggle='collapse'
-                                                    data-parent='#datasets' href='#remainingDatasets' aria-expanded='false'
-                                                    aria-controls='remainingDatasets'>
-                                                    <tal:if condition='python:numRemainingDatasets == 1'>
-                                                        One more matching dataset…
-                                                    </tal:if>
-                                                    <tal:if condition='python:numRemainingDatasets &gt; 1'>
-                                                        <span tal:replace='numRemainingDatasets'>45</span>
-                                                        more matching datasets…
-                                                    </tal:if>
+                                                    data-parent='#datasets' href='#remainingDatasets'
+                                                    aria-expanded='false' aria-controls='remainingDatasets'>
+                                                    More matching datasets…
                                                 </a>
                                             </h4>
                                         </div>
@@ -261,13 +250,7 @@
                                                 <a class='collapsed' role='button' data-toggle='collapse'
                                                     data-parent='#files' href='#remainingFiles' aria-expanded='false'
                                                     aria-controls='remainingFiles'>
-                                                    <tal:if condition='python:numRemainingFiles == 1'>
-                                                        One more matching file…
-                                                    </tal:if>
-                                                    <tal:if condition='python:numRemainingFiles &gt; 1'>
-                                                        <span tal:replace='numRemainingFiles'>23</span>
-                                                        more matching files…
-                                                    </tal:if>
+                                                    More matching files…
                                                 </a>
                                             </h4>
                                         </div>

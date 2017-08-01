@@ -169,7 +169,8 @@ class SearchView(object):
             u'score': self.percent(i[u'score']),
             u'contentType': i.get(u'FileType', [u'application/octet-stream'])[0],
             u'collection': i.get(u'CollectionName'),
-            u'dataset': i.get(u'DatasetName')
+            u'dataset': i.get(u'DatasetName'),
+            u'shortDesc': i.get(u'Description', [None])[0]
         } for i in files.results]
         numFiles, top10Files, files = len(files), files[:10], files[10:]
         return {
