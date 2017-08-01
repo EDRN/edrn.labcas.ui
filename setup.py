@@ -9,7 +9,7 @@ import os.path
 # ------------
 
 _name            = 'edrn.labcas.ui'
-_version         = '1.0.10'
+_version         = '1.0.11'
 _description     = 'User interface for LabCAS, for EDRN'
 _author          = 'Sean Kelly'
 _authorEmail     = 'sean.kelly@jpl.nasa.gov'
