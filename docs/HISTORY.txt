@@ -6,8 +6,8 @@ are listed below, you can find out more about them by visiting the issue
 tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 
 
-1.0.12 — TBD
-------------
+1.0.12 — Gimme Some Space
+-------------------------
 
 • Tag-up, Add Collaborative Group facet
 • Tag-up, Add Discipline facet
