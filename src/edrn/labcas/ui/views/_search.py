@@ -45,6 +45,42 @@ class SearchView(object):
             rows=99999  # FIXME: we should support pagination
         )
         facetCode = [u'$(document).ready(function() {']
+        discs = set()
+        for i in collections.results:
+            disc = i.get(u'Discipline', [None])[0]
+            if disc:
+                discs.add(disc)
+        discs = list(discs)
+        discs.sort()
+        discToIDs, idsToDiscs, counter = {}, {}, 0
+        for disc in discs:
+            discToIDs[disc] = counter
+            idsToDiscs[counter] = disc
+            facetCode.append(u'''$("#disc-{}").click(function() {{
+                if ($(this).prop("checked"))
+                    $(".disc-{}").slideDown();
+                else
+                    $(".disc-{}").slideUp();
+            }}); '''.format(counter, counter, counter))
+            counter += 1
+        cbs = set()
+        for i in collections.results:
+            cb = i.get(u'CollaborativeGroup', [None])[0]
+            if cb:
+                cbs.add(cb)
+        cbs = list(cbs)
+        cbs.sort()
+        cbToIDs, idsToCBs, counter = {}, {}, 0
+        for cb in cbs:
+            cbToIDs[cb] = counter
+            idsToCBs[counter] = cb
+            facetCode.append(u'''$("#cb-{}").click(function() {{
+                if ($(this).prop("checked"))
+                    $(".cb-{}").slideDown();
+                else
+                    $(".cb-{}").slideUp();
+            }}); '''.format(counter, counter, counter))
+            counter += 1
         pis = set()
         for i in collections.results:
             pi = i.get(u'LeadPI', [None])[0]
@@ -87,7 +123,9 @@ class SearchView(object):
             u'pi': i.get(u'LeadPI', [None])[0],
             u'organ': i.get(u'Organ', [None])[0],
             u'desc': self.truncate(i.get(u'CollectionDescription')),
-            u'score': self.percent(i[u'score'])
+            u'score': self.percent(i[u'score']),
+            u'collabGroup': i.get(u'CollaborativeGroup', [None])[0],
+            u'disc': i.get(u'Discipline', [None])[0]
             # Other potential metadata to include here:
             # Discipline, Organ, InstitutionId, ProtocolId, CollaborativeGroup, LeadPI, Consortium, QAState,
             # Institution, OrganId, LeadPIId, DataCustodian, CollectionDescription, ProtocolName', OwnerPrincipal
@@ -200,5 +238,11 @@ class SearchView(object):
             u'idsToSpecs': idsToSpecs,
             u'specsToIDs': specsToIDs,
             u'specs': specs,
+            u'idsToCBs': idsToCBs,
+            u'cbToIDs': cbToIDs,
+            u'cbs': cbs,
+            u'idsToDiscs': idsToDiscs,
+            u'discToIDs': discToIDs,
+            u'discs': discs,
             u'pageTitle': u'LabCAS Search'
         }

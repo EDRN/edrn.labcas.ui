@@ -56,10 +56,36 @@
                     </li>
                 </ul>
 
+                <br/>
+
                 <div class='tab-content'>
                     <div role='tabpanel' class='tab-pane active' id='collections'>
                         <div class='row'>
                             <div class='col-md-2'>
+                                <tal:if condition='cbs'>
+                                    <h6 class='text-uppercase'>COLLABORATIVE GROUPS</h6>
+                                    <div class='checkbox' tal:repeat='cb cbs'>
+                                        <label>
+                                            <input type='checkbox' name='cb-0' id='cb-0' checked='true'
+                                                tal:attributes='id python:u"cb-{}".format(cbToIDs[cb])'/>
+                                            <span tal:replace='cb'>
+                                                Anal Group
+                                            </span>
+                                        </label>
+                                    </div>
+                                </tal:if>
+                                <tal:if condition='discs'>
+                                    <h6 class='text-uppercase'>DISCIPLINES</h6>
+                                    <div class='checkbox' tal:repeat='disc discs'>
+                                        <label>
+                                            <input type='checkbox' name='disc-0' id='disc-0' checked='true'
+                                                tal:attributes='id python:u"disc-{}".format(discToIDs[disc])'/>
+                                            <span tal:replace='disc'>
+                                                Anal Discipline
+                                            </span>
+                                        </label>
+                                    </div>
+                                </tal:if>
                                 <tal:if condition='pis'>
                                     <h6 class='text-uppercase'>INVESTIGATORS</h6>
                                     <div class='checkbox' tal:repeat='pi pis'>
@@ -139,7 +165,7 @@
                     <div role='tabpanel' class='tab-pane' id='datasets'>
                         <div class='row'>
                             <div class='col-md-2'>
-                                <tal:if condition='organs'>
+                                <tal:if condition='specs'>
                                     <h6 class='text-uppercase'>SPECIES</h6>
                                     <div class='checkbox' tal:repeat='spec specs'>
                                         <label>

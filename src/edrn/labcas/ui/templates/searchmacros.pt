@@ -11,13 +11,17 @@
     </head>
     <body>
         <div metal:define-macro='displayCollection'>
-            <p tal:attributes='class python:u"p-{} o-{}".format(pisToIDs[pi], organsToIDs[organ])' tal:define='
+            <p tal:attributes='class python:u"p-{} o-{} cb-{} disc-{}".format(
+                pisToIDs.get(pi), organsToIDs.get(organ), cbToIDs.get(collabGroup), discToIDs.get(disc)
+            )' tal:define='
                 name python:match[u"name"];
                 url python:match[u"url"];
                 pi python:match[u"pi"];
                 desc python:match[u"desc"];
                 score python:match[u"score"];
                 organ python:match[u"organ"];
+                collabGroup python:match[u"collabGroup"];
+                disc python:match[u"disc"];
             '>
                 <a href='#' tal:attributes='href url' tal:content='name'>
                     Collection of Parts
@@ -42,7 +46,7 @@
         </div>
 
         <div metal:define-macro='displayDataset'>
-            <p class='s-0' tal:attributes='class python:u"s-{}".format(specsToIDs[species])' tal:define='
+            <p class='s-0' tal:attributes='class python:u"s-{}".format(specsToIDs.get(species))' tal:define='
                 name python:match[u"name"];
                 url python:match[u"url"];
                 cohort python:match[u"cohort"];
@@ -88,7 +92,7 @@
         </div>
 
         <div metal:define-macro='displayFile'>
-            <p class='c-0' tal:attributes='class python:u"c-{}".format(typesToIDs[contentType])'
+            <p class='c-0' tal:attributes='class python:u"c-{}".format(typesToIDs.get(contentType))'
                 tal:define='
                     name python:match[u"name"];
                     url python:match[u"url"];
