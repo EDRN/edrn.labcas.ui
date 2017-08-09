@@ -59,6 +59,7 @@ _metadataToIgnore = frozenset((
     u'FileLocation',
     u'FileName',
     u'FileSize',
+    u'FileThumbnailUrl',
     u'id',
     u'LeadPI',
     u'OwnerPrincipal',
@@ -564,10 +565,10 @@ class LabCASDataset(object):
 
 class LabCASFile(object):
     u'''A file stored in a LabCASDataset'''
-    def __init__(self, identifier, name, fileID, size, contentType, directory, metadata, description):
+    def __init__(self, identifier, name, fileID, size, contentType, directory, metadata, description, thumbnailURL):
         self.identifier = identifier
         self.name, self.fileID, self.size, self.contentType, self.directory = name, fileID, size, contentType, directory
-        self.description = description
+        self.description, self.thumbnailURL = description, thumbnailURL
         self.metadata = {}
         for key, value in metadata.items():
             if key.startswith(u'CAS.') or key in _metadataToIgnore: continue
@@ -587,6 +588,7 @@ class LabCASFile(object):
         size = mapping[u'FileSize']
         directory = mapping[u'FileLocation']
         contentType = mapping.get(u'FileType', [u'application/octet-stream'])[0]
+        thumbnailURL = mapping.get(u'FileThumbnailUrl', [None])[0]
         description = None
         if u'Description' in mapping:
             seq = mapping[u'Description']
@@ -597,7 +599,7 @@ class LabCASFile(object):
         for key, values in mapping.iteritems():
             if key not in _metadataToIgnore and not key.startswith(u'CAS.'):
                 metadata[key] = values
-        return LabCASFile(identifier, name, fileID, size, contentType, directory, metadata, description)
+        return LabCASFile(identifier, name, fileID, size, contentType, directory, metadata, description, thumbnailURL)
     @staticmethod
     def get(datasetID):
         u'''Get the files belonging to the dataset with the given ``datasetID``

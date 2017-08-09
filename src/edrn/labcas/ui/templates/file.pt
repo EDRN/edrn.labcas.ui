@@ -43,32 +43,39 @@
 
                 <h1 tal:content='f.name'>whatever.txt</h1>
 
-                <dl class='dl-horizontal'>
-                    <dt>Identifier:</dt>
-                    <dd tal:content='f.identifier'>urn:id:fileID</dd>
-                    <dt>Name:</dt>
-                    <dd tal:content='f.name'>whatever.txt</dd>
-                    <dt>Size:</dt>
-                    <dd>
-                        <abbr title='301925 bytes' tal:attributes='title python:u"{} bytes".format(f.size)'
-                            tal:content='view.humanFriendlySize(f.size)'>
-                            300k
-                        </abbr>
-                    </dd>
-                    <dt>Content type:</dt>
-                    <dd tal:content='contentType'>text/plain</dd>
-                    <tal:if condition='f.description'>
-                        <dt>Description:</dt>
-                        <dd tal:content='f.description'>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                            proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                        </dd>
-                    </tal:if>
-                </dl>
+                <div class='row'>
+                    <div class='col-md-10'>
+                        <dl class='dl-horizontal'>
+                            <dt>Identifier:</dt>
+                            <dd tal:content='f.identifier'>urn:id:fileID</dd>
+                            <dt>Name:</dt>
+                            <dd tal:content='f.name'>whatever.txt</dd>
+                            <dt>Size:</dt>
+                            <dd>
+                                <abbr title='301925 bytes' tal:attributes='title python:u"{} bytes".format(f.size)'
+                                    tal:content='view.humanFriendlySize(f.size)'>
+                                    300k
+                                </abbr>
+                            </dd>
+                            <dt>Content type:</dt>
+                            <dd tal:content='contentType'>text/plain</dd>
+                            <tal:if condition='f.description'>
+                                <dt>Description:</dt>
+                                <dd tal:content='f.description'>
+                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                                    proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                </dd>
+                            </tal:if>
+                        </dl>
+                    </div>
+                    <div tal:condition='f.thumbnailURL' class='col-md-2'>
+                        <img src='#' tal:attributes='src python:f.thumbnailURL'/>
+                    </div>
+                </div>
 
                 <p>
                     <a class='btn btn-default' href='#' role='button'

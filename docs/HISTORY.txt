@@ -6,6 +6,12 @@ are listed below, you can find out more about them by visiting the issue
 tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 
 
+1.0.13 — Thumbnails
+-------------------
+
+• Email, add thumbnails
+
+
 1.0.12 — Gimme Some Space
 -------------------------
 
