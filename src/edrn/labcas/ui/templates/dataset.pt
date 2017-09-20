@@ -119,7 +119,9 @@
                                         proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
                                     </td>
                                     <td>
-                                        <img src='#' tal:condition='f.thumbnailURL' tal:attributes='src f.thumbnailURL'/>
+                                        <img src='#' tal:condition='f.thumbnailURL' tal:attributes='src f.thumbnailURL'
+                                            style='border-width: 1px; border-color: black; border-style: solid;'
+                                            width='80' />
                                     </td>
                                     <td tal:content='python:view.humanFriendlySize(f.size)'
                                         style='text-align: right;'>

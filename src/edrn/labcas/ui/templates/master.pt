@@ -34,6 +34,7 @@
         infoFlashes python:request.session.pop_flash("info");
         settings python:request.registry.getUtility(ILabCASSettings);
         program python:settings.getProgram();
+        analytics python:settings.getAnalytics();
         isEDRN python:program == u"EDRN";
         routeName python:request.matched_route.name;
         noSearch python:("upload", "start", "wfmetadata", "metadata", "accept", "login", "logout", "manage");
@@ -112,5 +113,6 @@
                 </p>
             </div>
         </footer>
+        <script tal:replace='structure analytics'/>
     </body>
 </html>

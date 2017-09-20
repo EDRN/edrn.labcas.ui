@@ -93,3 +93,7 @@ class ILabCASSettings(Interface):
         u'''Get the LDAP group for the super users'''
     def setSuperGroup(group):
         u'''Set the super group'''
+    def getAnalytics():
+        u'''Get the analytics'''
+    def setAnalytics(analytics):
+        u'''Set the analytics'''

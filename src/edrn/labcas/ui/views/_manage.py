@@ -86,6 +86,15 @@ class ManageView(object):
             description=u'URL to the Resource Description Framework knowledge source of species, like left sharks.',
             default=getUtility(ILabCASSettings).getSpeciesRDFURL(),
         ))
+        schema.add(colander.SchemaNode(
+            colander.String(),
+            name='analytics',
+            title=u'Analytics',
+            description=u'JavaScript to append to the bottom of each page for analytics purposes.',
+            default=getUtility(ILabCASSettings).getAnalytics(),
+            missing=u'',
+            widget=deform.widget.TextAreaWidget(rows=6)
+        ))
         form = deform.Form(schema, buttons=('submit',))
         if 'submit' in self.request.params:
             try:
@@ -100,6 +109,7 @@ class ManageView(object):
                 speciesRDFURL     = metadataAppstruct['speciesRDFURL']
                 zipFileLimit      = metadataAppstruct['zipFileLimit']
                 tmpDir            = metadataAppstruct['tmpDir']
+                analytics         = metadataAppstruct['analytics']
                 if program != settings.getProgram() \
                     or peopleRDFURL != settings.getPeopleRDFURL() \
                     or protocolRDFURL != settings.getProtocolRDFURL() \
@@ -109,7 +119,8 @@ class ManageView(object):
                     or speciesRDFURL != settings.getSpeciesRDFURL() \
                     or superGroup != settings.getSuperGroup() \
                     or zipFileLimit != settings.getZipFileLimit() \
-                    or tmpDir != settings.getTmpDir():
+                    or tmpDir != settings.getTmpDir() \
+                    or analytics != settings.getAnalytics():
                     settings.setProgram(program)
                     settings.setPeopleRDFURL(peopleRDFURL)
                     settings.setProtocolRDFURL(protocolRDFURL)
@@ -120,6 +131,7 @@ class ManageView(object):
                     settings.setSuperGroup(superGroup)
                     settings.setZipFileLimit(zipFileLimit)
                     settings.setTmpDir(tmpDir)
+                    settings.setAnalytics(analytics)
                     self.request.session.flash(u'Changes saved.', 'info')
                 else:
                     self.request.session.flash(u'No changes made.', 'info')

@@ -14,10 +14,11 @@ from pyramid.config import Configurator
 from pyramid_ldap import groupfinder
 from zope.component import provideUtility, getGlobalSiteManager
 from zope.interface import implements
-import xmlrpclib, solr, cPickle
+import xmlrpclib, solr, cPickle, logging
 
 
 PACKAGE_NAME = __name__
+_logger = logging.getLogger(PACKAGE_NAME)
 
 
 class _Backend(object):
@@ -41,6 +42,7 @@ class _Backend(object):
 
 def main(global_config, **settings):
     u'''Return a WSGI application using the Pyramid framework that implements the LabCAS user interface.'''
+    _logger.warn(u'INITIALIZING %s', PACKAGE_NAME)
     globalReg = getGlobalSiteManager()
     config = Configurator(registry=globalReg, root_factory=Root)
     config.setup_registry(settings=settings)
@@ -95,9 +97,12 @@ def main(global_config, **settings):
     config.add_route('manage', '/manage', factory=Management)
     config.scan()
     try:
+        _logger.warn(u'Attempting to initialize settings from %s', settings['labcas.settings'])
         with open(settings['labcas.settings'], 'rb') as f:
             labCASSettings = cPickle.load(f)
+            _logger.warn(u'Successfully restored settings!')
     except:
+        _logger.warn(u'Failed to restore settings from %s; using defaults', settings['labcas.settings'])
         labCASSettings = Settings(settings['labcas.settings'])
         labCASSettings.update()
     provideUtility(labCASSettings)
@@ -109,4 +114,5 @@ def main(global_config, **settings):
         settings['labcas.solr.baseURL']
     ))
     provideUtility(Vocabularies(settings['labcas.vocabularies']))
+    _logger.warn(u'LabCAS UI Ready')
     return config.make_wsgi_app()

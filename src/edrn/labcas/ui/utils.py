@@ -83,6 +83,7 @@ DEFAULT_SPEC_TYPES_RDF_URL = u'https://mcl.jpl.nasa.gov/ksdb/publishrdf/?filterb
 DEFAULT_SUPER_GROUP        = u'cn=Super User,dc=edrn,dc=jpl,dc=nasa,dc=gov'
 DEFAULT_ZIP_FILE_LIMIT     = 250
 DEFAULT_TMP_DIR            = u'/data/tmp'
+DEFAULT_ANALYTICS          = u''
 
 
 # Functions
@@ -638,21 +639,29 @@ class LabCASWorkflow(object):
 
 class Settings(object):
     implements(ILabCASSettings)
-    program = u'EDRN'
-    metadata = _defaultMetadata
-    datatypes = _defaultDatatypes
-    siteRDFURL = DEFAULT_SITE_RDF_URL
-    protocolRDFURL = DEFAULT_PROTOCOL_RDF_URL
-    peopleRDFURL = DEFAULT_PEOPLE_RDF_URL
-    organRDFURL = DEFAULT_ORGAN_RDF_URL
-    disciplineRDFURL = DEFAULT_DISCIPLINE_RDF_URL
-    speciesRDFURL = DEFAULT_SPECIES_RDF_URL
+    program            = u'EDRN'
+    metadata           = _defaultMetadata
+    datatypes          = _defaultDatatypes
+    siteRDFURL         = DEFAULT_SITE_RDF_URL
+    protocolRDFURL     = DEFAULT_PROTOCOL_RDF_URL
+    peopleRDFURL       = DEFAULT_PEOPLE_RDF_URL
+    organRDFURL        = DEFAULT_ORGAN_RDF_URL
+    disciplineRDFURL   = DEFAULT_DISCIPLINE_RDF_URL
+    speciesRDFURL      = DEFAULT_SPECIES_RDF_URL
     specimenTypeRDFURL = DEFAULT_SPEC_TYPES_RDF_URL
-    superGroup = DEFAULT_SUPER_GROUP
-    zipFileLimit = DEFAULT_ZIP_FILE_LIMIT
-    tmpDir = DEFAULT_TMP_DIR
+    superGroup         = DEFAULT_SUPER_GROUP
+    zipFileLimit       = DEFAULT_ZIP_FILE_LIMIT
+    tmpDir             = DEFAULT_TMP_DIR
+    analytics          = DEFAULT_ANALYTICS
     def __init__(self, settingsPath):
         self.settingsPath = settingsPath
+        _logger.warn(u'Settings object CREATED with path %s', settingsPath)
+    def getAnalytics(self):
+        return self.analytics
+    def setAnalytics(self, analytics):
+        if self.analytics != analytics:
+            self.analytics = analytics
+            self.update()
     def getTmpDir(self):
         return self.tmpDir
     def setTmpDir(self, tmpDir):
@@ -742,6 +751,7 @@ class Settings(object):
         self.datatypes[datatype.identifier] = datatype
         self.update()
     def update(self):
+        _logger.warn(u'Settings object saving itself to %s', self.settingsPath)
         with open(self.settingsPath, 'wb') as f:
             cPickle.dump(self, f)
 
