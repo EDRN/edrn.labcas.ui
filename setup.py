@@ -9,7 +9,7 @@ import os.path
 # ------------
 
 _name            = 'edrn.labcas.ui'
-_version         = '1.0.15'
+_version         = '1.0.16'
 _description     = 'User interface for LabCAS, for EDRN'
 _author          = 'Sean Kelly'
 _authorEmail     = 'sean.kelly@jpl.nasa.gov'
@@ -22,12 +22,16 @@ _keywords        = 'web edrn cancer biomarkers lab laboratory catalog archive'
 _testSuite       = 'edrn.labcas.ui.tests.test_suite'
 _entryPoints     = {
     'paste.app_factory': ['main=edrn.labcas.ui:main'],
-    'console_scripts': ['update-vocabularies=edrn.labcas.ui.vocabularies:main']
+    'console_scripts': [
+        'update-vocabularies=edrn.labcas.ui.vocabularies:main',
+        'update-settings=edrn.labcas.ui.settings:main'
+    ]
 }
 _extras = {
 }
 _externalRequirements = [
     'setuptools',
+    'click',
     'deform >= 2.0a1',
     'humanize',
     'M2Crypto',
