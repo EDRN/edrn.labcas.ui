@@ -11,6 +11,39 @@ import base64, logging, urllib, binascii
 
 _logger = logging.getLogger(__name__)
 
+# Adapted from http://opensourceconnections.com/blog/2013/01/17/escaping-solr-query-characters-in-python/
+_escapeRules = {
+    u'+': ur'\+',
+    u'-': ur'\-',
+    u'&': ur'\&',
+    u'|': ur'\|',
+    u'!': ur'\!',
+    u'(': ur'\(',
+    u')': ur'\)',
+    u'{': ur'\{',
+    u'}': ur'\}',
+    u'[': ur'\[',
+    u']': ur'\]',
+    u'^': ur'\^',
+    u'~': ur'\~',
+    u'*': ur'\*',
+    u'?': ur'\?',
+    u':': ur'\:',
+    u'"': ur'\"',
+    u';': ur'\;',
+    u' ': ur'\ '
+}
+
+
+def _escapedSeq(term):
+    for char in term:
+        yield _escapeRules[char] if char in _escapeRules else char
+
+
+def _escapeSolrArg(term):
+    term = term.replace(u'\\', ur'\\')
+    return u''.join([i for i in _escapedSeq(term)])
+
 
 class DownloadView(object):
     u'''API to authenticate a request and if valid download a file.'''
@@ -44,9 +77,9 @@ class DownloadView(object):
     @view_config(route_name='download')
     def __call__(self):
         fileID = self.request.matchdict['fileID']
+        query = u'id:{}'.format(_escapeSolrArg(fileID))
         response = getUtility(IBackend).getSearchEngine(u'files').select(
-            q='id:{}'.format(fileID),
-            fields=[u'CollectionId', u'FileDownloadId']
+            q=query, fields=[u'CollectionId', u'FileDownloadId']
         )
         if not response.results: raise HTTPNotFound()
         collectionID, downloadID = response.results[0].get(u'CollectionId'), response.results[0].get(u'FileDownloadId')
