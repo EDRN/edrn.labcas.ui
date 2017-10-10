@@ -5,6 +5,13 @@ What follows is a history of changes from release to release.  Where issue IDs
 are listed below, you can find out more about them by visiting the issue
 tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 
+1.0.15 — TBD
+------------
+
+• (Various emails) Add a /download API endpoint with HTTP Basic authentication
+• (Observation) Remove hard-coding of EDRN group in dev mode
+• (Observation) Add a favicon.ico
+
 
 1.0.14 — WIP?
 -------------

@@ -6,6 +6,7 @@ from ._collection import CollectionView
 from ._collections import CollectionsView
 from ._completions import PeopleCompletionsView, ProtocolCompletionsView, LDAPGroupsCompletionsView
 from ._dataset import DatasetView
+from ._download import DownloadView
 from ._favicon import favicon_view
 from ._file import FileView
 from ._metadata import MetadataView
@@ -20,6 +21,7 @@ __all__ = (
     CollectionsView,
     CollectionView,
     DatasetView,
+    DownloadView,
     favicon_view,
     FileView,
     LDAPGroupsCompletionsView,

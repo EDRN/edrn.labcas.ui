@@ -21,6 +21,15 @@ parts =
     paste-dev
 
 
+# LDAP
+# ----
+#
+# Settings for LDAP
+[ldap]
+user-base =
+group-base =
+
+
 # Secrets
 # -------
 #

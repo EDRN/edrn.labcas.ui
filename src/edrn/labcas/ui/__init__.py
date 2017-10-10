@@ -79,6 +79,7 @@ def main(global_config, **settings):
     config.add_route('collection', '/c/{collectionID}', factory=Collection)
     config.add_route('dataset', '/c/{collectionID}/{datasetID}', factory=Dataset)
     config.add_route('file', '/c/{collectionID}/{datasetID}/{fileID}', factory=File)
+    config.add_route('download', '/download/{fileID}')
     config.add_route('upload', '/upload', factory=Upload)
     config.add_route('start', '/start', factory=Upload)
     config.add_route('wfmetadata', '/start/{workflowID}', factory=Upload)

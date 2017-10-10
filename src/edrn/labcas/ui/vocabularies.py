@@ -276,7 +276,7 @@ def main():
     if not os.path.isdir(vocabDir):
         os.makedirs(vocabDir)
     try:
-        with open(config.get(settingsFile, 'rb')) as f:
+        with open(settingsFile, 'rb') as f:
             labCASSettings = cPickle.load(f)
     except:
         labCASSettings = Settings(settingsFile)
