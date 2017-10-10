@@ -3,7 +3,8 @@
 from edrn.labcas.ui.interfaces import IBackend
 from edrn.labcas.ui.utils import LabCASCollection
 from M2Crypto import EVP
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPForbidden
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPForbidden, HTTPUnauthorized
+from pyramid.security import Everyone
 from pyramid.view import view_config
 from pyramid_ldap import get_ldap_connector
 from zope.component import getUtility
@@ -84,15 +85,20 @@ class DownloadView(object):
         if not response.results: raise HTTPNotFound()
         collectionID, downloadID = response.results[0].get(u'CollectionId'), response.results[0].get(u'FileDownloadId')
         if not collectionID: raise HTTPNotFound()
-        username, password = self.getCredentials()
-        ldapConnector = get_ldap_connector(self.request)
-        user = ldapConnector.authenticate(username, password)
-        if user is None: raise HTTPForbidden()
-        userDN = user[0]
-        groups = ldapConnector.user_groups(userDN)
-        principals = [i[0] for i in groups]
-        principals.append(userDN)
-        principals = frozenset(principals)
+        try:
+            username, password = self.getCredentials()
+            ldapConnector = get_ldap_connector(self.request)
+            user = ldapConnector.authenticate(username, password)
+            if user is None: raise HTTPForbidden()
+            userDN = user[0]
+            groups = ldapConnector.user_groups(userDN)
+            principals = [i[0] for i in groups]
+            principals.append(userDN)
+            principals = frozenset(principals)
+        except TypeError:
+            principals = frozenset(self.request.effective_principals)
+            if len(principals) <= 1 and Everyone in principals:
+                raise HTTPForbidden()
         collection = LabCASCollection.get(collectionID, principals)
         if not collection: raise HTTPForbidden()
         response = HTTPFound(self.request.host_url + u'/fmprod/data?productID=' + downloadID)

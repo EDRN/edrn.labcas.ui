@@ -10,6 +10,8 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 -----------
 
 • (Various emails) Escape characters in Solr queries
+• (Various emails) When accessing a /download URL with a browser, prompt for
+  credentials
 
 
 1.0.15 — API
