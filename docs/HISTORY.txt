@@ -6,8 +6,8 @@ are listed below, you can find out more about them by visiting the issue
 tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 
 
-1.0.1 — TBD
------------
+1.0.16 — Escape *all* the Credentials!
+--------------------------------------
 
 • (Various emails) Escape characters in Solr queries
 • (Various emails) When accessing a /download URL with a browser, prompt for
