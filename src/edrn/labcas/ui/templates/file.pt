@@ -73,7 +73,7 @@
                         </dl>
                     </div>
                     <div tal:condition='f.thumbnailURL' class='col-md-2'>
-                        <img src='#' tal:attributes='src python:f.thumbnailURL'/>
+                        <img src='#' width='200' tal:attributes='src python:f.thumbnailURL'/>
                     </div>
                 </div>
 
