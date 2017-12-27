@@ -89,8 +89,8 @@
                                                 urn:some:collection
                                             </a>
                                         </td>
-                                        <td tal:content='col.leadPI'>
-                                            Joe Schmoe
+                                        <td tal:content='python:u", ".join(col.leadPIs)'>
+                                            Joe Schmoe, Jerri Schmoe
                                         </td>
                                         <td tal:define='numOrgans python:len(col.organs)'>
                                             <span tal:condition='numOrgans' tal:omit-tag=''
@@ -122,8 +122,8 @@
                                                 urn:some:pubcol
                                             </a>
                                         </td>
-                                        <td tal:content='col.leadPI'>
-                                            Joe Public Exposure
+                                        <td tal:content='python:u", ".join(col.leadPI)'>
+                                            Joe Public Exposure, Jerri Public Exposure
                                         </td>
                                         <td tal:define='numOrgans python:len(col.organs)'>
                                             <span tal:condition='numOrgans' tal:omit-tag=''

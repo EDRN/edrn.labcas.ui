@@ -407,14 +407,14 @@ UTC = _UTC()
 
 class LabCASCollection(object):
     u'''A collection of datasets stored in LabCAS'''
-    def __init__(self, identifier, qaState, owners, name, title, description, leadPI, organs, metadata):
+    def __init__(self, identifier, qaState, owners, name, title, description, leadPIs, organs, metadata):
         self.identifier = identifier
         self.qaState = qaState
         self.owners = owners
         self.name = name
         self.title = title
         self.description = description
-        self.leadPI = leadPI
+        self.leadPIs = leadPIs
         self.organs = organs
         self.metadata = metadata
         self.datasetMapping = None
@@ -455,7 +455,7 @@ class LabCASCollection(object):
             name = mapping.get(u'CollectionName', u'UNKNOWN')
             title = _getSingleValue(u'Title', mapping, u'UNKNOWN')
             description = mapping.get(u'CollectionDescription', u'UNKNOWN')
-            leadPI = _getSingleValue(u'LeadPI', mapping, u'UNKNOWN')
+            leadPIs = _getMultipleValues(u'LeadPI', mapping, u'UNKNOWN')
             organs = _getMultipleValues(u'Organ', mapping, [])
             metadata = {}
             for key, values in mapping.iteritems():
@@ -464,7 +464,7 @@ class LabCASCollection(object):
                 if not isinstance(values, list) and not isinstance(values, basestring):
                     values = [values]
                 metadata[key] = [unicode(i) for i in values]
-            return LabCASCollection(identifier, qaState, owners, name, title, description, leadPI, organs, metadata)
+            return LabCASCollection(identifier, qaState, owners, name, title, description, leadPIs, organs, metadata)
         else:
             # Sorry pal, try when you get better permissions
             return None

@@ -83,9 +83,7 @@ class SearchView(object):
             counter += 1
         pis = set()
         for i in collections.results:
-            pi = i.get(u'LeadPI', [None])[0]
-            if pi:
-                pis.add(pi)
+            pis = pis | set(i.get(u'LeadPI', []))
         pis = list(pis)
         pis.sort()
         pisToIDs, idsToPIs, counter = {}, {}, 0

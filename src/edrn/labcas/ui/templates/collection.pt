@@ -43,7 +43,7 @@
                         proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
                     </dd>
                     <dt>Lead PI:</dt>
-                    <dd tal:content='collection.leadPI'>Joe Schmoe</dd>
+                    <dd tal:content='python:u", ".join(collection.leadPIs)'>Joe Schmoe, Jerri Schmoe</dd>
 <!-- CA-1480
                     <dt>Collaborative Group:</dt>
                     <dd tal:content='collection.collaborativeGroup'>Lung</dd>
