@@ -10,6 +10,7 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 ------------
 
 • (Luca's email) Limit size of thumbnail on file-level view
+• (Luca's email) Show multiple PIs
 
 
 1.0.16 — Escape *all* the Credentials!
