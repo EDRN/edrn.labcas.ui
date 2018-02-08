@@ -122,7 +122,7 @@
                                                 urn:some:pubcol
                                             </a>
                                         </td>
-                                        <td tal:content='python:u", ".join(col.leadPI)'>
+                                        <td tal:content='python:u", ".join(col.leadPIs)'>
                                             Joe Public Exposure, Jerri Public Exposure
                                         </td>
                                         <td tal:define='numOrgans python:len(col.organs)'>
