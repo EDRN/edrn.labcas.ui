@@ -28,7 +28,6 @@ class DatasetView(object):
         collection = LabCASCollection.get(collectionID, principals)
         dataset = collection.datasets(datasetID)
         totalSize = sum([i.size for i in dataset.files()])
-        showCheckboxes = totalSize < getUtility(ILabCASSettings).getZipFileLimit() * 1024L * 1024L
         params = self.request.params
         if 'Download checked files' in params:
             # Download multiple files
@@ -54,6 +53,4 @@ class DatasetView(object):
             return {
                 'collection': collection,
                 'dataset': dataset,
-                'showCheckboxes': showCheckboxes,
-                'pageTitle': u'Dataset: ' + dataset.name
             }
