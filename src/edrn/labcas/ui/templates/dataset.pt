@@ -13,12 +13,7 @@
             provided names:
             - collection: parent collection
             - dataset: current dataset
-            - showCheckboxes: boolean indicating if the download checkboxes should be showed
         -->
-        <metal:javascript fill-slot='javascript_head_slot'>
-            <script type='text/javascript' tal:condition='showCheckboxes'>
-            </script>
-        </metal:javascript>
     </head>
     <body>
         <div metal:fill-slot='content'>
@@ -81,7 +76,7 @@
                         <table class='table' id='file-table'>
                             <thead>
                                 <tr>
-                                    <th tal:condition='showCheckboxes'>
+                                    <th>
                                         <input type='checkbox' name='select-all' id='select-all'/>
                                     </th>
                                     <th>Name</th>
@@ -89,12 +84,13 @@
                                     <th>Description</th>
                                     <th>Thumbnail</th>
                                     <th style='text-align: right;'>Size</th>
+                                    <th>Download</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr tal:repeat='f python:files'>
-                                    <td tal:condition='showCheckboxes'>
-                                        <input type='checkbox' name='include.name'
+                                    <td>
+                                        <input type='checkbox' class='downloadToggle' name='include.name'
                                             tal:attributes='name python:u"include." + f.identifier'/>
                                     </td>
                                     <td tal:define='fileURL python:request.route_url(
@@ -127,19 +123,51 @@
                                         style='text-align: right;'>
                                         42M
                                     </td>
+                                    <td tal:define='downloadHREF python:request.route_url(
+                                            "file",
+                                            collectionID=collection.identifier,
+                                            datasetID=dataset.identifier,
+                                            fileID=f.identifier
+                                        ) + u"?download=true"'>
+                                        <a class='btn btn-default' data-id='name' href='#' role='button'
+                                            tal:attributes='href downloadHREF; data-id python:f.identifier;'>
+                                            <span class='glyphicon glyphicon-cloud-download' aria-hidden='true'></span>
+                                        </a>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
-                        <button type='submit' class='btn bth-default' name='Download checked files'
-                            value='download' tal:condition='showCheckboxes'>
+                        <a class='btn btn-default' name='Download checked files' id='dl'>
                             <span class='glyphicon glyphicon-download-alt' aria-hidden='true'></span>
                             Download checked files
-                        </button>
+                        </a>
                     </form>
-                    <script type='text/javascript' tal:condition='showCheckboxes'>
+                    <script type='text/javascript'>
                         $(document).ready(function() {
                             $("#select-all").click(function() {
                                 $("#file-table input[type='checkbox']").prop('checked', this.checked);
+                            });
+                            $("#dl").click(function(e) {
+                                e.preventDefault();
+                                var tempDownloadLink = document.createElement("a");
+                                tempDownloadLink.style.display = "none";
+                                document.body.appendChild(tempDownloadLink);
+                                boxes = $("#file-table input:checked")
+                                if (boxes.length == 0)
+                                    alert("Please check one or more boxes");
+                                else {
+                                    boxes.each(function (index) {
+                                        if ($(this).prop('checked')) {
+                                            var name = $(this).prop('name').substring(8);
+                                            var selector = 'a[data-id="' + name + '"]';
+                                            var href = $(selector).prop('href');
+                                            tempDownloadLink.setAttribute('download', name);
+                                            tempDownloadLink.setAttribute('href', href);
+                                            tempDownloadLink.click();
+                                        }
+                                    });
+                                }
+                                document.body.removeChild(tempDownloadLink);
                             });
                         });
                     </script>
