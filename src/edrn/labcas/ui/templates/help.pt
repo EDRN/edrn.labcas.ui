@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal" lang="en" xml:lang="en" metal:use-macro="load:edrn.labcas.ui:templates/master.pt">
+    <head>
+        <title>Help</title>
+    </head>
+    <body>
+        <div metal:fill-slot="content">
+            <div class="container">
+                <ol class="breadcrumb">
+                    <li class="active">Help</li>
+                </ol>
+                <p>LabCAS ("Laboratory Catalog and Archive Services") is a
+        web-enabled environment that allows users to publish, share, search
+        and download a wide variety of biomedical datasets. This page contains
+        information for end-users of the LabCAS portal and services. </p>
+                <h1 id="LabCASUserGuide-DataPublishing">Data Publishing</h1>
+                <p>At present,
+        data can be published into LabCAS in two possible ways: by using the
+        LabCAS User Interface to upload and trigger ingestion of data; or by
+        uploading data directly to the LabCAS server. Before publishing, data
+        should be "curated" i.e. organized in a meaningful directory
+        structure, and provided with enough metadata to make them useful to
+        other users.</p>
+                <h2 id="LabCASUserGuide-DataStructure">Data
+        Structure</h2>
+                <p>Data in LabCAS is organized according to the
+        following logical hierarchy:</p>
+                <ul>
+                    <li><strong>Collections</strong>:
+        broad sets of related data from the same study, the same analysis, or
+        the same project. </li>
+                    <li><strong>Datasets</strong>: different sets
+        of related files within the same collection - for example, the
+        different patients of a clinical study, or the different labs
+        participating in a study.</li>
+                    <li><strong>Files</strong>: all the
+        files in a given dataset - for example, all the images for a single
+        patient, or all the data supplied by a single
+        lab.</li>
+                </ul>
+                <p>Examples:</p>
+                <ul>
+                    <li>Collection=RNA Sequencing,
+        Dataset=ERR164773, Files=ERR164773_1.fastq, ERR164773_2.fastq,
+        gene.counts</li>
+                    <li>Collection=University of Colorado Lung Images,
+        Dataset=UCHSC_1467, Files=<span>22021 P06-32 B4 Bronchus Intermedium
+        x40 D1.jpg</span></li>
+                </ul>
+                <p>Before publishing data into LabCAS, you
+        should organize them in a meaningful directory structure conforming to
+        the model above.</p>
+                <h2 id="LabCASUserGuide-         Metadata">Metadata</h2>
+                <p>In LabCAS, metadata can be associated to
+        data at all 3 levels: collections, datasets, and files. When
+        publishing, it is recommended that the following metadata fields be
+        supplied to make the data searchable and more useful (mandatory fields
+        are <u>underlined</u>). When using the LabCAS UI to publish data, some
+        of these fields are automatically populated based on the user login,
+        or the value of other supplied fields.</p>
+                <p>
+                    <strong>Collection</strong>
+                </p>
+                <ul>
+                    <li>
+                        <p class="p1"><span class="s1"><u>CollectionName</u>: </span>short name
+        for high level data collection (example: MD Anderson Lung
+        Images)</p>
+                    </li>
+                    <li>
+                        <p class="p1"><span class="s1"><u>CollectionDescription</u>: </span>a few sentences
+        describing the high level data collection (ex: Lung images for
+        clinical studies conducted during 2001-2010.)</p>
+                    </li>
+                    <li>
+                        <p class="p1">
+                            <span class="s1"><u>OwnerPrincipal</u> (ex:
+        uid=amos,dc=edrn,dc=jpl,dc=nasa,dc=gov - this is provided by the
+        IC)</span>
+                        </p>
+                    </li>
+                    <li>
+                        <p class="p1">
+                            <span class="s1"><u>Consortium</u> (ex: MCL or EDRN)</span>
+                        </p>
+                    </li>
+                    <li>
+                        <p class="p1"><u>Discipline</u>: (ex: RNA Sequencing, Pathology,
+        Oncology, etc.)</p>
+                    </li>
+                    <li>
+                        <p class="p1"><u>LeadPI</u> (ex: Chris
+        Amos)</p>
+                    </li>
+                    <li>
+                        <p class="p1">
+                            <span class="s1">LeadPIId</span>
+                        </p>
+                    </li>
+                    <li>
+                        <p class="p1"><em>QAState</em>
+        (ex: Public)</p>
+                    </li>
+                    <li><u>Organ</u> (ex: Lung, Pancreas,
+        etc.)</li>
+                    <li>OrganId (ex: 3)</li>
+                    <li><u>Institution</u> (ex:
+        Dartmouth, MD Anderson Cancer Research Center)</li>
+                    <li>InstitutionId</li>
+                    <li>ProtocolName</li>
+                    <li>ProtocolId</li>
+                    <li>
+                        <u>CollaborativeGroup</u>
+                    </li>
+                </ul>
+                <p>
+                    <strong>Dataset</strong>
+                </p>
+                <ul>
+                    <li><u>DatasetName</u>:
+        short name for this dataset (ex:
+        ERR318895)</li>
+                    <li><u>DatasetDescription</u>: a few sentences
+        describing this dataset (ex: Data for patient X)</li>
+                    <li>PubMedID</li>
+                    <li>
+                        <u>Species</u>
+                    </li>
+                    <li>Instrument</li>
+                    <li>SpecimenType</li>
+                    <li>Dat
+        asetURL (ex: http://someotherwebsite/patients?id=X)</li>
+                </ul>
+                <p>
+                    <strong>File</strong>
+                </p>
+                <ul>
+                    <li><u><u>FileName</u></u>: parsed from file
+        system</li>
+                    <li><u>FileLocation</u>: parsed from file
+        system</li>
+                    <li>FileType</li>
+                    <li><u>FileSize</u>: parsed from file
+        system</li>
+                    <li>FileDescription</li>
+                    <li>ProcessingLevel</li>
+                </ul>
+                <p>Any
+        other custom metadata can be supplied and stored as well, at all
+        levels of the data hierarchy.</p>
+                <h2 id="LabCASUserGuide-         PublishingviaLabCASUI">Publishing via LabCAS UI</h2>
+                <p>The LabCAS web
+        portal provides a web-enabled
+        workflow for uploading data to the server, and trigger publication to
+        the LabCAS archive. The user is guided through the process of
+        selecting the files from their own desktop, and populating the
+        required and recommended metadata fields. Because uploading data
+        through the browser is not very efficient, this process is recommended
+        for datasets that are not very large (up to a few GB in size).</p>
+                <h2 id="LabCASUserGuide-UploadingDatatotheLabCASServer">Uploading Data to
+        the LabCAS Server</h2>
+                <p>Very large datasets should be transferred to
+        the LabCAS server via some means other than a web browser. At this
+        time, LabCAS offers two ways to upload data directly: SFTP and WebDAV.
+        Both protocols are supported on a variety of platforms including
+        Linux, Mac OSX, and Windows. Before uploading data, please make sure
+        to:</p>
+                <ul>
+                    <li>Organize your data in a directory structure
+        corresponding to one collection and one or more datasets, as described
+        above</li>
+                    <li>For each dataset, provide as much metadata as possible
+        in a file colocated with the dataset, and named &lt;dataset&gt;.cfg
+        </li>
+                </ul>
+                <p>Then proceed through one of the two methods
+        below.</p>
+                <h3 id="LabCASUserGuide-SFTP">SFTP</h3>
+                <p>In this section we
+        describe how to upload data using a Unix-like system (macOS, Linux,
+        FreeBSD, Solaris, etc.) and on Windows.</p>
+                <h4 id="LabCASUserGuide-         Unix">Unix</h4>
+                <p>On Unix-like systems, do the
+        following:</p>
+                <ul>
+                    <li>Generate a public/private RSA key pair with the
+        following command, or use an existing pair if you have one:<ul><li>ssh
+        -keygen -t rsa</li></ul></li>
+                    <li>Send your public key (id_rsa.pub) to
+        the LabCAS team so they can enter it in the list of allowed user
+        keys</li>
+                    <li>Simply use the SFTP client of your choice to connect to
+        the LabCAS server (with no username or password, since authentication
+        is provided by the key), navigate to your assigned root directory,
+        create new directories for the Collection and Dataset to upload, then
+        transfer the data (all files in the current local directory, including
+        the metadata file &lt;dataset&gt;.cfg):<ul><li><p class="p1"><span class="s1">sftp <a href="mailto:sftpxfer@zipper.jpl.nasa.gov" class="external-link" rel="nofollow">sftpxfer@zipper.jpl.nasa.gov</a></span></p></li><li><p class="p1">cd data/&lt;user directory&gt;</p></li><li>mkdir
+        &lt;collection directory&gt;</li><li>cd &lt;collection
+        directory&gt;</li><li>mkdir &lt;dataset directory&gt;</li><li>cd
+        &lt;dataset directory&gt;</li><li>put *</li></ul></li>
+                </ul>
+                <h4 id="LabCASUserGuide-Windows">Windows</h4>
+                <p>On Windows systems, you
+        first generate a public/private key pair:</p>
+                <ol>
+                    <li>Download and
+        install both <a href="http://www.putty.org/" class="external-link" rel="nofollow">PuTTY</a> and <a href="https://winscp.net/" class="external-link" rel="nofollow">WinSCP</a>. Both are free, open-source
+        software packages.</li>
+                    <li>Installing PuTTY makes a new program
+        available, PuTTYgen. Start this.</li>
+                    <li>At the bottom, select SSH-2
+        RSA and enter 2048 bits. (This should be the default.)</li>
+                    <li>Press
+        "Generate".</li>
+                    <li>Move the mouse around in the blank area
+        to generate random numbers until the progress bar is
+        filled.</li>
+                    <li>Click "Save public key" and save the key to
+        a file. Mail that file to JPL and we'll install it in the right place.
+        Alternatively, you can click in the Public key box, select ALL the
+        text, and paste that in an email. This key should be a single long
+        line of text that starts with "ssh-rsa AAAA…"</li>
+                    <li>Enter
+        a passphrase (and confirm it) then press "Save private key".
+        Choose a filename (say "LabCAS") and save it to your
+        Documents folder.</li>
+                    <li>Close PuTTYgen.</li>
+                </ol>
+                <p>At this point,
+        you'll need to await confirmation from JPL that your public key has
+        been installed. Once you hear back, you can start uploading data with
+        the following:</p>
+                <ol>
+                    <li>Open WinSCP.</li>
+                    <li>Press the
+        "Advanced" button.</li>
+                    <li>On the left side, under
+        "SSH", click "Authentication".</li>
+                    <li>Under
+        "Authentication parameters", click the ellipsis … button
+        under "Private key file".</li>
+                    <li>Select the private key you
+        saved in the Documents folder in step 7 (above). Click
+        "OK".</li>
+                    <li>Under "Session", select SFTP. For
+        Host name, enter zipper-vm.jpl.nasa.gov; for user name, enter
+        "sftpxfer".</li>
+                    <li>You will be warned the first time you're
+        connecting to an unknown server. Press the "Copy Key"
+        button. Then press "Yes".</li>
+                    <li>Enter the passphrase for
+        the private key you created in step 7 (above). Check the box by
+        "Remember password for this session". Then press
+        "OK".</li>
+                    <li>You now have a window on the left with your
+        local files and on the right. To send a file, select it on the left
+        and click "Upload". Or simply drag and drop. You'll be
+        prompted the first time to set up transfer settings. The defaults are
+        fine, so check "Do not show this dialog box again" and press
+        "OK".</li>
+                </ol>
+                <h3 id="LabCASUserGuide-         WebDavdataupload">WebDav data upload</h3>
+                <ul>
+                    <li>Contact the LabCAS
+        team to obtain a WebDAV username and password, which will be stored in
+        the LabCAS LDAP database</li>
+                    <li>Use one of the supported clients on
+        your desktop to upload the data (see below).
+        After logging in with your credentials, drop your data in the location
+        staing/&lt;collection&gt;/&lt;dataset&gt;<ul><li>Mac OSX: macs come
+        with a pre-installed WebDAV client. In the upper bar menu, choose Go
+        &gt; Connect to Server, and enter the URL above</li><li>Linux: we
+        recommend using the <em>cadaver</em> client (see <a href="http://www.webdav.org/cadaver/" class="external-link" rel="nofol         low">http://www.webdav.org/cadaver/</a>):</li><li>Windows:</li></ul>
+    </li>
+                </ul>
+                <p>Note that at this time uploading data through SFTP or
+        WebDAV will NOT automatically trigger data publishing (although it
+        will in the near future). Please contact the LabCAS team to let them
+        know new data is available, and to coordinate the publishing
+        phase.</p>
+                <p>
+                    <br/>
+                </p>
+            </div>
+        </div>
+    </body>
+</html>

@@ -101,9 +101,12 @@
                             Consortium for Molecular and Cellular Characterization of Screen-Detected Lesions
                         </a>
                     </li>
+                    <li tal:define='helpURL python:request.route_url("help");'>
+                        <a href='#' tal:attributes='href helpURL'>Help</a>
+                    </li>
                 </ul>
                 <p>
-                    Copyright © 2017 California Institute of Technology. <small>ALL RIGHTS RESERVED.</small>
+                    Copyright © 2018 California Institute of Technology. <small>ALL RIGHTS RESERVED.</small>
                     U.S. Government Sponsorship Acknowledged.
                 </p>
                 <p>
