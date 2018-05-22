@@ -106,6 +106,9 @@
                     <li tal:define='helpURL python:request.route_url("help");'>
                         <a href='#' tal:attributes='href helpURL'>Help</a>
                     </li>
+                    <li tal:define='aboutURL python:request.route_url("about");'>
+                        <a href='#' tal:attributes='href aboutURL'>About</a>
+                    </li>
                 </ul>
                 <p>
                     Copyright © <span tal:replace='python:date.today().year'>1999</span>

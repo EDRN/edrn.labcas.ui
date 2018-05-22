@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    lang="en"
+    xml:lang="en"
+    metal:use-macro="load:edrn.labcas.ui:templates/master.pt">
+    <head>
+        <title>About</title>
+    </head>
+    <body>
+        <div metal:fill-slot="content">
+            <div class="container">
+                <ol class="breadcrumb">
+                    <li class="active">About</li>
+                </ol>
+                <p>The Laboratory Catalog and Archive Service supports the capture and sharing of research data for
+                    programs within the Cancer Biomarker Research Group (CBRG) at the National Cancer Institute.
+                    LabCAS provides the ability to capture, process, manage, share, and link to analysis tools.
+                    It supports the use of Common Data Elements (CDEs) to describe the data holdings allow for a
+                    variety of data to be captured from imaging to RNA Sequencing. Processing pipelines are
+                    established to support generation of analytical data results, validation of data, and other
+                    automated computational capabilities.
+                </p>
+                <p>For more information, please contact:</p>
+                <ul>
+                    <li><a href='mailto:dan.crichton@jpl.nasa.gov'>Dan Crichton</a>, PI EDRN Informatics Center</li>
+                    <li><a href='mailto:heather.kincaid@jpl.nasa.gov'>Heather Kincaid</a>, Operations Lead
+                        EDRN Informatics Center</li>
+                </ul>
+            </div>
+        </div>
+    </body>
+</html>

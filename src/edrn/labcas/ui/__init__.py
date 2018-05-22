@@ -97,6 +97,7 @@ def main(global_config, **settings):
     config.add_route('ldapGroups', '/ldapGroups')
     config.add_route('manage', '/manage', factory=Management)
     config.add_route('help', '/help')
+    config.add_route('about', '/about')
     config.scan()
     try:
         _logger.warn(u'Attempting to initialize settings from %s', settings['labcas.settings'])
