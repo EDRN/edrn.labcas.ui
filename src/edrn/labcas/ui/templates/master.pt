@@ -5,6 +5,7 @@
     xmlns:tal='http://xml.zope.org/namespaces/tal'
     xmlns:metal='http://xml.zope.org/namespaces/metal'>
     <?python from edrn.labcas.ui.interfaces import ILabCASSettings ?>
+    <?python from datetime import date ?>
     <head>
         <meta charset='utf-8'/>
         <meta http-equiv='X-UA-Compatible' content='IE=edge'/>
@@ -107,7 +108,8 @@
                     </li>
                 </ul>
                 <p>
-                    Copyright © 2018 California Institute of Technology. <small>ALL RIGHTS RESERVED.</small>
+                    Copyright © <span tal:replace='python:date.today().year'>1999</span>
+                    California Institute of Technology. <small>ALL RIGHTS RESERVED.</small>
                     U.S. Government Sponsorship Acknowledged.
                 </p>
                 <p>
