@@ -36,6 +36,7 @@
         program python:settings.getProgram();
         analytics python:settings.getAnalytics();
         isEDRN python:program == u"EDRN";
+        portalHome python:u"https://edrn.nci.nih.gov/" if isEDRN else u"https://mcl.nci.nih.gov/";
         routeName python:request.matched_route.name;
         noSearch python:("upload", "start", "wfmetadata", "metadata", "accept", "login", "logout", "manage");
         showSearch python:not request.session.get("login", False) and routeName not in noSearch;
@@ -43,7 +44,7 @@
         <nav class='navbar navbar-default' role='navigation' style='background-color: white;'>
             <div class='container-fluid'>
                 <div class='navbar-header'>
-                    <a class='navbar-brand' href='#' tal:attributes='href python:request.route_url("collections")'>
+                    <a class='navbar-brand' href='#' tal:attributes='href portalHome'>
                         <img tal:condition='isEDRN' src='#' alt='Early Detection Research Network'
                             tal:attributes='src python:request.static_url("edrn.labcas.ui:static/edrn.png")'/>
                         <img tal:condition='not:isEDRN' src='#'
