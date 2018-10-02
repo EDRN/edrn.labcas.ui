@@ -511,8 +511,10 @@ class LabCASCollection(object):
 
 class LabCASDataset(object):
     u'''A dataset stored in a LabCASCollection'''
-    def __init__(self, identifier, name, description, metadata):
+    def __init__(self, identifier, name, description, metadata, children=[], parentID=None):
         self.identifier, self.name, self.description, self.metadata = identifier, name, description, metadata
+        self.parentID = parentID
+        self.children = children
         self.fileMapping = None
     def getMetadata(self):
         metadata = self.metadata.items()
@@ -535,16 +537,48 @@ class LabCASDataset(object):
     def _construct(mapping):
         u'''Construct a dataset given the information in the ``mapping``.'''
         identifier = mapping[u'id']
+        _logger.info('Dataset identifier is %s', identifier)
         name = mapping.get(u'DatasetName', u'UNKNOWN')
         metadata = {}
-        description = None
+        description = parentID = None
         for key, value in mapping.iteritems():
             if key == u'OwnerPrincipal': continue
             if key == u'DatasetDescription' and value is not None:
                 description = value
+            if key == u'DatasetParentId' and value is not None:
+                parentID = value
             if isinstance(value, list) and not isinstance(value, basestring):
                 metadata[key] = value
-        return LabCASDataset(identifier, name, description, metadata)
+        # Get the kids
+        backend = getUtility(IBackend)
+        response = backend.getSearchEngine(u'datasets').select(
+            q='*:*',
+            fields=None,
+            highlight=None,
+            score=True,
+            sort=['DatasetName'],
+            fq=[u'DatasetParentId:{}'.format(identifier.replace(u':', u'\\:'))],
+            start=0,
+            rows=99999  # FIXME: support pagination
+        )
+        children = [LabCASDataset._construct(item) for item in response.results]
+        return LabCASDataset(identifier, name, description, metadata, children, parentID)
+    @staticmethod
+    def getByDatasetID(datasetID):
+        u'''Get the LabCAS dataset with the matching ID'''
+        datasetID = datasetID.replace(u'%57', u'/')  # Ugh.
+        backend = getUtility(IBackend)
+        response = backend.getSearchEngine(u'datasets').select(
+            q='*:*',
+            fields=None,
+            highlight=None,
+            score=True,
+            sort=['DatasetName'],
+            fq=[u'id:{}'.format(datasetID.replace(u':', u'\\:'))],
+            start=0,
+            rows=99999  # FIXME: we should support pagination
+        )
+        return LabCASDataset._construct(response.results[0])
     @staticmethod
     def get(collectionID):
         u'''Get the LabCAS datasets belonging to the collection with the given
@@ -558,6 +592,22 @@ class LabCASDataset(object):
             score=True,
             sort=['DatasetName'],
             fq=[u'CollectionId:{}'.format(collectionID.replace(u':', u'\\:'))],
+            start=0,
+            rows=99999  # FIXME: we should support pagination
+        )
+        return [LabCASDataset._construct(item) for item in response.results if item.get('DatasetParentId') is None]
+    # What uses this ``getByParentDataset`` method? Nothing so far as I can tell.
+    @staticmethod
+    def getByParentDataset(datasetID):
+        u'''Get the LabCAS datasets that have the given datasetID as a parent.'''
+        backend = getUtility(IBackend)
+        response = backend.getSearchEngine(u'datasets').select(
+            q='*:*',
+            fields=None,
+            highlight=None,
+            score=True,
+            sort=['DatasetName'],
+            fq=[u'DatasetParentId:{}'.format(datasetID.replace(u':', u'\\:'))],
             start=0,
             rows=99999  # FIXME: we should support pagination
         )
@@ -655,7 +705,7 @@ class Settings(object):
     analytics          = DEFAULT_ANALYTICS
     def __init__(self, settingsPath):
         self.settingsPath = settingsPath
-        _logger.warn(u'Settings object CREATED with path %s', settingsPath)
+        _logger.info(u'Settings object CREATED with path %s', settingsPath)
     def getAnalytics(self):
         return self.analytics
     def setAnalytics(self, analytics):
@@ -751,7 +801,7 @@ class Settings(object):
         self.datatypes[datatype.identifier] = datatype
         self.update()
     def update(self):
-        _logger.warn(u'Settings object saving itself to %s', self.settingsPath)
+        _logger.info(u'Settings object saving itself to %s', self.settingsPath)
         with open(self.settingsPath, 'wb') as f:
             cPickle.dump(self, f)
 

@@ -17,6 +17,7 @@ tracker at https://oodt.jpl.nasa.gov/jira/browse/CA.
 • CA-1583: LabCAS link back to Portal
 • CA-1584: LabCAS update copyright date
 • CA-1585: Add About Tab to LabCAS
+• CA-1586: Update UI to support hierarchical datasets
 
 
 1.0.16 — Escape *all* the Credentials!

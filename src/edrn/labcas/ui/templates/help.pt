@@ -8,6 +8,7 @@
         <div metal:fill-slot="content">
             <div class="container">
                 <ol class="breadcrumb">
+                    <li><a href='#' tal:attributes='href python:request.route_url("collections")'>Home</a></li>
                     <li class="active">Help</li>
                 </ol>
                 <p>LabCAS ("Laboratory Catalog and Archive Services") is a

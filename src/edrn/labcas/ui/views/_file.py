@@ -18,8 +18,8 @@ class FileView(object):
         return unicode(humanize.naturalsize(size)).replace(u' ', u' ')  # There's a NO-BREAK SPACE in there.
     @view_config(route_name='file', permission='view')
     def __call__(self):
-        collectionID = self.request.matchdict['collectionID']
-        datasetID = self.request.matchdict['datasetID']
+        collectionID = self.request.params.get('collectionID')
+        datasetID = self.request.params.get('datasetID')
         fileID = self.request.matchdict['fileID']
         principals = frozenset(self.request.effective_principals)
         collection = LabCASCollection.get(collectionID, principals)

@@ -2,15 +2,16 @@
 
 from edrn.labcas.ui import PACKAGE_NAME
 from edrn.labcas.ui.interfaces import ILabCASSettings
-from edrn.labcas.ui.utils import LabCASCollection, computeHumanReadableContentType
+from edrn.labcas.ui.utils import LabCASCollection, computeHumanReadableContentType, LabCASDataset
 from pyramid.httpexceptions import HTTPFound
 from pyramid.response import FileResponse
 from pyramid.view import view_config, view_defaults
 from zope.component import getUtility
-import humanize, zipfile, os, os.path, threading, tempfile  # FIXME: if /tmp lacks space, we fail
+import humanize, zipfile, os, os.path, threading, tempfile, logging  # FIXME: if /tmp lacks space, we fail
 
 
 _tempFileRemovalTimeout = 10.0  # seconds
+_logger = logging.getLogger(__name__)
 
 
 @view_defaults(renderer=PACKAGE_NAME + ':templates/dataset.pt')
@@ -23,10 +24,11 @@ class DatasetView(object):
         return computeHumanReadableContentType(f.name, f.contentType)
     @view_config(route_name='dataset', permission='view')
     def __call__(self):
-        collectionID, datasetID = self.request.matchdict['collectionID'], self.request.matchdict['datasetID']
         principals = frozenset(self.request.effective_principals)
+        collectionID = self.request.matchdict['collectionID']
         collection = LabCASCollection.get(collectionID, principals)
-        dataset = collection.datasets(datasetID)
+        datasetID = self.request.matchdict['datasetID']
+        dataset = LabCASDataset.getByDatasetID(datasetID)
         totalSize = sum([i.size for i in dataset.files()])
         params = self.request.params
         if 'Download checked files' in params:
@@ -49,8 +51,9 @@ class DatasetView(object):
             fr.content_disposition = u'attachement; filename="{}.zip"'.format(datasetID)
             return fr
         else:
-            # View files
+            _logger.info('Dataset view: collection ID %s, dataset ID %s', collection.identifier, dataset.identifier)
             return {
                 'collection': collection,
                 'dataset': dataset,
+                'totalSize': self.humanFriendlySize(totalSize)
             }

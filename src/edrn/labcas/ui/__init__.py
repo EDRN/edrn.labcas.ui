@@ -77,8 +77,8 @@ def main(global_config, **settings):
     config.add_route('search', '/search', factory=Collections)
     config.add_route('collections', '/c', factory=Collections)
     config.add_route('collection', '/c/{collectionID}', factory=Collection)
+    config.add_route('file', '/c/file/{fileID}', factory=File)
     config.add_route('dataset', '/c/{collectionID}/{datasetID}', factory=Dataset)
-    config.add_route('file', '/c/{collectionID}/{datasetID}/{fileID}', factory=File)
     config.add_route('download', '/download/{fileID}')
     config.add_route('upload', '/upload', factory=Upload)
     config.add_route('start', '/start', factory=Upload)
@@ -117,5 +117,5 @@ def main(global_config, **settings):
         settings['labcas.solr.baseURL']
     ))
     provideUtility(Vocabularies(settings['labcas.vocabularies']))
-    _logger.warn(u'LabCAS UI Ready')
+    _logger.info(u'LabCAS UI Ready')
     return config.make_wsgi_app()

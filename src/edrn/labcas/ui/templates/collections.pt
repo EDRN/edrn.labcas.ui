@@ -23,10 +23,6 @@
         <div metal:fill-slot='content'>
 
             <div class='container'>
-                <ol class='breadcrumb'>
-                    <li class='active'>Collections</li>
-                </ol>
-
                 <h3>Manage Workflows</h3>
                 <p tal:condition='canUpload'>
                     <a class='btn btn-default' href='#' role='button'

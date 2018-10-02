@@ -21,11 +21,10 @@
         '>
 
             <div class='container'>
-                <ol class='breadcrumb'>
-                    <li><a href='#' tal:attributes='href python:request.route_url("collections")'>Collections</a></li>
-                    <li class='active' tal:content='python:collection.name'>Some Collection Name</li>
+                <ol class="breadcrumb">
+                    <li><a href='#' tal:attributes='href python:request.route_url("collections")'>Home</a></li>
+                    <li class="active" tal:content='collection.name'>BlahCollection</li>
                 </ol>
-
                 <dl class='dl-horizontal'>
                     <dt>Name:</dt>
                     <dd tal:content='collection.name'>BlahCollection</dd>
@@ -87,11 +86,13 @@
                         <tbody>
                             <tr tal:repeat='dataset datasets'>
                                 <td>
+                                    <!-- FIXME: Should use urlescape of some sort -->
                                     <a href='#'
-                                        tal:attributes='
-                                            href python:request.current_route_url() + u"/" + dataset.identifier
-                                        '
-                                        tal:content='dataset.name'>
+                                        tal:attributes='href python:request.route_url(
+                                            "dataset",
+                                            collectionID=collection.identifier,
+                                            datasetID=dataset.identifier.replace(u"/", u"%57")
+                                        )' tal:content='dataset.name'>
                                         some dataset name
                                     </a>
                                 </td>

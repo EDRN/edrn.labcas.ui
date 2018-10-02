@@ -14,6 +14,7 @@
         <div metal:fill-slot="content">
             <div class="container">
                 <ol class="breadcrumb">
+                    <li><a href='#' tal:attributes='href python:request.route_url("collections")'>Home</a></li>
                     <li class="active">About</li>
                 </ol>
                 <p>The Laboratory Catalog and Archive Service supports the capture and sharing of research data for
