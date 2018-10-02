@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-import xmlrpclib, time, solr
+import xmlrpclib, time, solr, json
 
 
 def waitForComp(server, workflowID):
@@ -57,20 +57,55 @@ def main():
     # print response
     # waitForComp(server, response)
 
-    server = solr.SolrConnection('http://localhost:8983/solr/oodt-fm')
     # response = server.query('*:*', fq=['OwnerGroup:cn=Crichton*'], start=0)
     # for result in response.results:
     #     printResult(result)
 
     # response = server.query('*:*', fq=['Dataset:FHCRCHanashAnnexinLamr'], start=0, rows=0, facet='true', facet_field='Version')
-    response = server.query('*:*', fq=['DatasetId:FHCRCHanashAnnexinLamr'], start=0)
-    import pdb;pdb.set_trace()
-    versions = response.facet_counts['facet_fields']['Version']
-    lastVersion = 0
-    for key, value in versions.items():
-        print 'Version {} has {} files'.format(key, value)
-        if int(key) > lastVersion:
-            lastVersion = int(key)
+
+
+    # Parent/Child Relationships
+    # ==========================
+
+    server = solr.SolrConnection('http://localhost:8983/solr/datasets')
+
+    # Get a single dataset given its ID:
+    # ----------------------------------
+    # response = server.query(
+    #     q='*:*',
+    #     score=True,
+    #     sort=['DatasetName'],
+    #     fq=['id:City_Of_Hope/Du98Breastmri12212005/Breast_Mr_Guided_Biopsy-1'],
+    #     start=0,
+    #     rows=99999
+    # )
+    # with open('/tmp/x.json', 'wb') as f:
+    #     f.write(json.dumps(response.results))
+
+
+    # Get all the datasets with the above dataset as their parent:
+    # ------------------------------------------------------------
+    # response = server.query(
+    #     q='*:*',
+    #     score=True,
+    #     sort=['DatasetName'],
+    #     fq=['DatasetParentId:City_Of_Hope/Du98Breastmri12212005/Breast_Mr_Guided_Biopsy-1'],
+    #     start=0,
+    #     rows=99999
+    # )
+    # with open('/tmp/x.json', 'wb') as f:
+    #     f.write(json.dumps(response.results))
+
+    # End of Parent/Child Relationships
+    # =================================
+
+    # import pdb;pdb.set_trace()
+    # versions = response.facet_counts['facet_fields']['Version']
+    # lastVersion = 0
+    # for key, value in versions.items():
+    #     print 'Version {} has {} files'.format(key, value)
+    #     if int(key) > lastVersion:
+    #         lastVersion = int(key)
 
     # response = server.query('*:*', fq=['Dataset:t1', 'Version:%s'.format(lastVersion)], start=0)
     # print 'Latest version {} # of files {}'.format(lastVersion, response.numFound)
