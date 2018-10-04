@@ -118,6 +118,7 @@
                             <tbody>
                                 <tr tal:repeat='f python:files'>
                                     <td>
+                                        <!-- CHECK: Do we need to transform / to %57 here? -->
                                         <input type='checkbox' class='downloadToggle' name='include.name'
                                             tal:attributes='name python:u"include." + f.identifier'/>
                                     </td>
@@ -126,7 +127,7 @@
                                         fileID=f.identifier.replace(u"/", u"%57"),
                                         _query=dict(
                                             collectionID=collection.identifier,
-                                            datasetID=dataset.identifier.replace(u"/", u"%57")
+                                            datasetID=dataset.identifier
                                         )
                                     )'>
                                         <a href='#' tal:attributes='href fileURL' tal:content='f.name'>
@@ -158,7 +159,7 @@
                                             fileID=f.identifier.replace(u"/", u"%57"),
                                             _query=dict(
                                                 collectionID=collection.identifier,
-                                                datasetID=dataset.identifier.replace(u"/", u"%57"),
+                                                datasetID=dataset.identifier,
                                                 download=True
                                             )
                                         )'>

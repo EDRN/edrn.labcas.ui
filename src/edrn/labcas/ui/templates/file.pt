@@ -67,7 +67,7 @@
                     <a class='btn btn-default' href='#' role='button'
                         tal:attributes='href python:request.current_route_url(_query=dict(
                             collectionID=collection.identifier,
-                            datasetID=dataset.identifier.replace(u"/", u"%57"),
+                            datasetID=dataset.identifier,
                             download=True
                         ))'>
                         <span class='glyphicon glyphicon-cloud-download' aria-hidden='true'></span> Download this file

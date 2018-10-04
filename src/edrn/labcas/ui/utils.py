@@ -425,9 +425,11 @@ class LabCASCollection(object):
         metadata.sort(lambda a, b: cmp(a[0], b[0]))
         return metadata
     def datasets(self, datasetID=None):
+        _logger.info('LabCASCollection.datasets called with datasetID="%s", my collectionID="%s"',
+            datasetID, self.identifier)
         if self.datasetMapping is None:
             self.datasetMapping = {}
-            datasets = LabCASDataset.get(self.identifier)
+            datasets = LabCASDataset.get(self.identifier, includeChildren=True)
             for dataset in datasets:
                 self.datasetMapping[dataset.identifier] = dataset
         if datasetID is None:
@@ -475,6 +477,7 @@ class LabCASCollection(object):
         all LabCASCollections.  Use the given ``principals`` to figure out
         which we have access to.
         '''
+        _logger.info('Retrieving collection with identifier "%s"', identifier)
         backend = getUtility(IBackend)
         if identifier is None:
             collections = []
@@ -566,7 +569,7 @@ class LabCASDataset(object):
     @staticmethod
     def getByDatasetID(datasetID):
         u'''Get the LabCAS dataset with the matching ID'''
-        datasetID = datasetID.replace(u'%57', u'/')  # Ugh.
+        _logger.info('Retreiving dataset for datasetID "%s"', datasetID)
         backend = getUtility(IBackend)
         response = backend.getSearchEngine(u'datasets').select(
             q='*:*',
@@ -580,10 +583,11 @@ class LabCASDataset(object):
         )
         return LabCASDataset._construct(response.results[0])
     @staticmethod
-    def get(collectionID):
+    def get(collectionID, includeChildren=False):
         u'''Get the LabCAS datasets belonging to the collection with the given
         ``collectionName``.
         '''
+        _logger.info('Retrieving datasets for collectionID "%s"', collectionID)
         backend = getUtility(IBackend)
         response = backend.getSearchEngine(u'datasets').select(
             q='*:*',
@@ -595,7 +599,10 @@ class LabCASDataset(object):
             start=0,
             rows=99999  # FIXME: we should support pagination
         )
-        return [LabCASDataset._construct(item) for item in response.results if item.get('DatasetParentId') is None]
+        if includeChildren:
+            return [LabCASDataset._construct(item) for item in response.results]
+        else:
+            return [LabCASDataset._construct(item) for item in response.results if item.get('DatasetParentId') is None]
     # What uses this ``getByParentDataset`` method? Nothing so far as I can tell.
     @staticmethod
     def getByParentDataset(datasetID):
@@ -655,6 +662,7 @@ class LabCASFile(object):
     def get(datasetID):
         u'''Get the files belonging to the dataset with the given ``datasetID``
         '''
+        _logger.info('Retrieving files for datasetID "%s"', datasetID)
         backend = getUtility(IBackend)
         response = backend.getSearchEngine(u'files').select(
             q='*:*',

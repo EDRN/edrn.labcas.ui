@@ -27,7 +27,8 @@ class DatasetView(object):
         principals = frozenset(self.request.effective_principals)
         collectionID = self.request.matchdict['collectionID']
         collection = LabCASCollection.get(collectionID, principals)
-        datasetID = self.request.matchdict['datasetID']
+        datasetID = self.request.matchdict['datasetID'].replace(u"%57", u"/")
+        _logger.info('__call__ for dataset, collectionID "%s", datasetID "%s"', collectionID, datasetID)
         dataset = LabCASDataset.getByDatasetID(datasetID)
         totalSize = sum([i.size for i in dataset.files()])
         params = self.request.params

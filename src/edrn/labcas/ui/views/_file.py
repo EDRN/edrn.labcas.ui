@@ -2,9 +2,10 @@
 
 from edrn.labcas.ui import PACKAGE_NAME
 from edrn.labcas.ui.utils import LabCASCollection, computeHumanReadableContentType
-from pyramid.httpexceptions import HTTPFound
-from pyramid.view import view_config, view_defaults
 from M2Crypto import EVP
+from pyramid.httpexceptions import HTTPFound
+from pyramid.url import urlencode
+from pyramid.view import view_config, view_defaults
 import humanize, base64, logging, urllib
 
 _logger = logging.getLogger(__name__)
@@ -20,7 +21,13 @@ class FileView(object):
     def __call__(self):
         collectionID = self.request.params.get('collectionID')
         datasetID = self.request.params.get('datasetID')
-        fileID = self.request.matchdict['fileID']
+        fileID = self.request.matchdict['fileID'].replace(u'%57', u'/')
+        _logger.info(
+            '__call__ for file, collectionID "%s", datasetID "%s", fileID "%s"',
+            collectionID,
+            datasetID,
+            fileID
+        )
         principals = frozenset(self.request.effective_principals)
         collection = LabCASCollection.get(collectionID, principals)
         dataset = collection.datasets(datasetID)
@@ -35,7 +42,7 @@ class FileView(object):
         params = self.request.params
         if 'download' in params:
             # Download the file
-            response = HTTPFound(self.request.host_url + u'/fmprod/data?productID=' + f.fileID)
+            response = HTTPFound(self.request.host_url + u'/fmprod/data?' + urlencode([(u'productID', f.fileID)]))
             key = EVP.load_key(self.request.registry.settings['labcas.hostkey'])
             key.reset_context(md='sha1')
             key.sign_init()
