@@ -30,7 +30,7 @@ class FileView(object):
         )
         principals = frozenset(self.request.effective_principals)
         collection = LabCASCollection.get(collectionID, principals)
-        dataset = collection.datasets(datasetID)
+        dataset = collection.datasets(includeChildren=True, datasetID=datasetID)
         f = dataset.files(fileID)
         viewerURL = viewerType = None
         if u'FileUrl' in f.metadata:

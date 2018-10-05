@@ -424,12 +424,12 @@ class LabCASCollection(object):
         metadata = self.metadata.items()
         metadata.sort(lambda a, b: cmp(a[0], b[0]))
         return metadata
-    def datasets(self, datasetID=None):
-        _logger.info('LabCASCollection.datasets called with datasetID="%s", my collectionID="%s"',
-            datasetID, self.identifier)
+    def datasets(self, includeChildren=False, datasetID=None):
+        _logger.info('LabCASCollection.datasets called with datasetID="%s", my collectionID="%s", children=%d',
+            datasetID, self.identifier, includeChildren)
         if self.datasetMapping is None:
             self.datasetMapping = {}
-            datasets = LabCASDataset.get(self.identifier, includeChildren=True)
+            datasets = LabCASDataset.get(self.identifier, includeChildren=includeChildren)
             for dataset in datasets:
                 self.datasetMapping[dataset.identifier] = dataset
         if datasetID is None:
