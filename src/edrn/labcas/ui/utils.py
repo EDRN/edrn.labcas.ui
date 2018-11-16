@@ -402,6 +402,8 @@ class _UTC(datetime.tzinfo):
         return 'UTC'
     def dst(self, dt):
         return self.zero
+
+
 UTC = _UTC()
 
 
