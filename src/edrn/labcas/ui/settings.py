@@ -14,6 +14,7 @@ def _validateProgram(context, parameter, value):
         raise click.BadParameter('Program must be either EDRN or MCL')
     return value
 
+
 @click.command()
 @click.option('--tmp', help='Set the path to the temporary directory', default=DEFAULT_TMP_DIR)
 @click.option('--zip', help='Set the limit (in megabytes) for ZIP archives', default=DEFAULT_ZIP_FILE_LIMIT)
@@ -27,7 +28,7 @@ def main(tmp, zip, program, super):
     config = ConfigParser.SafeConfigParser()
     config.read(args.config)
     vocabDir = config.get('app:main', 'labcas.vocabularies')
-    settingsFile = config.get('app:main',  'labcas.settings')
+    settingsFile = config.get('app:main', 'labcas.settings')
     if not os.path.isdir(vocabDir):
         os.makedirs(vocabDir)
     try:
