@@ -15,6 +15,23 @@ There is also Apache HTTPD on ports 80/443 but essentially doing nothing.
 ssh -L 9000:localhost:9000 -L 9001:localhost:9001 -L 9002:localhost:9002 -L 8080:localhost:8080 -L 8983:localhost:8983 labcas-dev.jpl.nasa.gov
 
 
+Docker
+======
+
+To build:
+
+    env LABCAS_UI_VERSION=1.2.3 docker-compose build
+
+This will create an image edrn.labcas.ui:1.2.3.  If you ommit the
+LABCAS_UI_VERSION, the default tag of "latest" will be used instead.
+
+To run:
+
+    docker-compose up
+
+
+
+
 Luca
 ====
 
