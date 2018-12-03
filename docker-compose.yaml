@@ -1,0 +1,65 @@
+version: '3.3'
+services:
+    labcas:
+        build:
+            # Building? Easy. The Dockerfile is right here.
+            context: .
+            dockerfile: Dockerfile
+            # And it's loaded with metadata
+            labels:
+                org.dublincore.creator: Sean Kelly
+                org.dublincore.description: User interface to the Laboratory Catalog and Archive System
+                org.dublincore.language: English
+                org.dublincore.publisher: Jet Propulsion Laboratory
+                org.dublincore.rights: Open source
+                org.dublincore.title: LabCAS UI
+        image: edrn.labcas.ui:${LABCAS_UI_VERSION-latest}
+        container_name: labcas-ui-container
+        # These are the standard Pyramid ports
+        ports:
+            - '6543:6543'
+        # Make sure you copy env.ini to .env and set the values
+        env_file: .env
+        volumes:
+            - type: volume
+              source: persistence
+              target: /app/persistence
+              volume:
+                nocopy: true
+            # Where the "shared secret" between the backend and the UI lives.
+            # See https://github.com/docker/for-mac/issues/2114 when using Docker on Mac.
+            # You'll need to go to Docker in the menubar → Preferences → File Sharing
+            # and add /usr/local/labcas there.
+            - type: bind
+              source: /usr/local/labcas/certs
+              target: /app/certs
+              read_only: true
+              bind:
+                propagation: rprivate
+              volume:
+                nocopy: true
+        healthcheck:
+            # Pretty basic
+            test: ["CMD", "curl", "--fail", "http://localhost:6543"]
+            interval: 5m
+            timeout: 10s
+            retries: 3
+        networks:
+            - frontend
+            - labcas-network
+        # logging:
+        #     driver: 
+        #         '???'
+        # restart: always
+
+networks:
+    default:
+        driver: bridge
+    frontend:
+        # No special settings, just have to mention it
+    labcas-network:
+        external: true
+
+volumes:
+    persistence:
+        # Just has to be mentioned

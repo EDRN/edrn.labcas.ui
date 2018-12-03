@@ -5,7 +5,8 @@
 u'''EDRN LabCAS User Interface: vocabularies'''
 
 from .interfaces import IVocabularies, ILabCASSettings
-from .utils import UTC, Settings
+from .utils import UTC
+from .settings import Settings
 from zope.interface import implements
 from zope.component import getUtility, provideUtility
 import os.path, cPickle, datetime, rdflib, ConfigParser, argparse, os, sys, urlparse, logging
@@ -272,7 +273,7 @@ def main():
     config = ConfigParser.SafeConfigParser()
     config.read(args.config)
     vocabDir = config.get('app:main', 'labcas.vocabularies')
-    settingsFile = config.get('app:main',  'labcas.settings')
+    settingsFile = config.get('app:main', 'labcas.settings')
     if not os.path.isdir(vocabDir):
         os.makedirs(vocabDir)
     try:

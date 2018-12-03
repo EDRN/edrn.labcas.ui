@@ -7,7 +7,7 @@ u'''EDRN LabCAS User Interface'''
 from .interfaces import IBackend, ILabCASSettings
 from .resources import Root, Dataset, Upload, Collections, Collection, File, Management
 from .vocabularies import Vocabularies
-from .utils import Settings
+from .settings import Settings
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator

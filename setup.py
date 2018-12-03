@@ -24,7 +24,7 @@ _entryPoints     = {
     'paste.app_factory': ['main=edrn.labcas.ui:main'],
     'console_scripts': [
         'update-vocabularies=edrn.labcas.ui.vocabularies:main',
-        'update-settings=edrn.labcas.ui.settings:main'
+        'update-settings=edrn.labcas.ui.settings:main',
     ]
 }
 _extras = {

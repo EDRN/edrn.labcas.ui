@@ -1,0 +1,16 @@
+click
+deform >= 2.0a1
+html5lib == 1.0b8
+humanize
+M2Crypto == 0.27.0
+pyramid == 1.6
+pyramid_beaker
+pyramid_chameleon
+pyramid_debugtoolbar
+pyramid_ldap
+rdflib
+six
+solrpy
+waitress
+zope.component
+zope.interface
