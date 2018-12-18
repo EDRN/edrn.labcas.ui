@@ -150,13 +150,14 @@ _tokenChars = string.ascii_letters + string.digits
 
 
 def _generateToken():
-    return u''.join(random.choice(_tokenChars) for i in range(32))
+    return u''.join(random.choice(_tokenChars) for i in range(4))
 
 
 def main():
     try:
         # First our post-start mutable LabCAS settings
         _logger.info('Creating LabCAS settings')
+        print >>sys.stderr, '=========== HERE ========='
         settings = Settings('/app/persistence/settings')
         settings.setTmpDir(os.environ['LabCAS_TMP_Dir'])
         settings.setZipFileLimit(int(os.environ['LabCAS_ZIP_File_Limit']))

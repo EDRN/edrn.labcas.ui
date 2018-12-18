@@ -27,7 +27,7 @@ RUN pip install -r requirements.txt && mkdir src docs
 COPY MANIFEST.in README.rst setup.py app.py /app/
 COPY src src
 COPY docs docs
-RUN python setup.py install
+RUN python setup.py install && ls -lF /usr/local/bin/
 
 # And let's get running
 ENTRYPOINT ["python"]

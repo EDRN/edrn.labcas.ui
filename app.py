@@ -25,6 +25,7 @@ def main():
             # subprocess.check_call([_ingestor])
         except subprocess.CalledProcessError as ex:
             _logger.exception('Failed setup')
+            _logger.warn(u'==== OUTPUT: "%s"', ex.output)
     else:
         _logger.info('Initial setup already complete')
     _logger.info('Starting pyramid app')

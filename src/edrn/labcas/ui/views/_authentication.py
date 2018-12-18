@@ -6,7 +6,9 @@ from pyramid.security import remember, forget
 from pyramid.httpexceptions import HTTPFound
 from pyramid_ldap import get_ldap_connector
 from deform import widget
-import colander, deform
+import colander, deform, logging
+
+_logger = logging.getLogger(__name__)
 
 
 class _LoginSchema(colander.MappingSchema):
@@ -46,17 +48,29 @@ class AuthenticationView(object):
         cameFrom = self.request.params.get('cameFrom', referrer)
         message = username = password = u''
         if 'submit' in self.request.params:
+            _logger.warn('=== login === Found submit parameter')
             username, password = self.request.params['username'], self.request.params['password']
+            _logger.warn('=== login === got username %s and password', username)
             connector = get_ldap_connector(self.request)
+            _logger.warn('=== login === got LDAP connector')
             result = connector.authenticate(username, password)
             if result is not None:
+                _logger.warn('=== login === successful challenge')
                 dn = result[0]
                 fullName = result[1].get(u'cn', result[1][u'uid'])
                 fullName = fullName[0]
+                _logger.warn('=== login === fullName is %s', fullName)
                 self.request.session['fullName'] = fullName
-                del self.request.session['login']
+                try:
+                    _logger.warn('=== login === deleting login key from session')
+                    del self.request.session['login']
+                except KeyError:
+                    pass
+                _logger.warn('=== login === setting flash message')
                 self.request.session.flash(u'Welcome {}. You are now logged in.'.format(fullName), 'info')
+                _logger.warn('=== login === remembering headers')
                 headers = remember(self.request, dn)
+                _logger.warn('=== login ===redirecting to %s with headers %r', cameFrom, headers)
                 return HTTPFound(location=cameFrom, headers=headers)
             else:
                 message = 'Login failed'

@@ -13,7 +13,7 @@ services:
                 org.dublincore.publisher: Jet Propulsion Laboratory
                 org.dublincore.rights: Open source
                 org.dublincore.title: LabCAS UI
-        image: edrn.labcas.ui:${LABCAS_UI_VERSION-latest}
+        image: labcas.ui:${LABCAS_UI_VERSION-latest}
         container_name: labcas-ui-container
         # These are the standard Pyramid ports
         ports:
