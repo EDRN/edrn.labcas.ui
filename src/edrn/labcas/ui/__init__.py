@@ -24,6 +24,10 @@ _logger = logging.getLogger(PACKAGE_NAME)
 class _Backend(object):
     implements(IBackend)
     def __init__(self, fileMgrURL, workflowMgrURL, stagingDir, archiveDir, solrURL):
+        _logger.warn(
+            '=== Creating _Backend with fileMgrURL=%s, workflowMgrURL=%s, stagingDir=%s, archiveDir=%s, and solrURL=%s',
+            fileMgrURL, workflowMgrURL, stagingDir, archiveDir, solrURL
+        )
         self.fileMgr = xmlrpclib.ServerProxy(fileMgrURL)
         self.workflowMgr = xmlrpclib.ServerProxy(workflowMgrURL)
         self.stagingDir, self.archiveDir = stagingDir, archiveDir
