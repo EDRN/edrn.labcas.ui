@@ -7,7 +7,6 @@
     lang='en'
     xml:lang='en'
     metal:use-macro='load:edrn.labcas.ui:templates/master.pt'>
-    <?python from edrn.labcas.ui.interfaces import ILabCASSettings ?>
     <head>
         <title>Login</title>
         <!--
@@ -29,11 +28,7 @@
             </tal:repeat>
         </metal:javascript>
     </head>
-    <body tal:define='
-        settings python:request.registry.getUtility(ILabCASSettings);
-        program python:settings.getProgram();
-        isEDRN python:program == u"EDRN";
-    '>
+    <body>
         <div metal:fill-slot='content'>
             <div class='row'>
                 <div class='col-md-4'></div>
@@ -42,11 +37,20 @@
                     <p tal:content='structure python:form'>
                         Login form here.
                     </p>
-                    <p tal:condition='isEDRN'>If you have forgotten your password,
-                        <a href="https://www.compass.fhcrc.org/userManager/password/pub_pwdf.asp">use the DMCC's 
-                            account manager</a> to attempt to reset it.</p>
-                    <p tal:condition='not:isEDRN'>If you have forgotten your password,
-                        <a href="https://mcl.nci.nih.gov/mail_password_form">we can send you a new one</a>.</p>
+                    <p><em>Forgotten password?</em></p>
+                    <dl>
+                        <dt>EDRN users</dt>
+                        <dd><a href='https://www.compass.fhcrc.org/userManager/password/pub_pwdf.asp'>Use
+                            the DMCC's account manager</a> to reset it
+                        </dd>
+                        <dt>MCL users</dt>
+                        <dd><a href='https://mcl.nci.nih.gov/mail_password_form'>We can send you a new one</a>
+                        </dd>
+                        <dt>CIB users</dt>
+                        <dd><a href='mailto:ic-portal@jpl.nasa.gov'>Contact the Informatics Center</a>
+                            for assistance.
+                        </dd>
+                    </dl>
                 </div>
             </div>
         </div>

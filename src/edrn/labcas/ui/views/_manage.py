@@ -19,9 +19,8 @@ class ManageView(object):
             colander.String(),
             name='program',
             title=u'Program',
-            description=u'Which program this LabCAS installation is for.',
+            description=u'Which program this LabCAS installation is for (CIB, EDRN, MCL, etc.).',
             default=getUtility(ILabCASSettings).getProgram(),
-            widget=deform.widget.RadioChoiceWidget(values=((u'EDRN', u'EDRN'), (u'MCL', u'MCL')), inline=True)
         ))
         schema.add(colander.SchemaNode(
             colander.Integer(),

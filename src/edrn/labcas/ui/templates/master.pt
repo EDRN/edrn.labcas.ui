@@ -36,8 +36,6 @@
         settings python:request.registry.getUtility(ILabCASSettings);
         program python:settings.getProgram();
         analytics python:settings.getAnalytics();
-        isEDRN python:program == u"EDRN";
-        portalHome python:u"https://edrn.nci.nih.gov/" if isEDRN else u"https://mcl.nci.nih.gov/";
         routeName python:request.matched_route.name;
         noSearch python:("upload", "start", "wfmetadata", "metadata", "accept", "login", "logout", "manage");
         showSearch python:not request.session.get("login", False) and routeName not in noSearch;
@@ -45,18 +43,15 @@
         <nav class='navbar navbar-default' role='navigation' style='background-color: white;'>
             <div class='container-fluid'>
                 <div class='navbar-header'>
-                    <a class='navbar-brand' href='#' tal:attributes='href portalHome'>
-                        <img tal:condition='isEDRN' src='#' alt='Early Detection Research Network'
-                            tal:attributes='src python:request.static_url("edrn.labcas.ui:static/edrn.png")'/>
-                        <img tal:condition='not:isEDRN' src='#'
-                            alt='Consortium for Molecular and Cellular Characterization of Screen-Detected Lesions'
-                            tal:attributes='src python:request.static_url("edrn.labcas.ui:static/mcl.png")'/>
+                    <a class='navbar-brand' href='https://prevention.cancer.gov'>
+                        <img src='#' alt='LabCAS'
+                            tal:attributes='src python:request.static_url("edrn.labcas.ui:static/nci_dcp_logo.png")'/>
                     </a>
                 </div>
-                <div class='navbar-text navbar-right'>
+                <div class='navbar-text navbar-right' style='padding-right: 16px;'>
                     <p>
                         <a class='h1 navbar-link' href='#' tal:attributes='href python:request.route_url("collections")'>
-                        LabCAS
+                            <span tal:replace='program'>Joe's</span>&#x00a0;LabCAS
                         </a>
                     </p>
                     <p tal:condition='fullName' tal:define='logoutURL python:request.route_url("logout")'>
@@ -95,12 +90,9 @@
         '>
             <div class='container'>
                 <ul class='labcas-footer-links'>
-                    <li tal:condition='isEDRN'>
-                        <a href='https://edrn.nci.nih.gov/'>Early Detection Research Network</a>
-                    </li>
-                    <li tal:condition='not:isEDRN'>
-                        <a href='https://mcl.nci.nih.gov/'>
-                            Consortium for Molecular and Cellular Characterization of Screen-Detected Lesions
+                    <li>
+                        <a href='https://prevention.cancer.gov/'>
+                            National Cancer Institute Division of Cancer Prevention
                         </a>
                     </li>
                     <li tal:define='helpURL python:request.route_url("help");'>
