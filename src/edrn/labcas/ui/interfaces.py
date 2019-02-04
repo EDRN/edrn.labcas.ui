@@ -14,7 +14,7 @@ class IBackend(Interface):
     def getArchiveDirectory():
         u'''Retrieves the path to the LabCAS archive directory'''
     def getSearchEngine(kind):
-        u'''Retrieves the SOLR search API for the given ``kind`` of data.'''
+        u'''Retrieves the Solr search API for the given ``kind`` of data.'''
 
 
 class IVocabularies(Interface):
@@ -37,6 +37,10 @@ class IVocabularies(Interface):
 
 class ILabCASSettings(Interface):
     u'''Various settings for LabCAS'''
+    def getSolrURL():
+        u'''Get the URL to Solr.'''
+    def setSolrURL(solrURL):
+        u'''Set the URL to Solr to ``solrURL``.'''
     def getTmpDir():
         u'''Tells where we can make temporary files on the server'''
     def setTmpDir(tmpDir):
@@ -46,9 +50,9 @@ class ILabCASSettings(Interface):
     def setZipFileLimit(megabytes):
         u'''Set the number of megabytes where we disable the zip file download due to specimen considerations'''
     def getProgram():
-        u'''Returns either EDRN or MCL'''
+        u'''Returns the name of the program/consortium (CIB, EDRN, MCL, etc.)'''
     def setProgram(program):
-        u'''Set whether this is for EDRN or MCL'''
+        u'''Sets the name of the program/consortium, such as CIB, EDRN, MCL, etc.'''
     def getSpecimenTypeRDFURL():
         u'''Get the URL to specimen type information'''
     def setSpecimenTypeRDFURL(url):

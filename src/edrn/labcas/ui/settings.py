@@ -14,6 +14,7 @@ _defaultMetadata = {
 }
 _defaultDatatypes = {
 }
+DEFAULT_SOLR_URL           = u'http://labcas-backend:8983/solr'
 DEFAULT_SITE_RDF_URL       = u'https://edrn.jpl.nasa.gov/cancerdataexpo/rdf-data/sites/@@rdf'
 DEFAULT_PROTOCOL_RDF_URL   = u'https://edrn.jpl.nasa.gov/cancerdataexpo/rdf-data/protocols/@@rdf'
 DEFAULT_PEOPLE_RDF_URL     = u'https://edrn.jpl.nasa.gov/cancerdataexpo/rdf-data/registered-person/@@rdf'
@@ -32,6 +33,7 @@ class Settings(object):
     program            = u'EDRN'
     metadata           = _defaultMetadata
     datatypes          = _defaultDatatypes
+    solrURL            = DEFAULT_SOLR_URL
     siteRDFURL         = DEFAULT_SITE_RDF_URL
     protocolRDFURL     = DEFAULT_PROTOCOL_RDF_URL
     peopleRDFURL       = DEFAULT_PEOPLE_RDF_URL
@@ -46,6 +48,12 @@ class Settings(object):
     def __init__(self, settingsPath):
         self.settingsPath = settingsPath
         _logger.info(u'Settings object CREATED with path %s', settingsPath)
+    def getSolrURL(self):
+        return self.solrURL
+    def setSolrURL(self, solrURL):
+        if self.solrURL != solrURL:
+            self.solrURL = solrURL
+            self.update()
     def getAnalytics(self):
         return self.analytics
     def setAnalytics(self, analytics):

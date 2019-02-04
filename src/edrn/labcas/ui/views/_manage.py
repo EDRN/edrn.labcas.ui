@@ -23,6 +23,13 @@ class ManageView(object):
             default=getUtility(ILabCASSettings).getProgram(),
         ))
         schema.add(colander.SchemaNode(
+            colander.String(),
+            name='solrURL',
+            title=u'Solr URL',
+            description=u'URL to the Solr search engine for this LabCAS installation.''',
+            default=getUtility(ILabCASSettings).getSolrURL(),
+        ))
+        schema.add(colander.SchemaNode(
             colander.Integer(),
             name='zipFileLimit',
             title=u'Zip File Limit',
@@ -99,6 +106,7 @@ class ManageView(object):
             try:
                 metadataAppstruct = form.validate(self.request.POST.items())
                 program           = metadataAppstruct['program']
+                solrURL           = metadataAppstruct['solrURL']
                 superGroup        = metadataAppstruct['superGroup']
                 disciplineRDFURL  = metadataAppstruct['disciplineRDFURL']
                 organRDFURL       = metadataAppstruct['organRDFURL']
@@ -110,6 +118,7 @@ class ManageView(object):
                 tmpDir            = metadataAppstruct['tmpDir']
                 analytics         = metadataAppstruct['analytics']
                 if program != settings.getProgram() \
+                    or solrURL != settings.getSolrURL() \
                     or peopleRDFURL != settings.getPeopleRDFURL() \
                     or protocolRDFURL != settings.getProtocolRDFURL() \
                     or siteRDFURL != settings.getSiteRDFURL() \
@@ -121,6 +130,7 @@ class ManageView(object):
                     or tmpDir != settings.getTmpDir() \
                     or analytics != settings.getAnalytics():
                     settings.setProgram(program)
+                    settings.setSolrURL(solrURL)
                     settings.setPeopleRDFURL(peopleRDFURL)
                     settings.setProtocolRDFURL(protocolRDFURL)
                     settings.setSiteRDFURL(siteRDFURL)

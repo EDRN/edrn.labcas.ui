@@ -12,7 +12,7 @@ from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid_ldap import groupfinder
-from zope.component import provideUtility, getGlobalSiteManager
+from zope.component import provideUtility, getGlobalSiteManager, getUtility
 from zope.interface import implements
 import xmlrpclib, solr, cPickle, logging
 
@@ -23,15 +23,14 @@ _logger = logging.getLogger(PACKAGE_NAME)
 
 class _Backend(object):
     implements(IBackend)
-    def __init__(self, fileMgrURL, workflowMgrURL, stagingDir, archiveDir, solrURL):
+    def __init__(self, fileMgrURL, workflowMgrURL, stagingDir, archiveDir):
         _logger.warn(
-            '=== Creating _Backend with fileMgrURL=%s, workflowMgrURL=%s, stagingDir=%s, archiveDir=%s, and solrURL=%s',
-            fileMgrURL, workflowMgrURL, stagingDir, archiveDir, solrURL
+            '=== Creating _Backend with fileMgrURL=%s, workflowMgrURL=%s, stagingDir=%s, archiveDir=%s',
+            fileMgrURL, workflowMgrURL, stagingDir, archiveDir
         )
         self.fileMgr = xmlrpclib.ServerProxy(fileMgrURL)
         self.workflowMgr = xmlrpclib.ServerProxy(workflowMgrURL)
         self.stagingDir, self.archiveDir = stagingDir, archiveDir
-        self.solrURL = solrURL
     def getFileMgr(self):
         return self.fileMgr.filemgr
     def getWorkflowMgr(self):
@@ -41,7 +40,7 @@ class _Backend(object):
     def getArchiveDirectory(self):
         return self.archiveDir
     def getSearchEngine(self, kind):
-        return solr.Solr(self.solrURL + u'/' + kind)
+        return solr.Solr(getUtility(ILabCASSettings).getSolrURL() + u'/' + kind)
 
 
 def main(global_config, **settings):
@@ -118,7 +117,6 @@ def main(global_config, **settings):
         settings['labcas.workflow'],
         settings['labcas.staging'],
         settings['labcas.archive'],
-        settings['labcas.solr.baseURL']
     ))
     provideUtility(Vocabularies(settings['labcas.vocabularies']))
     _logger.info(u'LabCAS UI Ready')
