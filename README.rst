@@ -35,7 +35,7 @@ For MCL:
 • LabCAS_LDAP_Manager_Auth: REDACTED
 • LabCAS_ZIP_File_Limit: Say 200–500 MiB or so
 • LabCAS_TMP_Dir: /data/tmp
-• LabCAS_Program: EDRN
+• LabCAS_Program: MCL
 
 
 Running a Development Instance
