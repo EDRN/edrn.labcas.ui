@@ -25,6 +25,7 @@ For EDRN:
 • LabCAS_ZIP_File_Limit: Say 200–500 MiB or so
 • LabCAS_TMP_Dir: /data/tmp
 • LabCAS_Program: EDRN
+• LabCAS_Scheme: https
 
 For MCL:
 
@@ -36,6 +37,7 @@ For MCL:
 • LabCAS_ZIP_File_Limit: Say 200–500 MiB or so
 • LabCAS_TMP_Dir: /data/tmp
 • LabCAS_Program: MCL
+• LabCAS_Scheme: https
 
 
 Running a Development Instance

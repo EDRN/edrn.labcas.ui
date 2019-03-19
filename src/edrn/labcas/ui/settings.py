@@ -26,6 +26,7 @@ DEFAULT_SUPER_GROUP        = u'cn=Super User,dc=edrn,dc=jpl,dc=nasa,dc=gov'
 DEFAULT_ZIP_FILE_LIMIT     = 250
 DEFAULT_TMP_DIR            = u'/data/tmp'
 DEFAULT_ANALYTICS          = u''
+DEFAULT_SCHEME             = u'https'
 
 
 class Settings(object):
@@ -45,9 +46,16 @@ class Settings(object):
     zipFileLimit       = DEFAULT_ZIP_FILE_LIMIT
     tmpDir             = DEFAULT_TMP_DIR
     analytics          = DEFAULT_ANALYTICS
+    scheme             = DEFAULT_SCHEME
     def __init__(self, settingsPath):
         self.settingsPath = settingsPath
         _logger.info(u'Settings object CREATED with path %s', settingsPath)
+    def getScheme(self):
+        return self.scheme
+    def setScheme(self, scheme):
+        if self.scheme != scheme:
+            self.scheme = scheme
+            self.update()
     def getSolrURL(self):
         return self.solrURL
     def setSolrURL(self, solrURL):
@@ -171,11 +179,13 @@ def main():
         settings.setZipFileLimit(int(os.environ['LabCAS_ZIP_File_Limit']))
         settings.setSuperGroup(os.environ['LabCAS_LDAP_Super_Group'])
         settings.setProgram(os.environ['LabCAS_Program'])
+        settings.setScheme(os.environ['LabCAS_Scheme'])
 
         # Now our Pyramid start-up settings
         values = {
             'secrets_session': _generateToken(),
             'secrets_authorization': _generateToken(),
+            'url_scheme': os.environ['LabCAS_Scheme'],
             'ldap_manager_dn': os.environ['LabCAS_LDAP_Manager_DN'],
             'secrets_ldap_manager_password': os.environ['LabCAS_LDAP_Manager_Auth'],
             'ldap_user_base': os.environ['LabCAS_LDAP_User_Base'],

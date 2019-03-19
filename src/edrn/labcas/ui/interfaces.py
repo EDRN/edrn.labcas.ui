@@ -37,6 +37,10 @@ class IVocabularies(Interface):
 
 class ILabCASSettings(Interface):
     u'''Various settings for LabCAS'''
+    def getScheme():
+        u'''Get the URL scheme to prefer.'''
+    def setScheme(scheme):
+        u'''Set the URL scheme to prefer.'''
     def getSolrURL():
         u'''Get the URL to Solr.'''
     def setSolrURL(solrURL):

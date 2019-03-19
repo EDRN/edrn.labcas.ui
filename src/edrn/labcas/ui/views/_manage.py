@@ -17,6 +17,13 @@ class ManageView(object):
         schema = colander.SchemaNode(colander.Mapping())
         schema.add(colander.SchemaNode(
             colander.String(),
+            name='scheme',
+            title=u'Scheme',
+            description=u'Which URL scheme to prefer.',
+            default=getUtility(ILabCASSettings).getScheme(),
+        ))
+        schema.add(colander.SchemaNode(
+            colander.String(),
             name='program',
             title=u'Program',
             description=u'Which program this LabCAS installation is for (CIB, EDRN, MCL, etc.).',
@@ -106,6 +113,7 @@ class ManageView(object):
             try:
                 metadataAppstruct = form.validate(self.request.POST.items())
                 program           = metadataAppstruct['program']
+                scheme            = metadataAppstruct['scheme']
                 solrURL           = metadataAppstruct['solrURL']
                 superGroup        = metadataAppstruct['superGroup']
                 disciplineRDFURL  = metadataAppstruct['disciplineRDFURL']
@@ -118,6 +126,7 @@ class ManageView(object):
                 tmpDir            = metadataAppstruct['tmpDir']
                 analytics         = metadataAppstruct['analytics']
                 if program != settings.getProgram() \
+                    or scheme != settings.getScheme() \
                     or solrURL != settings.getSolrURL() \
                     or peopleRDFURL != settings.getPeopleRDFURL() \
                     or protocolRDFURL != settings.getProtocolRDFURL() \
@@ -130,6 +139,7 @@ class ManageView(object):
                     or tmpDir != settings.getTmpDir() \
                     or analytics != settings.getAnalytics():
                     settings.setProgram(program)
+                    settings.setScheme(scheme)
                     settings.setSolrURL(solrURL)
                     settings.setPeopleRDFURL(peopleRDFURL)
                     settings.setProtocolRDFURL(protocolRDFURL)
