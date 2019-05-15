@@ -41,7 +41,7 @@ class AcceptView(object):
                     metadata[key] = value.isoformat()
                 elif isinstance(value, set) or isinstance(value, frozenset):
                     metadata[key] = list(value)
-                elif value is None or key.lower() == 'datasetid':
+                elif value is None or unicode(key.lower()) == u'datasetid':
                     del metadata[key]
             # See comments on CA-1332; we need a better way to discover this and not hard-code
             tasks = [i['id'] for i in workflow.tasks]
