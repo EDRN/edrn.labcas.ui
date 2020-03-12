@@ -474,7 +474,7 @@ class LabCASCollection(object):
                 sort=['CollectionName'],
                 fq=[u'*:*'],
                 start=0,
-                rows=99999  # FIXME: we should support pagination
+                rows=1000  # FIXME: we should support pagination
             )
             for item in response.results:
                 collection = LabCASCollection._construct(item, principals)
@@ -489,7 +489,7 @@ class LabCASCollection(object):
                 sort=None,
                 fq=[u'id:{}'.format(identifier.replace(u':', u'\\:'))],
                 start=0,
-                rows=99999  # FIXME: we should support pagination
+                rows=1000  # FIXME: we should support pagination
             )
             if response.results:
                 return LabCASCollection._construct(response.results[0], principals)
@@ -547,7 +547,7 @@ class LabCASDataset(object):
             sort=['DatasetName'],
             fq=[u'DatasetParentId:{}'.format(identifier.replace(u':', u'\\:'))],
             start=0,
-            rows=99999  # FIXME: support pagination
+            rows=1000  # FIXME: support pagination
         )
         children = [LabCASDataset._construct(item) for item in response.results]
         return LabCASDataset(identifier, name, description, metadata, children, parentID)
@@ -564,7 +564,7 @@ class LabCASDataset(object):
             sort=['DatasetName'],
             fq=[u'id:{}'.format(datasetID.replace(u':', u'\\:'))],
             start=0,
-            rows=99999  # FIXME: we should support pagination
+            rows=1000  # FIXME: we should support pagination
         )
         return LabCASDataset._construct(response.results[0])
     @staticmethod
@@ -574,15 +574,17 @@ class LabCASDataset(object):
         '''
         _logger.info('Retrieving datasets for collectionID "%s"', collectionID)
         backend = getUtility(IBackend)
+        fq = [u'CollectionId:{}'.format(collectionID.replace(u':', u'\\:'))]
+        if not includeChildren: fq.append(u'-DatasetParentId:[* TO *]')
         response = backend.getSearchEngine(u'datasets').select(
             q='*:*',
             fields=None,
             highlight=None,
             score=True,
             sort=['DatasetName'],
-            fq=[u'CollectionId:{}'.format(collectionID.replace(u':', u'\\:'))],
+            fq=fq,
             start=0,
-            rows=99999  # FIXME: we should support pagination
+            rows=1000  # FIXME: we should support pagination
         )
         if includeChildren:
             return [LabCASDataset._construct(item) for item in response.results]
@@ -601,7 +603,7 @@ class LabCASDataset(object):
             sort=['DatasetName'],
             fq=[u'DatasetParentId:{}'.format(datasetID.replace(u':', u'\\:'))],
             start=0,
-            rows=99999  # FIXME: we should support pagination
+            rows=1000  # FIXME: we should support pagination
         )
         return [LabCASDataset._construct(item) for item in response.results]
 
@@ -657,7 +659,7 @@ class LabCASFile(object):
             sort=['FileName'],
             fq=[u'DatasetId:{}'.format(datasetID.replace(u':', u'\\:'))],
             start=0,
-            rows=99999  # FIXME: we should support pagination
+            rows=1000  # FIXME: we should support pagination
         )
         return [LabCASFile._construct(item) for item in response.results]
 
