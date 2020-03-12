@@ -20,7 +20,7 @@
         -->
     </head>
     <body>
-        <div metal:fill-slot='content'>
+        <div metal:fill-slot='content' tal:define='authenticated python:fullName is not None and len(fullName) &gt; 0'>
 
             <div class='container'>
                 <h3>Manage Workflows</h3>
@@ -43,7 +43,7 @@
                     </p>
                     <p class='text-muted'>
                         Your account is not a member of any group! As a result, you cannot upload any
-                        data into LabCAS. <a href='https://cancer.jpl.nasa.gov/contact-info'>Contact
+                        data into LabCAS. <a href='mailto:ic-portal@jpl.nasa.gov'>Contact
                         the Informatics Center</a> for assistance.
                     </p>
                 </div>
@@ -51,12 +51,13 @@
                 <h3>Data</h3>
 
                 <ul class='nav nav-tabs' role='tablist'>
-                    <li role='presentation' class='active'>
+                    <li role='presentation' tal:condition='authenticated' class='active'>
                         <a href='#mycollections' aria-controls='mycollections' role='tab' data-toggle='tab'>
                             My Collections
                         </a>
                     </li>
-                    <li role='presentation'>
+                    <li role='presentation' class='active'
+                        tal:attributes='class python:"active" if not authenticated else ""'>
                         <a href='#allcollections' aria-controls='allcollections' role='tab' data-toggle='tab'>
                             All Public Collections
                         </a>
@@ -64,8 +65,7 @@
                 </ul>
 
                 <div class='tab-content'>
-                    <div role='tabpanel' class='tab-pane active' id='mycollections'>
-
+                    <div role='tabpanel' class='tab-pane active' id='mycollections' tal:condition='authenticated'>
                         <p tal:condition='not:hasCollections' class='text-muted'>
                             You currently do not have access to collections of datasets.
                         </p>
@@ -99,8 +99,8 @@
                             </table>
                         </div>
                     </div> <!-- /hasCollections -->
-                    <div role='tabpanel' class='tab-pane' id='allcollections'>
-
+                    <div role='tabpanel' class='tab-pane' id='allcollections'
+                        tal:attributes='class python:"tab-pane active" if not authenticated else "tab-pane"'>
                         <p tal:condition='not:hasPublicCollections' class='text-muted'>
                             There are no publicly available collections.
                         </p>

@@ -16,7 +16,7 @@ _suppressedCollections = (u'ECAS Product', u'LabCAS Product')
 class CollectionsView(object):
     def __init__(self, request):
         self.request = request
-    @view_config(route_name='collections', permission='view')
+    @view_config(route_name='collections')  # , permission='view') # Make it all public
     def __call__(self):
         backend = getUtility(IBackend)
         showStartWorkflow = False
